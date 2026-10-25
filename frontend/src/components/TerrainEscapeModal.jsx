@@ -109,7 +109,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
       // Site marker — pitchAlignment & rotationAlignment viewport anchors marker above 3D elevation mesh!
       const sitePopup = new maplibregl.Popup({ offset: 18, closeButton: false })
         .setHTML(`
-          <div style="font-family:Inter,sans-serif;font-size:11px;padding:2px;">
+          <div style="font-family:'Public Sans',sans-serif;font-size:11px;padding:2px;">
             <strong style="color:#f1f5f9;">${site.name}</strong><br/>
             <span style="color:${riskColor};font-weight:700;font-family:monospace;">
               ${riskPercent}% failure probability
@@ -314,7 +314,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
         {!isMapReady && (
           <div className="absolute inset-0 flex items-center justify-center bg-onyx">
             <p className="flex items-center gap-2 text-xs text-slate-400">
-              <Loader2 size={14} className="animate-spin text-telemetry" />
+              <Loader2 size={14} className="animate-spin text-ink" />
               Loading satellite terrain...
             </p>
           </div>
@@ -395,7 +395,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
 
         <section className="mt-4 rounded-lg border border-slate-800 bg-slate-card/40 p-3">
           <h3 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-            <Navigation size={13} className="text-telemetry/70" />
+            <Navigation size={13} className="text-ink/70" />
             All Escape Routes
           </h3>
 
@@ -408,7 +408,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
               </p>
               <button
                 onClick={handleGetAllRoutes}
-                className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-md bg-telemetry px-3 py-2 text-[11px] font-semibold text-onyx hover:bg-cyan-400 transition-colors"
+                className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-md border border-risk-low bg-risk-low/10 px-3 py-2 text-sm font-medium text-ink hover:bg-risk-low/15 transition-colors"
               >
                 <MapPinned size={13} />
                 Get All Escape Routes
@@ -417,7 +417,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
           )}
 
           {isLoading && (
-            <p className="mt-2 flex items-center gap-1.5 text-[11px] text-telemetry animate-live-pulse">
+            <p className="mt-2 flex items-center gap-1.5 text-sm text-ink">
               <Loader2 size={13} className="animate-spin" />
               Calculating all routes via live OSRM...
             </p>
@@ -447,7 +447,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
                             style={{ backgroundColor: route.color, boxShadow: `0 0 6px ${route.color}` }}
                           />
                           <span className="text-[11px] font-semibold text-slate-200">{route.label}</span>
-                          {isActive && <CheckCircle2 size={11} className="text-telemetry" />}
+                          {isActive && <CheckCircle2 size={11} className="text-ink" />}
                         </div>
                         <div className="flex items-center gap-2 text-[10px] text-slate-400">
                           <RouteIcon size={10} />
@@ -480,7 +480,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
 
                 <button
                   onClick={handleGetAllRoutes}
-                  className="mt-1 w-full rounded-md border border-slate-700 px-3 py-1.5 text-[10px] text-slate-400 hover:border-telemetry/40 hover:text-telemetry transition-colors"
+                  className="mt-1 w-full rounded-md border border-slate-700 px-3 py-1.5 text-sm text-slate-400 hover:border-risk-low/40 hover:text-ink transition-colors"
                 >
                   Refresh routes
                 </button>
@@ -491,7 +491,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
 
         <section className="mt-4 rounded-lg border border-slate-800 bg-slate-card/40 p-3">
           <h3 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-            <ShieldCheck size={13} className="text-telemetry/70" />
+            <ShieldCheck size={13} className="text-ink/70" />
             Safety Strategy
           </h3>
           <div className="mt-2 space-y-3">
@@ -501,7 +501,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
                 <ul className="mt-1 space-y-1">
                   {section.points.map((point, index) => (
                     <li key={index} className="flex gap-1.5 text-[10.5px] text-slate-400">
-                      <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-telemetry/60" />
+                      <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-risk-low/60" />
                       {point}
                     </li>
                   ))}

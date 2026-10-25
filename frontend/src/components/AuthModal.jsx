@@ -2,7 +2,7 @@
 // AuthModal.jsx
 // -----------------------------------------------------------------------
 // WHAT: Secure Admin Authorization Gate. Strictly restricts access to the full
-//       Tactical Command Center Dashboard to authorized emergency administrators.
+//       Emergency administrators portal for authorized users.
 // -----------------------------------------------------------------------
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -58,7 +58,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
 
           {/* Header */}
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-telemetry/15 text-telemetry ring-1 ring-telemetry/40">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-risk-low/15 text-ink ring-1 ring-ink/40">
               <Lock size={20} />
             </div>
             <div>
@@ -92,11 +92,11 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
                       onClick={() => setSelectedRole(role.id)}
                       className={`flex w-full items-center gap-3 rounded-lg border p-2.5 text-left text-xs transition-all ${
                         isSelected
-                          ? "border-telemetry bg-telemetry/10 text-slate-100 font-medium"
+                          ? "border-risk-low bg-risk-low/10 text-ink font-medium"
                           : "border-slate-800 bg-slate-card/50 text-slate-400 hover:border-slate-700"
                       }`}
                     >
-                      <Icon size={16} className={isSelected ? "text-telemetry" : "text-slate-500"} />
+                      <Icon size={16} className={isSelected ? "text-ink" : "text-slate-500"} />
                       <span>{role.title}</span>
                     </button>
                   );
@@ -117,14 +117,14 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
                 className="w-full rounded-lg border border-slate-700 bg-onyx px-3.5 py-2.5 text-xs text-slate-200 placeholder:text-slate-600 focus:border-telemetry focus:outline-none focus:ring-1 focus:ring-telemetry/40 font-mono"
               />
               {errorMsg && <p className="mt-1.5 text-[11px] text-red-400 font-medium">{errorMsg}</p>}
-              <p className="mt-1 text-[10.5px] text-slate-500">Authorized passcode: <code className="text-telemetry font-mono font-bold">admin123</code></p>
+              <p className="mt-1 text-[10.5px] text-slate-500">Authorized passcode: <code className="text-ink font-mono font-bold">admin123</code></p>
             </div>
 
             {/* Buttons */}
             <div className="pt-2 space-y-2">
               <button
                 type="submit"
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-telemetry px-4 py-2.5 text-xs font-bold text-onyx shadow-glow-cyan hover:bg-cyan-400 transition-colors"
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-risk-low bg-risk-low/10 px-4 py-2.5 text-xs font-bold text-ink hover:bg-risk-low/15 transition-colors"
               >
                 <span>Authenticate &amp; Open Command Center</span>
                 <ArrowRight size={14} />

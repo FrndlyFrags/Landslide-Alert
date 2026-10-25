@@ -40,7 +40,7 @@ function severityColor(severity) {
 function SectionHeading({ icon: Icon, children }) {
   return (
     <h2 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-      <Icon size={13} className="text-telemetry/70" />
+      <Icon size={13} className="text-ink/70" />
       {children}
     </h2>
   );
@@ -90,7 +90,7 @@ export function FieldPhotoModal({ isOpen, onClose }) {
           </button>
 
           <div className="flex items-center gap-3 mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-telemetry/15 text-telemetry ring-1 ring-telemetry/40">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-risk-low/15 text-ink ring-1 ring-ink/40">
               <Camera size={20} />
             </div>
             <div>
@@ -112,7 +112,7 @@ export function FieldPhotoModal({ isOpen, onClose }) {
             </div>
             <button
               onClick={() => setIsOffline((current) => !current)}
-              className="text-[10px] text-slate-500 underline hover:text-telemetry"
+              className="text-sm text-slate-500 underline hover:text-ink"
             >
               Toggle
             </button>
@@ -123,8 +123,8 @@ export function FieldPhotoModal({ isOpen, onClose }) {
               Upload a photo of a slope crack or road blockage for AI analysis.
             </p>
 
-            <label className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-slate-700 bg-slate-card/30 p-6 text-center transition-colors hover:border-telemetry/60 hover:bg-telemetry/5">
-              <Camera size={20} className="text-telemetry" />
+            <label className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-slate-700 bg-slate-card/30 p-6 text-center transition-colors hover:border-risk-low/60 hover:bg-risk-low/5">
+              <Camera size={20} className="text-ink" />
               <span className="text-xs font-medium text-slate-300">Click to choose a photo</span>
               <input type="file" accept="image/*" className="hidden" onChange={handlePhotoSelected} />
             </label>
@@ -139,7 +139,7 @@ export function FieldPhotoModal({ isOpen, onClose }) {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="absolute border-2 border-red-500 shadow-glow-red"
+                    className="absolute border-2 border-red-500"
                     style={{
                       left: `${analysisResult.boundingBox.x}%`,
                       top: `${analysisResult.boundingBox.y}%`,
@@ -155,7 +155,7 @@ export function FieldPhotoModal({ isOpen, onClose }) {
               </div>
 
               {isAnalyzing && (
-                <p className="mt-2 flex items-center gap-1.5 text-[11px] text-telemetry animate-live-pulse">
+                <p className="mt-2 flex items-center gap-1.5 text-sm text-ink">
                   <ScanSearch size={12} />
                   Running crack detection model...
                 </p>

@@ -7,7 +7,7 @@
 //           Rendered directly inside WebGL canvas so dots are 100% locked
 //           to terrain coordinates and NEVER shift or drift when zooming in/out or pitching!
 //         - MapLibre Heatmap layer for Displacement Heat
-//         - Tactical Controls Bar (Field Photo Report, Drone Patrol, Day/Night)
+//         - Controls Bar (Field Photo Report, Drone Patrol, Day/Night)
 //         - Right-hand side panel containing Spatial Inspector & Emergency Road Rerouting
 // -----------------------------------------------------------------------
 import { useEffect, useRef, useState } from "react";
@@ -47,7 +47,7 @@ function SourceTag({ source }) {
   return (
     <span
       className={`ml-1.5 rounded px-1 py-0.5 text-[8.5px] font-semibold uppercase tracking-wide ${
-        isLive ? "bg-telemetry/15 text-telemetry" : "bg-slate-700/60 text-slate-400"
+        isLive ? "bg-risk-low/15 text-ink" : "bg-slate-700/60 text-slate-400"
       }`}
     >
       {isLive ? "Live" : "Sim"}
@@ -58,7 +58,7 @@ function SourceTag({ source }) {
 function SectionHeading({ icon: Icon, children }) {
   return (
     <h2 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-      <Icon size={13} className="text-telemetry/70" />
+      <Icon size={13} className="text-ink/70" />
       {children}
     </h2>
   );
@@ -372,7 +372,7 @@ export default function DigitalTwinMap({
         popupRef.current = new maplibregl.Popup({ offset: 12, closeButton: false, className: "ner-popup" })
           .setLngLat(coords)
           .setHTML(`
-            <div style="font-family:'Inter',sans-serif;font-size:11px;padding:4px 2px;">
+            <div style="font-family:'Public Sans',sans-serif;font-size:11px;padding:4px 2px;">
               <strong style="color:#f1f5f9;">${props.name}</strong><br/>
               <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
                 <span style="color:${props.color};font-family:monospace;font-weight:700;font-size:12px;">
@@ -466,7 +466,7 @@ export default function DigitalTwinMap({
                 onClick={() => onToggleLayer(layer.id)}
                 className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] transition-all ${
                   isActive
-                    ? "border-telemetry bg-telemetry/10 text-telemetry shadow-glow-cyan"
+                    ? "border-risk-low bg-risk-low/10 text-ink"
                     : "border-slate-700 text-slate-500 hover:border-slate-500 hover:text-slate-300"
                 }`}
               >
@@ -477,12 +477,12 @@ export default function DigitalTwinMap({
           })}
         </div>
 
-        {/* Tactical Map Controls */}
+        {/* Map Controls */}
         <div className="flex items-center gap-2">
           {/* Field Photo Report Modal Trigger Button */}
           <button
             onClick={() => setIsPhotoModalOpen(true)}
-            className="flex items-center gap-1.5 rounded-lg border border-telemetry/50 bg-telemetry/10 px-3 py-1 text-[11px] font-semibold text-telemetry hover:bg-telemetry/20 transition-all shadow-glow-cyan/40"
+            className="flex items-center gap-1.5 rounded-lg border border-risk-low/50 bg-risk-low/10 px-3 py-1 text-sm font-medium text-ink hover:bg-risk-low/20 transition-all"
             title="Upload slope crack photo for AI analysis"
           >
             <Camera size={13} />
@@ -494,7 +494,7 @@ export default function DigitalTwinMap({
             onClick={() => setIsMapUnlocked((prev) => !prev)}
             className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-colors ${
               isMapUnlocked
-                ? "border-telemetry/50 bg-telemetry/10 text-telemetry"
+                ? "border-risk-low/50 bg-risk-low/10 text-ink"
                 : "border-slate-700 bg-slate-card/80 text-slate-400 hover:border-slate-500"
             }`}
             title={isMapUnlocked ? "Free pan/zoom active" : "Map movement locked"}
@@ -506,7 +506,7 @@ export default function DigitalTwinMap({
           {/* Quick Location Jump Select */}
           {rankedSites && (
             <div className="relative flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-card/80 px-2 py-1 text-[11px] text-slate-200">
-              <MapPin size={12} className="text-telemetry shrink-0" />
+              <MapPin size={12} className="text-ink shrink-0" />
               <select
                 value={selectedSite?.siteId || ""}
                 onChange={(e) => onSelectSite(e.target.value)}
@@ -526,7 +526,7 @@ export default function DigitalTwinMap({
             onClick={() => setIsDroneOrbiting((prev) => !prev)}
             className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-all ${
               isDroneOrbiting
-                ? "border-amber-400 bg-amber-400/20 text-amber-300 shadow-glow-amber"
+                ? "border-amber-400 bg-amber-400/20 text-amber-300"
                 : "border-slate-700 bg-slate-card/80 text-slate-300 hover:border-slate-500"
             }`}
             title="Orbit camera 360° around selected hillside in 3D"
@@ -539,9 +539,9 @@ export default function DigitalTwinMap({
           <button
             onClick={() => setIsDaylight((prev) => !prev)}
             className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-card/80 px-2 py-1 text-[11px] text-slate-300 hover:border-slate-500"
-            title="Toggle Tactical Day/Night sky lighting"
+            title="Toggle Day/Night sky lighting"
           >
-            {isDaylight ? <Sun size={12} className="text-amber-400" /> : <Moon size={12} className="text-telemetry" />}
+            {isDaylight ? <Sun size={12} className="text-amber-400" /> : <Moon size={12} className="text-ink" />}
           </button>
         </div>
       </div>
@@ -554,7 +554,7 @@ export default function DigitalTwinMap({
           {!isMapReady && (
             <div className="absolute inset-0 flex items-center justify-center bg-onyx z-20">
               <p className="flex items-center gap-2 text-xs text-slate-400">
-                <Loader2 size={14} className="animate-spin text-telemetry" />
+                <Loader2 size={14} className="animate-spin text-ink" />
                 Loading satellite terrain...
               </p>
             </div>
@@ -578,10 +578,10 @@ export default function DigitalTwinMap({
           {showRoads && isMapReady && (
             <div className="absolute bottom-10 left-4 z-20 flex gap-4 rounded-lg border border-slate-800 bg-slate-card/90 px-3 py-2 text-[10px] text-slate-300 backdrop-blur-sm shadow-xl">
               <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-4 rounded bg-emerald-500 shadow-glow-emerald" /> Open Road
+                <span className="h-1.5 w-4 rounded bg-emerald-500" /> Open Road
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-4 rounded bg-red-500 shadow-glow-red" /> Blocked Road
+                <span className="h-1.5 w-4 rounded bg-red-500" /> Blocked Road
               </span>
             </div>
           )}
@@ -592,7 +592,7 @@ export default function DigitalTwinMap({
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
               SATELLITE · 3D TERRAIN · LIVE MONITORING
               {selectedSite && (
-                <span className="border-l border-slate-700 pl-2 text-telemetry">
+                <span className="border-l border-slate-700 pl-2 text-ink">
                   SLOPE: {selectedSite.telemetry.slopeAngleDegrees}°
                 </span>
               )}
@@ -680,7 +680,7 @@ export default function DigitalTwinMap({
 
                 <button
                   onClick={() => onOpenTerrainView(selectedSite)}
-                  className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-md border border-telemetry/50 bg-telemetry/10 px-3 py-2 text-[11px] font-semibold text-telemetry transition-colors hover:bg-telemetry/20"
+                  className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-md border border-risk-low/50 bg-risk-low/10 px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-risk-low/20"
                 >
                   <Box size={13} />
                   3D Terrain &amp; All Escape Routes

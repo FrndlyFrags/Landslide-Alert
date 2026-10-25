@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Skeleton from "./components/ui/Skeleton";
 import Header from "./components/Header";
+import LocationRiskCard from "./components/LocationRiskCard";
 import DigitalTwinMap from "./components/DigitalTwinMap";
 import AnalyticsPanel from "./components/AnalyticsPanel";
 import CopilotCenter from "./components/CopilotCenter";
@@ -100,6 +101,8 @@ export default function App() {
   // Render landing page immediately; show skeletons where live data hasn't arrived
   return (
     <div className="relative min-h-screen bg-paper text-ink selection:text-accent">
+      {/* Location-based risk for any visitor — one tap, no dead ends */}
+      <LocationRiskCard />
       {/* Landing page shows right away; skeletons render while data loads */}
       <LandingPage
         rankedSites={isBooting ? null : rankedSites}

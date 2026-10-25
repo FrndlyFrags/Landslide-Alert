@@ -223,14 +223,14 @@ export default function CopilotCenter({ rankedSites }) {
             onClick={() => setIsOpen(true)}
             className="group relative flex items-center gap-2.5 rounded-full border border-telemetry/50 bg-dark-slate/95 px-4 py-3 text-slate-100 shadow-2xl shadow-cyan-500/20 backdrop-blur-md hover:border-telemetry"
           >
-            <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-telemetry/20 text-telemetry ring-1 ring-telemetry/50">
+            <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-risk-low/20 text-ink ring-1 ring-ink/50">
               <Bot size={18} />
-              <span className="absolute inset-0 animate-ping-slow rounded-full bg-telemetry/40" />
+              <span className="absolute inset-0 " />
             </span>
             <div className="text-left pr-1">
               <div className="flex items-center gap-1.5 text-xs font-bold text-slate-50">
                 <span>AI Copilot</span>
-                <Sparkles size={11} className="text-telemetry animate-pulse" />
+                <Sparkles size={11} className="text-ink animate-pulse" />
               </div>
               <p className="text-[10px] text-slate-400">Ask safety &amp; weather</p>
             </div>
@@ -251,7 +251,7 @@ export default function CopilotCenter({ rankedSites }) {
             {/* Header with Tabs */}
             <div className="flex items-center justify-between border-b border-slate-800 bg-slate-card/60 px-4 py-3">
               <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-telemetry/20 text-telemetry">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-risk-low/20 text-ink">
                   <Bot size={15} />
                 </div>
                 <div>
@@ -276,7 +276,7 @@ export default function CopilotCenter({ rankedSites }) {
                 onClick={() => setActiveTab("chat")}
                 className={`flex flex-1 items-center justify-center gap-1.5 py-2 transition-colors ${
                   activeTab === "chat"
-                    ? "border-b-2 border-telemetry text-telemetry bg-telemetry/5"
+                    ? "border-2 border-risk-low text-ink bg-risk-low/5"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
@@ -287,7 +287,7 @@ export default function CopilotCenter({ rankedSites }) {
                 onClick={() => setActiveTab("broadcast")}
                 className={`flex flex-1 items-center justify-center gap-1.5 py-2 transition-colors ${
                   activeTab === "broadcast"
-                    ? "border-b-2 border-telemetry text-telemetry bg-telemetry/5"
+                    ? "border-2 border-risk-low text-ink bg-risk-low/5"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
@@ -310,7 +310,7 @@ export default function CopilotCenter({ rankedSites }) {
                       <span
                         className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
                           message.role === "assistant"
-                            ? "bg-telemetry/15 text-telemetry ring-1 ring-telemetry/30"
+                            ? "bg-risk-low/15 text-ink ring-1 ring-ink/30"
                             : "bg-slate-700 text-slate-200"
                         }`}
                       >
@@ -320,7 +320,7 @@ export default function CopilotCenter({ rankedSites }) {
                         className={`rounded-xl px-3 py-2 leading-relaxed whitespace-pre-wrap ${
                           message.role === "assistant"
                             ? "bg-slate-800/90 text-slate-200 border border-slate-700/60 shadow-sm"
-                            : "bg-telemetry/20 text-cyan-100 border border-telemetry/30"
+                            : "bg-risk-moderate/20 text-ink border border-risk-moderate/30"
                         }`}
                       >
                         {message.text}
@@ -330,7 +330,7 @@ export default function CopilotCenter({ rankedSites }) {
 
                   {isLoading && (
                     <div className="flex items-center gap-2 text-slate-400 text-xs py-1">
-                      <Bot size={12} className="animate-spin text-telemetry" />
+                      <Bot size={12} className="animate-spin text-ink" />
                       Analyzing weather &amp; spatial risks...
                     </div>
                   )}
@@ -347,7 +347,7 @@ export default function CopilotCenter({ rankedSites }) {
                   />
                   <button
                     type="submit"
-                    className="flex items-center gap-1 rounded-lg bg-telemetry px-3 py-2 text-[11px] font-bold text-onyx hover:bg-cyan-400 transition-colors"
+                    className="flex items-center gap-1 rounded-lg bg-risk-moderate px-3 py-2 text-sm font-bold text-ink hover:bg-risk-moderate/20 transition-colors"
                   >
                     <Send size={12} />
                   </button>
@@ -372,7 +372,7 @@ export default function CopilotCenter({ rankedSites }) {
                       onClick={() => toggleBroadcastLanguage(language)}
                       className={`rounded-full border px-2.5 py-1 text-[10px] transition-colors ${
                         broadcastLanguages.includes(language)
-                          ? "border-telemetry bg-telemetry/15 text-telemetry font-semibold"
+                          ? "border-risk-low bg-risk-low/15 text-ink font-semibold"
                           : "border-slate-700 text-slate-500 hover:border-slate-500"
                       }`}
                     >
@@ -387,7 +387,7 @@ export default function CopilotCenter({ rankedSites }) {
                       key={language}
                       className="rounded-lg border border-slate-800 bg-onyx/60 p-2.5 text-[11px] text-slate-300"
                     >
-                      <span className="font-semibold text-telemetry">{language}: </span>
+                      <span className="font-semibold text-ink">{language}: </span>
                       {MOCK_ALERT_PHRASES[language] ?? MOCK_ALERT_PHRASES.English}
                     </div>
                   ))}

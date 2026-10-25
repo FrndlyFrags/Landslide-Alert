@@ -69,7 +69,7 @@ function RiskGauge({ label, percent }) {
 function SectionHeading({ icon: Icon, children }) {
   return (
     <h2 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-      <Icon size={13} className="text-telemetry/70" />
+      <Icon size={13} className="text-ink/70" />
       {children}
     </h2>
   );
@@ -114,7 +114,7 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
                   onClick={() => onSelectSite(site.siteId)}
                   className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left transition-all ${
                     isSelected
-                      ? "border-telemetry/60 bg-telemetry/10 shadow-glow-cyan"
+                      ? "border-risk-low/60 bg-risk-low/10"
                       : "border-slate-800 bg-slate-card/50 hover:border-slate-600"
                   }`}
                 >

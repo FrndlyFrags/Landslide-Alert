@@ -4,7 +4,7 @@
 // WHAT: Public Landing Page introducing the NER Landslide Early Warning &
 //       Monitoring Platform. Showcases system capabilities, public weather alerts,
 //       and disaster preparedness guidance, with a secure entry portal to the
-//       Tactical Command Center for authorized admins.
+//       Admin Command Center for authorized admins.
 // -----------------------------------------------------------------------
 import { motion } from "framer-motion";
 import {
@@ -24,14 +24,14 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
   }
 
   return (
-    <div className="min-h-screen bg-onyx text-slate-100 font-sans selection:bg-telemetry/30 selection:text-telemetry">
+    <div className="min-h-screen bg-paper text-ink font-sans selection:bg-paper/20 selection:text-ink">
       {/* Top Public Navigation Bar */}
-      <header className="sticky top-0 z-40 border-b border-slate-800 bg-dark-slate/90 px-6 py-3.5 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-slate-800 bg-slate-card/90 px-6 py-3.5 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-telemetry/15 ring-1 ring-telemetry/40">
-              <Radio size={18} className="text-telemetry" />
-              <span className="absolute inset-0 animate-ping-slow rounded-full bg-telemetry/30" />
+            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-paper/10 ring-1 ring-ink/40">
+              <Radio size={18} className="text-ink" />
+              <span className="" />
             </div>
             <div>
               <h1 className="text-sm font-bold tracking-tight text-slate-50">
@@ -44,20 +44,20 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
           <div className="flex items-center gap-4">
             <button
               onClick={() => scrollToSection("features")}
-              className="hidden text-xs text-slate-400 hover:text-slate-200 transition-colors md:block"
+              className="hidden text-sm text-slate-400 hover:text-ink transition-colors md:block"
             >
               System Tools
             </button>
             <button
               onClick={() => scrollToSection("safety")}
-              className="hidden text-xs text-slate-400 hover:text-slate-200 transition-colors md:block"
+              className="hidden text-sm text-slate-400 hover:text-ink transition-colors md:block"
             >
               Safety Guidelines
             </button>
 
             <button
               onClick={onOpenAdminAuth}
-              className="flex items-center gap-2 rounded-lg bg-telemetry px-4 py-2 text-xs font-bold text-onyx shadow-glow-cyan hover:bg-cyan-400 transition-all hover:scale-[1.02]"
+              className="flex items-center gap-2 rounded-lg border border-risk-low px-4 py-2 text-xs font-medium text-ink hover:bg-risk-low/10 transition-all hover:scale-100"
             >
               <Lock size={13} />
               <span>Authorized Admin Portal</span>
@@ -67,32 +67,32 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
       </header>
 
       {/* Hero Section */}
-      <section className="command-grid-backdrop relative overflow-hidden px-6 py-16 md:py-24">
+      <section className="relative overflow-hidden px-6 py-16 md:py-24">
         <div className="mx-auto max-w-7xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border border-telemetry/30 bg-telemetry/10 px-3.5 py-1 text-xs font-semibold text-telemetry mb-6"
+            className="inline-flex items-center gap-2 rounded-full border border-risk-moderate/30 bg-risk-moderate/10 px-3.5 py-1 text-sm font-medium text-ink mb-6"
           >
-            <span className="h-2 w-2 rounded-full bg-telemetry animate-pulse" />
-            LIVE IMD &amp; NASA Satellite Telemetry Integration
+            <span className="h-2 w-2 rounded-full bg-risk-appropriate" />
+            LIVE IMD & NASA Satellite Telemetry Integration
           </motion.div>
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-3xl font-extrabold tracking-tight text-slate-50 sm:text-5xl md:text-6xl max-w-4xl mx-auto leading-tight"
+            className="text-3xl font-extrabold tracking-tight text-slate-50 sm:text-5xl md:text-6xl max-w-4xl xl:text-7xl leading-tight"
           >
-            AI-Based Early Warning &amp; Landslide Risk Monitoring Platform
+            AI-Based Early Warning & Landslide Risk Monitoring Platform
           </motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-6 text-sm text-slate-300 sm:text-base max-w-2xl mx-auto leading-relaxed"
+            className="mt-6 text-sm text-slate-300 sm:text-base max-w-2xl xl:max-w-3xl mx-auto leading-relaxed"
           >
             Continuous spatial intelligence across Meghalaya, Sikkim, Assam, Manipur, Nagaland, Mizoram, Tripura, and Arunachal Pradesh. Combining live rainfall, satellite terrain elevation, and road-following escape routing.
           </motion.p>
@@ -105,7 +105,7 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
           >
             <button
               onClick={onOpenAdminAuth}
-              className="flex items-center gap-2 rounded-xl bg-telemetry px-6 py-3.5 text-xs font-bold text-onyx shadow-glow-cyan hover:bg-cyan-400 transition-all hover:scale-105"
+              className="flex items-center gap-2 rounded-xl border border-risk-high px-6 py-3.5 text-sm font-bold text-ink hover:bg-risk-high/15 transition-all hover:scale-100"
             >
               <Lock size={15} />
               <span>Open Admin Command Center</span>
@@ -125,9 +125,9 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
         {/* Live Corridors Banner */}
         <div id="corridors" className="mx-auto max-w-7xl mt-16 pt-8 border-t border-slate-800">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-              <CloudRain size={14} className="text-telemetry" />
-              Live Monitored Corridors &amp; Public Weather Status
+            <h3 className="text-xs font-medium uppercase tracking-wider text-ink flex items-center gap-2">
+              <CloudRain size={14} className="text-ink" />
+              Live Monitored Corridors & Public Weather Status
             </h3>
             <span className="text-[11px] text-slate-500 font-mono">12 Sites Across 8 States</span>
           </div>
@@ -139,11 +139,11 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
               return (
                 <div
                   key={site.siteId}
-                  className="rounded-xl border border-slate-800 bg-dark-slate/80 p-4 transition-all hover:border-slate-700"
+                  className="rounded-xl border border-slate-800 bg-slate-card/80 p-4 transition-all hover:border-slate-700"
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-xs font-semibold text-slate-100">{site.name}</p>
+                      <p className="text-sm font-medium text-ink">{site.name}</p>
                       <p className="text-[10.5px] text-slate-400">{site.state} · {site.corridor}</p>
                     </div>
                     <span className="text-sm">{rain.icon}</span>
@@ -166,8 +166,12 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
       <section id="features" className="px-6 py-16 bg-dark-slate/50 border-y border-slate-800">
         <div className="mx-auto max-w-7xl">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-telemetry mb-2">System Tools &amp; Architecture</h3>
-            <h4 className="text-2xl sm:text-3xl font-bold text-slate-50">Advanced Spatial &amp; AI Disaster Technologies</h4>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-ink mb-2">
+              System Tools & Architecture
+            </h3>
+            <h4 className="text-2xl sm:text-3xl font-bold text-slate-50">
+              Advanced Spatial & AI Disaster Technologies
+            </h4>
             <p className="text-xs sm:text-sm text-slate-400 mt-2">
               Designed to serve both emergency response command rooms and regional disaster management teams.
             </p>
@@ -177,7 +181,7 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
             {/* Feature 1 */}
             <div className="rounded-2xl border border-slate-800 bg-slate-card/50 p-6 flex flex-col justify-between">
               <div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-telemetry/10 text-telemetry mb-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-risk-low/10 text-ink mb-4">
                   <Mountain size={20} />
                 </div>
                 <h5 className="text-sm font-bold text-slate-100">3D Satellite Terrain Mapping</h5>
@@ -185,7 +189,7 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
                   Renders real NASA SRTM satellite elevation data with MapLibre GL 3D terrain mesh to visualize exact hillside steepness.
                 </p>
               </div>
-              <div className="mt-4 text-[10.5px] font-mono text-telemetry flex items-center gap-1">
+              <div className="mt-4 text-sm font-mono text-ink flex items-center gap-1">
                 <span>MapLibre 3D Engine</span>
                 <ChevronRight size={12} />
               </div>
@@ -202,7 +206,7 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
                   Queries OSRM OpenStreetMap routing engines to calculate turn-by-turn driving escape paths and alternative detours.
                 </p>
               </div>
-              <div className="mt-4 text-[10.5px] font-mono text-emerald-400 flex items-center gap-1">
+              <div className="mt-4 text-xs font-mono text-emerald-400 flex items-center gap-1">
                 <span>Multi-Route Evacuation</span>
                 <ChevronRight size={12} />
               </div>
@@ -219,7 +223,7 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
                   Natural language processing model that provides immediate answers regarding site safety, evacuation points, and rainfall forecasts.
                 </p>
               </div>
-              <div className="mt-4 text-[10.5px] font-mono text-amber-400 flex items-center gap-1">
+              <div className="mt-4 text-xs font-mono text-amber-400 flex items-center gap-1">
                 <span>Multilingual NLP AI</span>
                 <ChevronRight size={12} />
               </div>
@@ -236,7 +240,7 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
                   Field photo upload analysis module for evaluating hillside crack width and geological instability severity.
                 </p>
               </div>
-              <div className="mt-4 text-[10.5px] font-mono text-purple-400 flex items-center gap-1">
+              <div className="mt-4 text-xs font-mono text-purple-400 flex items-center gap-1">
                 <span>Vision Photo Intelligence</span>
                 <ChevronRight size={12} />
               </div>
@@ -250,33 +254,43 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 pb-4 border-b border-slate-800 gap-4">
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-telemetry">Citizen Safety</h3>
-              <h4 className="text-2xl font-bold text-slate-50 mt-1">Landslide Safety &amp; Evacuation Protocol</h4>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-ink">
+                Citizen Safety
+              </h3>
+              <h4 className="text-2xl font-bold text-slate-50 mt-1">
+                Landslide Safety & Evacuation Protocol
+              </h4>
             </div>
             <div className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-card px-3 py-1.5 text-xs text-slate-300">
               <ShieldCheck size={14} className="text-emerald-400" />
-              Standard NDMA &amp; SDMA Preparedness Guidelines
+              Standard NDMA & SDMA Preparedness Guidelines
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {/* Phase 1 */}
             <div className="rounded-2xl border border-slate-800 bg-dark-slate p-6">
-              <span className="inline-block rounded-md bg-telemetry/15 px-2.5 py-1 text-xs font-bold text-telemetry mb-3">
+              <span className="inline-block rounded-md bg-risk-low/15 px-2.5 py-1 text-xs font-bold text-ink mb-3">
                 1. BEFORE (Preparedness)
               </span>
               <ul className="space-y-2.5 text-xs text-slate-300">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 size={14} className="text-telemetry shrink-0 mt-0.5" />
-                  <span>Inspect hillside walls for new cracks, tilting trees, or sudden ground water seepage.</span>
+                  <CheckCircle2 size={14} className="text-ink shrink-0 mt-0.5" />
+                  <span>
+                    Inspect hillside walls for new cracks, tilting trees, or sudden ground water seepage.
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 size={14} className="text-telemetry shrink-0 mt-0.5" />
-                  <span>Identify at least two evacuation routes away from steep slopes.</span>
+                  <CheckCircle2 size={14} className="text-ink shrink-0 mt-0.5" />
+                  <span>
+                    Identify at least two evacuation routes away from steep slopes.
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 size={14} className="text-telemetry shrink-0 mt-0.5" />
-                  <span>Prepare an emergency grab-bag with torch, water, ID, and medicines.</span>
+                  <CheckCircle2 size={14} className="text-ink shrink-0 mt-0.5" />
+                  <span>
+                    Prepare an emergency grab-bag with torch, water, ID, and medicines.
+                  </span>
                 </li>
               </ul>
             </div>
@@ -289,15 +303,21 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
               <ul className="space-y-2.5 text-xs text-slate-300">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
-                  <span>Move quickly sideways out of the slide path toward higher stable ground.</span>
+                  <span>
+                    Move quickly sideways out of the slide path toward higher stable ground.
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
-                  <span>Avoid stream valleys and drainage gullies where debris flows concentrate.</span>
+                  <span>
+                    Avoid stream valleys and drainage gullies where debris flows concentrate.
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-amber-400 shrink-0 mt-0.5" />
-                  <span>If trapped inside, curl into a tight ball and protect your head.</span>
+                  <span>
+                    If trapped inside, curl into a tight ball and protect your head.
+                  </span>
                 </li>
               </ul>
             </div>
@@ -310,15 +330,21 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
               <ul className="space-y-2.5 text-xs text-slate-300">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-emerald-400 shrink-0 mt-0.5" />
-                  <span>Stay clear of slide debris — secondary slope failures are common.</span>
+                  <span>
+                    Stay clear of slide debris — secondary slope failures are common.
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-emerald-400 shrink-0 mt-0.5" />
-                  <span>Report blocked roads, broken power lines, or trapped vehicles to authorities.</span>
+                  <span>
+                    Report blocked roads, broken power lines, or trapped vehicles to authorities.
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 size={14} className="text-emerald-400 shrink-0 mt-0.5" />
-                  <span>Re-enter damaged structures only after safety confirmation.</span>
+                  <span>
+                    Re-enter damaged structures only after safety confirmation.
+                  </span>
                 </li>
               </ul>
             </div>
@@ -327,16 +353,20 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 bg-dark-slate px-6 py-8">
-        <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <footer className="border-t border-slate-800 bg-slate-card/90 px-6 py-8">
+        <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div>
-            <p className="font-semibold text-slate-300">NER Landslide Command &amp; Early Warning System</p>
-            <p className="mt-0.5">Monitoring Shillong Plateau, NH-10 Sikkim, Silchar-Lumding &amp; Tawang corridors.</p>
+            <p className="font-semibold text-slate-300">
+              NER Landslide Command & Early Warning System
+            </p>
+            <p className="mt-0.5">
+              Monitoring Shillong Plateau, NH-10 Sikkim, Silchar-Lumding & Tawang corridors.
+            </p>
           </div>
 
           <button
             onClick={onOpenAdminAuth}
-            className="flex items-center gap-1.5 text-telemetry hover:underline font-semibold"
+            className="flex items-center gap-1.5 text-ink hover:underline font-semibold"
           >
             <Lock size={12} />
             <span>Authorized Admin Login</span>
@@ -345,4 +375,4 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
       </footer>
     </div>
   );
-}
+}
