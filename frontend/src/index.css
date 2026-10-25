@@ -1,0 +1,63 @@
+/* -----------------------------------------------------------------------
+   index.css
+   WHAT: Loads Tailwind's base styles and adds a few small global tweaks
+         (like scrollbar styling and the "pulse" animation used on live
+         data badges) that Tailwind doesn't provide out of the box.
+   WHY:  Keeps the whole dashboard feeling like one cohesive dark-mode
+         "command center", not a default white webpage.
+   ----------------------------------------------------------------------- */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  background-color: #030712;
+  color: #e2e8f0;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+/* A thin, dark scrollbar so long panels don't look out of place */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* A gentle glowing pulse used to show a badge or dot is "live" */
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+.animate-live-pulse {
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+/* A faint, moving grid used behind the header/hero to suggest live
+   satellite telemetry without being distracting. Pure CSS, no images. */
+.command-grid-backdrop {
+  background-image: linear-gradient(rgba(6, 182, 212, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 182, 212, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Numeric readouts get a slight tabular alignment so digits don't jitter
+   when values update (used on gauges and the regional score badge). */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

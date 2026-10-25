@@ -1,0 +1,11 @@
+# -----------------------------------------------------------------------
+# requirements.txt
+# This file lists every Python "toolkit" (library) our backend server
+# needs to run. Install them all in one go with:
+#   pip install -r requirements.txt
+# -----------------------------------------------------------------------
+
+fastapi==0.111.0        # The web framework that powers our REST API
+uvicorn==0.30.1         # The server that actually runs FastAPI
+pydantic==2.7.4         # Validates the shape of data going in/out of the API
+python-multipart==0.0.9 # Lets the API accept photo uploads (crack detection)
