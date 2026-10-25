@@ -400,10 +400,19 @@ export default function DigitalTwinMap({
     map.on("mouseleave", dotLayerId, handleMouseLeave);
 
     return () => {
-      if (map.getLayer(dotLayerId)) {
-        map.off("click", dotLayerId, handleClick);
-        map.off("mouseenter", dotLayerId, handleMouseEnter);
-        map.off("mouseleave", dotLayerId, handleMouseLeave);
+      // On unmount, React runs this cleanup AFTER the map-init effect's
+      // cleanup has already destroyed the map (cleanups run in declaration
+      // order). Calling getLayer() on a destroyed map throws and blanks the
+      // whole app, so skip cleanup when the map is already gone.
+      if (mapRef.current !== map) return;
+      try {
+        if (map.getLayer(dotLayerId)) {
+          map.off("click", dotLayerId, handleClick);
+          map.off("mouseenter", dotLayerId, handleMouseEnter);
+          map.off("mouseleave", dotLayerId, handleMouseLeave);
+        }
+      } catch {
+        // Map was destroyed mid-cleanup — nothing left to detach.
       }
     };
   }, [rankedSites, isMapReady, showSoil, showRainfall, onSelectSite]);
