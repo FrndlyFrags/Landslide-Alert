@@ -5,6 +5,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# GITHUB_TOKEN defaults to read-only on many repos; pushing the gh-pages
+# branch requires explicit write access to repository contents.
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
