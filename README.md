@@ -1,8 +1,19 @@
 # AI-Based Early Warning and Landslide Risk Monitoring Platform (NER)
 
-A dashboard concept for monitoring landslide risk across India's North
-Eastern Region (NER) — covering Assam, Meghalaya, Sikkim, Manipur,
-Tripura, Nagaland, Mizoram, and Arunachal Pradesh.
+A monitoring platform for landslide risk across India's North Eastern
+Region (NER) — covering Assam, Meghalaya, Sikkim, Manipur, Tripura,
+Nagaland, Mizoram, and Arunachal Pradesh.
+
+The app has **two experiences**:
+
+- **Public landing page** — introduces the platform: night-sky hero with a
+  continuous falling-stars animation, live-risk corridor cards, and NDMA
+  landslide safety & evacuation guidance.
+- **Admin portal** — the full command center behind a passcode: regional
+  overview map, live telemetry, 3D terrain + escape routing, field photo
+  inspection, and the AI disaster copilot.
+
+**Live site:** https://frndlyfrags.github.io/Landslide-Alert/ (auto-deployed)
 
 ## What's actually real vs. simulated
 
@@ -30,8 +41,10 @@ real engineer can swap it in later without restructuring the project.
 ## Project layout
 
 ```
-landslide-monitoring-ner/
-├── frontend/    React (Vite) + Tailwind CSS dashboard UI
+Landslide-Alert/
+├── frontend/    React (Vite) + Tailwind CSS UI (landing page + admin portal)
+│   └── src/
+│       └── theme/tokens.css   shared design tokens (single source of truth)
 └── backend/     Python FastAPI backend & AI risk models
 ```
 
@@ -56,10 +69,12 @@ npm install
 npm run dev
 ```
 
-Then open **http://127.0.0.1:5173** in your browser. On load, it fetches
-real live rainfall and elevation data for all 12 sites directly from
-the browser (no backend required for this) — you'll see a short "boot
-sequence" while that happens. Click any site, then **"3D Terrain &
+Then open **http://127.0.0.1:5173** in your browser. You land on the
+public landing page; open the **admin portal** (navbar button, passcode
+protected) to reach the command center. On first load the dashboard
+fetches real live rainfall and elevation data for all 12 sites directly
+from the browser (no backend required for this) — you'll see a short
+"boot sequence" while that happens. Click any site, then **"3D Terrain &
 Escape Route"**, to see a real pitched 3D terrain view of that hillside
 and calculate a real driving route to the nearest safe zone.
 
@@ -78,30 +93,63 @@ and calculate a real driving route to the nearest safe zone.
 - `services/telemetry.py` — mock IMD weather & IoT soil sensor data,
   plus the list of 12 real NER monitoring locations
 
-**Frontend (`/frontend/src`)**
-- `App.jsx` — main dashboard layout, live-data loading, shared selection state
+**Frontend — shared (`/frontend/src`)**
+- `theme/tokens.css` — design tokens (colors, radii, spacing, type, motion)
+  shared by both pages; consumed by `tailwind.config.js` and `index.css`
 - `services/liveDataService.js` — real calls to Open-Meteo, Open Topo Data, and OSRM
 - `data/mockData.js` — site list, risk-scoring formula, simulated fallback data
 - `data/safetyData.js` — safe-zone destinations + landslide safety checklist
-- `components/Header.jsx` — live feed badges, language picker, refresh + warning buttons
+- `utils/colorUtils.js` — smooth green→red risk coloring + rain-status helpers
+
+**Frontend — public landing page only**
+- `components/LandingPage.jsx` — minimal navbar, night-sky hero, live
+  corridor status cards, safety & evacuation guidance, footer
+- `components/NightSkyBackground.jsx` — canvas animation: twinkling stars
+  + a continuous falling-stars shower (glowing diagonal streaks), paused
+  for hidden tabs and `prefers-reduced-motion`
+
+**Frontend — admin portal only**
+- `components/AdminShell.jsx` — collapsible sidebar navigation + summary
+  stat strip around the dashboard
+- `components/Header.jsx` — slim top bar: live feed badges, language
+  picker, refresh + warning buttons
 - `components/DigitalTwinMap.jsx` — regional overview map with toggleable layers
 - `components/TerrainEscapeModal.jsx` — real 3D terrain view + live escape route + safety strategy
 - `components/AnalyticsPanel.jsx` — high-risk list, risk gauges, slip-plane chart, rerouting
 - `components/FieldIntelligencePanel.jsx` — photo upload + computer vision demo
-- `components/CopilotCenter.jsx` — AI chat bar + multilingual broadcast preview
+- `components/CopilotCenter.jsx` — floating AI chat widget: in-scope only
+  (system/site/route questions), conversation cached in `sessionStorage`
+  so it survives view switches
+- `components/AuthModal.jsx` — passcode gate for the admin portal
 - `components/WarningModal.jsx` — confirmation dialog for the warning blast
+
+The two pages are strictly scoped (`.nightsky` vs `.admin-shell` roots),
+so no styles or markup leak between the landing page and the dashboard.
 
 ## Design system
 
-Dark "Tactical Operations Command Center" theme:
+A dark "night sky" theme: deep ink surfaces, a single cool-teal accent,
+with amber/red reserved for alerts & risk semantics. All values live in
+[`frontend/src/theme/tokens.css`](frontend/src/theme/tokens.css):
 
-| Purpose            | Color          | Hex       |
-|---------------------|----------------|-----------|
-| Background (deepest) | Deep Onyx      | `#030712` |
-| Background (panels)  | Dark Slate     | `#0F172A` |
-| Cards                | Slate Card     | `#1E293B` |
-| Safe / Stable        | Neon Emerald   | `#10B981` |
-| Moderate Watch       | Amber Gold     | `#F59E0B` |
-| Critical / High Risk | Crimson Red    | `#EF4444` |
-| Telemetry / AI       | Electric Cyan  | `#06B6D4` |
-# Landslide-Alert
+| Token | Value | Used for |
+|---|---|---|
+| `--c-bg` | `#05070f` | deepest background |
+| `--c-surface` / `--c-surface-2` | `#0b111f` / `#101830` | panels / raised cards |
+| `--c-line` / `--c-line-soft` | `#1c2742` / `#141d33` | borders / hairlines |
+| `--c-text` / `--c-heading` / `--c-muted` | `#dbe3f0` / `#f2f6fc` / `#8ea0bd` | body / headings / secondary text |
+| `--c-accent` | `#5cc8e8` | the one accent (live telemetry, CTAs) |
+| `--c-risk-safe` / `--c-risk-watch` / `--c-risk-critical` | `#4ade80` / `#f2b34c` / `#e5696c` | risk status ramp |
+| `--font-body` / `--font-heading` / `--font-mono` | Inter / Sora / JetBrains Mono | type pairing |
+
+Colors are also exposed as `R G B` triples (`--c-accent-rgb`, …) so
+Tailwind alpha modifiers like `bg-accent/10` work correctly.
+
+## Deployment
+
+Every push to `main` automatically builds the frontend and deploys it to
+GitHub Pages via [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml):
+it runs `npm ci` + `npm run build` in `/frontend` and publishes `dist/`
+to the `gh-pages` branch (the workflow holds `permissions: contents: write`
+so the `github-actions[bot]` token may push it). Set **Settings → Pages →
+Source: `gh-pages`** once on a fresh repo, then just push to `main`.
