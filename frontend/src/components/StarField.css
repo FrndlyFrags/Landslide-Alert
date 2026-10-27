@@ -4,8 +4,9 @@
    WHAT: Faithful port of the classic "Stars #Codevember 08" WebGL-free
          star field used by the Webflow shooting-star demo: three layered
          box-shadow star canvases (1px / 2px / 3px dots) that drift slowly
-         up and to the left (the field is doubly tiled with :after so the
-         loop is seamless), plus one diagonal shooting-star streak that
+         up and to the left. Each field is tiled with ::after one field
+         height (2560px) below it, so the 2560px translate loop never
+         empties the viewport; plus one diagonal shooting-star streak that
          sweeps the sky every 10s.
    RULES: All class names are ns- prefixed and rooted at .nightsky so they
           never affect the admin portal. Reduced-motion users get static
@@ -39,7 +40,7 @@
 .nightsky .ns-stars::after {
   content: " ";
   position: absolute;
-  top: -600px;
+  top: 2560px;
   width: 1px;
   height: 1px;
   border-radius: 50%;
@@ -75,7 +76,7 @@
 .nightsky .ns-stars1::after {
   content: " ";
   position: absolute;
-  top: -600px;
+  top: 2560px;
   width: 2px;
   height: 2px;
   border-radius: 50%;
@@ -109,7 +110,7 @@
 .nightsky .ns-stars2::after {
   content: " ";
   position: absolute;
-  top: -600px;
+  top: 2560px;
   width: 3px;
   height: 3px;
   border-radius: 50%;

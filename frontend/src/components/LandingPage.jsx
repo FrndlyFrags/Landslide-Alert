@@ -35,7 +35,13 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
   }
 
   return (
-    <div className="nightsky min-h-screen text-ink selection:bg-accent/30 selection:text-accent font-sans">
+    <div className="nightsky isolate min-h-screen text-ink selection:bg-accent/30 selection:text-accent font-sans">
+      {/* --------------- Fixed full-page star sky (StarField) --------------- */}
+      {/* Rendered as one fixed -z-10 layer; `isolate` on this root makes
+          its stacking context so stars sit above the page gradient but
+          below all content at every scroll position. */}
+      <NightSkyBackground />
+
       {/* ------------------------- Minimal navbar ------------------------- */}
       <header className="sticky top-0 z-40 border-b border-line bg-bg-base/85 px-6 py-3.5 backdrop-blur-md">
         <nav className="mx-auto flex max-w-6xl items-center justify-between" aria-label="Main">
@@ -88,14 +94,7 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
 
       {/* ----------------------------- Hero ----------------------------- */}
       <section className="relative overflow-hidden px-6 pb-16 pt-28 md:pb-24 md:pt-36">
-        {/* Night-sky background (falling stars) sits under all content */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[720px]">
-          <div className="relative h-full w-full overflow-hidden">
-            <NightSkyBackground />
-          </div>
-          {/* Fade the sky into the page base so sections below read cleanly */}
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[var(--c-bg)]" />
-        </div>
+        {/* Star sky now comes from the fixed full-page NightSkyBackground layer */}
 
         <div className="relative z-10 mx-auto max-w-3xl text-center">
           <motion.div

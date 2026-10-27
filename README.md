@@ -105,9 +105,10 @@ and calculate a real driving route to the nearest safe zone.
 - `components/LandingPage.jsx` — minimal navbar, night-sky hero, live
   corridor status cards, safety & evacuation guidance, footer
 - `components/NightSkyBackground.jsx` + `StarField.css` — pure-CSS "Stars
-  #Codevember 08" star field: three layered box-shadow star canvases
-  (1px/2px/3px) drifting slowly up-left on a seamless loop, plus a diagonal
-  shooting-star streak every 10s (static for `prefers-reduced-motion`)
+  #Codevember 08" star sky rendered as one fixed full-page layer behind all
+  content: three layered box-shadow star canvases (1px/2px/3px) drifting
+  slowly up-left on a seamless loop, plus a diagonal shooting-star streak
+  every 10s (static for `prefers-reduced-motion`)
 
 **Frontend — admin portal only**
 - `components/AdminShell.jsx` — collapsible sidebar navigation + summary
