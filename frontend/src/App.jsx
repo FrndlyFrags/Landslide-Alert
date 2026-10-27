@@ -17,6 +17,7 @@ import WarningModal from "./components/WarningModal";
 import TerrainEscapeModal from "./components/TerrainEscapeModal";
 import LandingPage from "./components/LandingPage";
 import AuthModal from "./components/AuthModal";
+import AdminShell from "./components/AdminShell";
 import { buildRankedSiteList, buildRankedSiteListLive, calculateRegionalScore } from "./data/mockData";
 
 const BOOT_SEQUENCE_STEPS = [
@@ -155,50 +156,60 @@ export default function App() {
         <>
           {viewMode === "dashboard" && isAdminAuthenticated ? (
             <div className="relative flex h-screen flex-col overflow-hidden">
-              <Header
+              {/* Admin-only layout chrome (sidebar + stat strip). All dashboard
+                  state, handlers and data flow below are exactly as before. */}
+              <AdminShell
+                rankedSites={rankedSites}
                 regionalScore={regionalScore}
                 activeSensorNodes={142}
-                onTriggerWarning={handleTriggerWarning}
-                onRefresh={loadLiveData}
-                isRefreshing={isRefreshing}
-                lastUpdated={lastUpdated}
-                onExitToLanding={handleExitToLanding}
-              />
+              >
+                <Header
+                  regionalScore={regionalScore}
+                  activeSensorNodes={142}
+                  onTriggerWarning={handleTriggerWarning}
+                  onRefresh={loadLiveData}
+                  isRefreshing={isRefreshing}
+                  lastUpdated={lastUpdated}
+                  onExitToLanding={handleExitToLanding}
+                />
 
-              {/* Main Command Dashboard — Expanded Full Screen Width Map */}
-              <main className="flex flex-1 min-h-0 overflow-hidden">
-                <motion.div
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="hidden w-72 shrink-0 border-r border-slate-800 lg:block h-full"
-                >
-                  <AnalyticsPanel
-                    rankedSites={rankedSites}
-                    selectedSite={selectedSite}
-                    onSelectSite={setSelectedSiteId}
-                  />
-                </motion.div>
+                {/* Main Command Dashboard — Expanded Full Screen Width Map */}
+                <main id="shell-overview" className="flex flex-1 min-h-0 overflow-hidden">
+                  <motion.div
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="hidden w-72 shrink-0 border-r border-line lg:block h-full"
+                  >
+                    <AnalyticsPanel
+                      rankedSites={rankedSites}
+                      selectedSite={selectedSite}
+                      onSelectSite={setSelectedSiteId}
+                    />
+                  </motion.div>
 
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.99 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.05 }}
-                  className="flex-1 min-w-0 h-full"
-                >
-                  <DigitalTwinMap
-                    rankedSites={rankedSites}
-                    activeLayers={activeLayers}
-                    onToggleLayer={toggleLayer}
-                    selectedSite={selectedSite}
-                    onSelectSite={setSelectedSiteId}
-                    onOpenTerrainView={setTerrainViewSite}
-                  />
-                </motion.div>
-              </main>
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.99 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.05 }}
+                    className="flex-1 min-w-0 h-full"
+                  >
+                    <DigitalTwinMap
+                      rankedSites={rankedSites}
+                      activeLayers={activeLayers}
+                      onToggleLayer={toggleLayer}
+                      selectedSite={selectedSite}
+                      onSelectSite={setSelectedSiteId}
+                      onOpenTerrainView={setTerrainViewSite}
+                    />
+                  </motion.div>
+                </main>
 
-              {/* Floating AI Disaster Copilot Action Widget */}
-              <CopilotCenter rankedSites={rankedSites} />
+                {/* Floating AI Disaster Copilot Action Widget — mounted at the
+                    admin layout level so it never unmounts or resets while
+                    navigating between admin views */}
+                <CopilotCenter rankedSites={rankedSites} />
+              </AdminShell>
             </div>
           ) : (
             <LandingPage

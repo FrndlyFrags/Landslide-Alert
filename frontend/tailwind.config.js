@@ -1,34 +1,72 @@
 // -----------------------------------------------------------------------
 // tailwind.config.js
-// WHAT: Configures Tailwind CSS and defines our custom color palette so
-//       every component can use names like "bg-onyx" or "text-safe"
-//       instead of remembering hex codes.
-// WHY:  Keeps the "Tactical Operations Command Center" color scheme
-//       consistent across the entire dashboard.
+// WHAT: Configures Tailwind CSS and maps every UI theme token defined in
+//       src/theme/tokens.css into Tailwind utilities (bg-ink, text-heading,
+//       bg-panel ...) so the landing page and the admin portal share one
+//       palette without hard-coded hex values.
+// WHY:  Colors use `rgb(var(--token-rgb) / <alpha-value>)` so opacity
+//       modifiers like bg-telemetry/10 keep working.
 // -----------------------------------------------------------------------
 /** @type {import('tailwindcss').Config} */
+const alpha = (token) => `rgb(var(${token}) / <alpha-value>)`;
+
 export default {
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
     extend: {
       colors: {
-        onyx: "#030712", // Deepest background
-        "dark-slate": "#0F172A", // Section backgrounds
-        "slate-card": "#1E293B", // Card backgrounds
-        safe: "#10B981", // Neon Emerald - stable / safe status
-        watch: "#F59E0B", // Amber Gold - moderate watch status
-        critical: "#EF4444", // Crimson Red - critical / high risk status
-        telemetry: "#06B6D4", // Electric Cyan - live data / AI streams
+        transparent: "transparent",
+        current: "currentColor",
+
+        // Base surfaces (alpha-capable triplets)
+        "bg-base":   alpha("--c-bg-rgb"),
+        "panel":     alpha("--c-surface-rgb"),
+        "panel-2":   alpha("--c-surface-2-rgb"),
+        "line":      alpha("--c-line-rgb"),
+        "line-soft": alpha("--c-line-soft-rgb"),
+
+        // Text
+        "ink":        "var(--c-text)",
+        "ink-strong": "var(--c-heading)",
+        "ink-muted":  "var(--c-muted)",
+        "ink-faint":  "var(--c-faint)",
+
+        // Accent
+        "accent":      alpha("--c-accent-rgb"),
+        "accent-deep": alpha("--c-accent-deep-rgb"),
+        // Legacy aliases — existing dashboard components keep their class
+        // names while consuming the new token palette underneath.
+        telemetry:     alpha("--c-accent-rgb"),
+        onyx:          alpha("--c-bg-rgb"),
+        "dark-slate":  alpha("--c-surface-rgb"),
+        "slate-card":  alpha("--c-surface-2-rgb"),
+
+        // Alerts & risk only
+        "alert-amber": alpha("--c-amber-rgb"),
+        "alert-red":   alpha("--c-red-rgb"),
+        watch:         alpha("--c-amber-rgb"),
+        critical:      alpha("--c-red-rgb"),
+        safe:          alpha("--c-risk-safe-rgb"),
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
+        display: ["Sora", "Inter", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
+      borderRadius: {
+        xs: "var(--r-xs)",
+        sm: "var(--r-sm)",
+        md: "var(--r-md)",
+        lg: "var(--r-lg)",
+        xl: "var(--r-xl)",
+        pill: "var(--r-pill)",
+      },
       boxShadow: {
-        "glow-cyan": "0 0 20px rgba(6, 182, 212, 0.35)",
-        "glow-emerald": "0 0 20px rgba(16, 185, 129, 0.35)",
-        "glow-amber": "0 0 20px rgba(245, 158, 11, 0.35)",
-        "glow-red": "0 0 24px rgba(239, 68, 68, 0.45)",
+        "glow-cyan":    "0 0 20px rgba(92, 200, 232, 0.25)",
+        "glow-emerald": "0 0 20px rgba(74, 222, 128, 0.30)",
+        "glow-amber":   "0 0 20px rgba(242, 179, 76, 0.30)",
+        "glow-red":     "0 0 24px rgba(229, 105, 108, 0.40)",
+        "panel":        "0 1px 2px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.25)",
       },
       keyframes: {
         "radar-sweep": {
@@ -47,12 +85,22 @@ export default {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        "reveal-up": {
+          "0%": { opacity: 0, transform: "translateY(14px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
+        },
+        "typing-dot": {
+          "0%, 60%, 100%": { opacity: 0.25 },
+          "30%": { opacity: 1 },
+        },
       },
       animation: {
         "radar-sweep": "radar-sweep 4s linear infinite",
         "scan-line": "scan-line 3s ease-in-out infinite",
         "ping-slow": "ping-slow 2.4s cubic-bezier(0,0,0.2,1) infinite",
         shimmer: "shimmer 2.5s linear infinite",
+        "reveal-up": "reveal-up 0.6s cubic-bezier(0.22,1,0.36,1) both",
+        "typing-dot": "typing-dot 1.4s ease-in-out infinite",
       },
     },
   },

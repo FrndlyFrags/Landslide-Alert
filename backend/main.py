@@ -8,7 +8,7 @@ server (using FastAPI) and defines every URL ("route") that the React
 dashboard is allowed to call, such as:
 
   GET  /api/sites                     -> list every monitored location
-  GET  /api/sites/{site_id}/risk      -> full risk report for one site
+  GET  /api/sites/{site_id}/risk3o      -> full risk report for one site
   GET  /api/regional-risk             -> one combined score for all of NER
   POST /api/crack-analysis            -> analyze an uploaded crack photo
   POST /api/trigger-warning           -> simulate sending a public alert

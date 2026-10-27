@@ -1,0 +1,68 @@
+/* -----------------------------------------------------------------------
+   tokens.css — Single source of truth for the redesigned UI theme.
+   WHAT: Design tokens (colors, spacing, radii, type) shared by the
+         landing page and the admin portal.
+   NOTE: Colors exist in two forms:
+         --c-x      solid value for plain CSS usage
+         --c-x-rgb  "R G B" triplet for Tailwind alpha modifiers
+                    (e.g. bg-telemetry/10 -> rgb(var(--c-accent-rgb)/0.1))
+         Night-sky palette: deep ink base, one cool-blue/teal accent.
+         Amber/orange/red are reserved for alert + risk elements only.
+   ----------------------------------------------------------------------- */
+:root {
+  /* --- Base surfaces (night sky) --- */
+  --c-bg:        #05070f;   --c-bg-rgb:        5 7 15;
+  --c-surface:   #0b111f;   --c-surface-rgb:   11 17 31;
+  --c-surface-2: #101830;   --c-surface-2-rgb: 16 24 48;
+  --c-line:      #1c2742;   --c-line-rgb:      28 39 66;
+  --c-line-soft: #141d33;   --c-line-soft-rgb: 20 29 51;
+
+  /* --- Text --- */
+  --c-text:      #dbe3f0;  /* body                     */
+  --c-heading:   #f2f6fc;  /* headings                 */
+  --c-muted:     #8ea0bd;  /* secondary                */
+  --c-faint:     #5b6b8a;  /* captions / placeholders  */
+
+  /* --- Single accent (cool-blue teal) --- */
+  --c-accent:      #5cc8e8;   --c-accent-rgb: 92 200 232;
+  --c-accent-deep: #2a9dc4;   --c-accent-deep-rgb: 42 157 196;
+  --c-accent-wash: rgba(92, 200, 232, 0.10);
+  --c-accent-line: rgba(92, 200, 232, 0.35);
+
+  /* --- Alert colors (alerts & risk ONLY) --- */
+  --c-amber: #f2b34c;   --c-amber-rgb: 242 179 76;
+  --c-red:   #e5696c;   --c-red-rgb:   229 105 108;
+
+  /* --- Risk ramp (status semantics, kept from original ramp) --- */
+  --c-risk-safe:     #4ade80;   --c-risk-safe-rgb: 74 222 128;
+  --c-risk-watch:    #f2b34c;
+  --c-risk-critical: #e5696c;
+
+  /* --- Radius scale --- */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-pill: 999px;
+
+  /* --- Spacing scale (major rhythm) --- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* --- Type pairing: Inter body, Sora headings --- */
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-heading: "Sora", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* --- Motion --- */
+  --t-fast: 140ms cubic-bezier(0.22, 1, 0.36, 1);
+  --t-med:  280ms cubic-bezier(0.22, 1, 0.36, 1);
+}

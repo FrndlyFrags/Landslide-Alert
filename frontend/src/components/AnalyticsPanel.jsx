@@ -40,8 +40,8 @@ function RiskGauge({ label, percent }) {
 
   return (
     <div className="flex flex-col items-center">
-      <svg width="90" height="90" viewBox="0 0 90 90">
-        <circle cx="45" cy="45" r={radius} fill="none" stroke="#1E293B" strokeWidth="8" />
+      <svg width="90" height="90" viewBox="0 0 90 90" role="img" aria-label={`${label}: ${percent}%`}>
+        <circle cx="45" cy="45" r={radius} fill="none" stroke="var(--c-line)" strokeWidth="8" />
         <circle
           cx="45"
           cy="45"
@@ -61,15 +61,15 @@ function RiskGauge({ label, percent }) {
           {percent}%
         </text>
       </svg>
-      <p className="mt-1 text-[11px] text-slate-400">{label}</p>
+      <p className="mt-1 text-[11px] text-ink-muted">{label}</p>
     </div>
   );
 }
 
 function SectionHeading({ icon: Icon, children }) {
   return (
-    <h2 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-      <Icon size={13} className="text-telemetry/70" />
+    <h2 className="flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-wide text-ink-muted">
+      <Icon size={13} className="text-accent/70" />
       {children}
     </h2>
   );
@@ -92,10 +92,12 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
   const blockedSites = rankedSites.filter((site) => site.telemetry.roadStatus === "blocked");
 
   return (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto bg-dark-slate p-4">
+    <div className="flex h-full flex-col gap-4 overflow-y-auto bg-bg-base p-4">
       {/* High-Risk Regional List with Live Rain Status */}
-      <section>
-        <SectionHeading icon={AlertTriangle}>High-Risk Regional List</SectionHeading>
+      <section aria-labelledby="panel-sites-heading">
+        <SectionHeading icon={AlertTriangle}>
+          <span id="shell-sites">Ranked Sites</span>
+        </SectionHeading>
         <ul className="mt-2 space-y-1.5">
           {rankedSites.slice(0, 6).map((site, index) => {
             const riskPercent = site.risk.failureProbabilityPercent;
@@ -112,21 +114,21 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
               >
                 <button
                   onClick={() => onSelectSite(site.siteId)}
-                  className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left transition-all ${
+                  className={`flex w-full items-center justify-between rounded-sm border px-3 py-2 text-left transition-all hover:bg-panel-2 ${
                     isSelected
-                      ? "border-telemetry/60 bg-telemetry/10 shadow-glow-cyan"
-                      : "border-slate-800 bg-slate-card/50 hover:border-slate-600"
+                      ? "border-accent/40 bg-accent/10"
+                      : "border-line bg-panel/60 hover:border-accent/30"
                   }`}
                 >
                   <div className="min-w-0 flex-1 pr-2">
                     <div className="flex items-center gap-1.5">
-                      <p className="truncate text-[11px] font-medium text-slate-100">{site.name}</p>
+                      <p className="truncate text-[11px] font-medium text-ink-strong">{site.name}</p>
                       <span className="text-[10px]" title={rain.label}>{rain.icon}</span>
                     </div>
-                    <p className="text-[10px] text-slate-500">{site.state} · {site.telemetry.rainfallLast24hMm}mm 24h</p>
+                    <p className="text-[10px] text-ink-faint">{site.state} · {site.telemetry.rainfallLast24hMm}mm 24h</p>
                   </div>
                   <span
-                    className="ml-2 shrink-0 rounded px-1.5 py-0.5 font-mono text-[11px] font-semibold ring-1"
+                    className="ml-2 shrink-0 rounded-xs border px-1.5 py-0.5 font-mono text-[11px] font-semibold tabular-nums"
                     style={{
                       color: riskColor,
                       backgroundColor: getRiskColorRgba(riskPercent, 0.12),
@@ -143,19 +145,23 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
       </section>
 
       {/* AI Predictive Analytics Gauges */}
-      <section>
-        <SectionHeading icon={GaugeIcon}>AI Predictive Risk Gauges</SectionHeading>
-        <p className="mt-1 truncate text-[10px] text-slate-400 font-medium">{selectedSite?.name}</p>
-        <div className="mt-2 flex justify-around rounded-md border border-slate-800 bg-slate-card/40 py-3">
+      <section aria-labelledby="panel-gauges-heading">
+        <SectionHeading icon={GaugeIcon}>
+          <span id="panel-gauges-heading">AI Predictive Risk Gauges</span>
+        </SectionHeading>
+        <p className="mt-1 truncate text-[10px] font-medium text-ink-muted">{selectedSite?.name}</p>
+        <div className="mt-2 flex justify-around rounded-md border border-line bg-panel/60 py-3">
           <RiskGauge label="6-Hour Risk" percent={sixHourPercent} />
           <RiskGauge label="24-Hour Risk" percent={twentyFourHourPercent} />
         </div>
       </section>
 
       {/* Slip-Plane Displacement Chart */}
-      <section>
-        <SectionHeading icon={Activity}>Slip-Plane Displacement Trend</SectionHeading>
-        <div className="mt-2 h-36 rounded-md border border-slate-800 bg-slate-card/40 p-2">
+      <section aria-labelledby="panel-chart-heading">
+        <SectionHeading icon={Activity}>
+          <span id="panel-chart-heading">Slip-Plane Displacement Trend</span>
+        </SectionHeading>
+        <div className="mt-2 h-36 rounded-md border border-line bg-panel/60 p-2">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={slipPlaneData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
               <defs>
@@ -185,10 +191,12 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
       </section>
 
       {/* Emergency Road Rerouting */}
-      <section>
-        <SectionHeading icon={TrafficCone}>Emergency Road Rerouting</SectionHeading>
+      <section id="shell-rerouting" aria-labelledby="panel-rerouting-heading">
+        <SectionHeading icon={TrafficCone}>
+          <span id="panel-rerouting-heading">Emergency Road Rerouting</span>
+        </SectionHeading>
         {blockedSites.length === 0 ? (
-          <p className="mt-2 rounded-md border border-slate-800 bg-slate-card/40 p-3 text-[11px] text-slate-500">
+          <p className="mt-2 rounded-md border border-line bg-panel/60 p-3 text-[11px] text-ink-faint">
             All primary highways are currently open. No reroutes needed.
           </p>
         ) : (
@@ -196,10 +204,10 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
             {blockedSites.map((site) => (
               <li
                 key={site.siteId}
-                className="rounded-md border border-red-500/40 bg-red-500/10 p-3 text-[11px]"
+                className="rounded-sm border border-critical/40 bg-critical/10 p-3 text-[11px]"
               >
-                <p className="font-medium text-red-400">{site.name} — road blocked</p>
-                <p className="mt-1 text-slate-300">
+                <p className="font-medium text-critical">{site.name} — road blocked</p>
+                <p className="mt-1 text-ink">
                   {ALTERNATE_ROUTES[site.siteId] ??
                     "No pre-mapped detour available. Dispatch a survey team."}
                 </p>

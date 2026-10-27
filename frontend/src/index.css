@@ -1,11 +1,12 @@
 /* -----------------------------------------------------------------------
    index.css
-   WHAT: Loads Tailwind's base styles and adds a few small global tweaks
-         (like scrollbar styling and the "pulse" animation used on live
-         data badges) that Tailwind doesn't provide out of the box.
-   WHY:  Keeps the whole dashboard feeling like one cohesive dark-mode
-         "command center", not a default white webpage.
+   WHAT: Loads Tailwind's base styles, the shared theme tokens from
+         src/theme/tokens.css, and page-scoped styling helpers.
+         The `.nightsky` block only applies inside the landing page root
+         element; the admin portal uses its own scoped classes, so styles
+         never leak between the two.
    ----------------------------------------------------------------------- */
+@import "./theme/tokens.css";
 
 @tailwind base;
 @tailwind components;
@@ -13,9 +14,14 @@
 
 html,
 body {
-  background-color: #030712;
-  color: #e2e8f0;
-  font-family: "Inter", system-ui, sans-serif;
+  background-color: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.01em;
 }
 
 /* A thin, dark scrollbar so long panels don't look out of place */
@@ -24,14 +30,26 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: var(--c-surface);
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: var(--c-line);
   border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #2a3a5f;
+}
+
+/* Visible keyboard focus everywhere (accessibility) */
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+  border-radius: var(--r-xs);
+}
+
+/* Numeric readouts get slight tabular alignment so digits don't jitter */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 /* A gentle glowing pulse used to show a badge or dot is "live" */
@@ -48,16 +66,71 @@ body {
   animation: live-pulse 2s ease-in-out infinite;
 }
 
-/* A faint, moving grid used behind the header/hero to suggest live
-   satellite telemetry without being distracting. Pure CSS, no images. */
+/* Faint, moving telemetry grid (landing chrome + small panels) */
 .command-grid-backdrop {
-  background-image: linear-gradient(rgba(6, 182, 212, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(6, 182, 212, 0.06) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(92, 200, 232, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(92, 200, 232, 0.05) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 
-/* Numeric readouts get a slight tabular alignment so digits don't jitter
-   when values update (used on gauges and the regional score badge). */
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
+/* =======================================================================
+   LANDING PAGE — night-sky scoped styles (never applied in the admin view)
+   ======================================================================= */
+.nightsky {
+  background:
+    radial-gradient(120% 90% at 50% 118%, #12203c 0%, transparent 60%),
+    linear-gradient(180deg, #04060d 0%, var(--c-bg) 45%, #0a1326 100%);
+}
+
+/* Hero heading uses the display font */
+.nightsky .display-heading {
+  font-family: var(--font-heading);
+  text-wrap: balance;
+}
+
+/* Section heading eyebrow label */
+.nightsky .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+/* Thin divider used between concise sections */
+.nightsky .hairline {
+  border-top: 1px solid var(--c-line);
+}
+
+/* =======================================================================
+   ADMIN PORTAL — scoped app-shell styles (never applied on the landing view)
+   ======================================================================= */
+.admin-shell {
+  font-family: var(--font-body);
+}
+
+.admin-shell .panel-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-md);
+}
+
+/* Slim chrome sheen — the only permitted gradient in the shell */
+.admin-shell .topbar-sheen {
+  background: linear-gradient(180deg, rgba(92, 200, 232, 0.06) 0%, rgba(92, 200, 232, 0) 70%);
+}
+
+/* =======================================================================
+   Reduced motion: disable looping/animated flourishes across both pages.
+   (Components additionally stop their own JS-driven motion separately.)
+   ======================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
