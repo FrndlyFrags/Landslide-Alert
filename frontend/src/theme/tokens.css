@@ -1,49 +1,50 @@
 /* -----------------------------------------------------------------------
-   tokens.css — Single source of truth for the redesigned UI theme.
+   tokens.css — Single source of truth for the UI theme.
    WHAT: Design tokens (colors, spacing, radii, type) shared by the
          landing page and the admin portal.
    NOTE: Colors exist in two forms:
          --c-x      solid value for plain CSS usage
          --c-x-rgb  "R G B" triplet for Tailwind alpha modifiers
                     (e.g. bg-telemetry/10 -> rgb(var(--c-accent-rgb)/0.1))
-         Night-sky palette: deep ink base, one cool-blue/teal accent.
-         Amber/orange/red are reserved for alert + risk elements only.
+         Palette: neutral charcoal surfaces, warm off-white type, one muted
+         slate accent. No neon, no gradients — colour is used for meaning
+         (risk + alerts) rather than decoration.
    ----------------------------------------------------------------------- */
 :root {
-  /* --- Base surfaces (night sky) --- */
-  --c-bg:        #05070f;   --c-bg-rgb:        5 7 15;
-  --c-surface:   #0b111f;   --c-surface-rgb:   11 17 31;
-  --c-surface-2: #101830;   --c-surface-2-rgb: 16 24 48;
-  --c-line:      #1c2742;   --c-line-rgb:      28 39 66;
-  --c-line-soft: #141d33;   --c-line-soft-rgb: 20 29 51;
+  /* --- Base surfaces (neutral charcoal) --- */
+  --c-bg:        #0d0e10;   --c-bg-rgb:        13 14 16;
+  --c-surface:   #141519;   --c-surface-rgb:   20 21 25;
+  --c-surface-2: #1a1c21;   --c-surface-2-rgb: 26 28 33;
+  --c-line:      #2b2e34;   --c-line-rgb:      43 46 52;
+  --c-line-soft: #212429;   --c-line-soft-rgb: 33 36 41;
 
   /* --- Text --- */
-  --c-text:      #dbe3f0;  /* body                     */
-  --c-heading:   #f2f6fc;  /* headings                 */
-  --c-muted:     #8ea0bd;  /* secondary                */
-  --c-faint:     #5b6b8a;  /* captions / placeholders  */
+  --c-text:      #c8ccd2;  /* body                     */
+  --c-heading:   #f4f4f2;  /* headings / primary ink   */
+  --c-muted:     #8f949e;  /* secondary                */
+  --c-faint:     #646a74;  /* captions / placeholders  */
 
-  /* --- Single accent (cool-blue teal) --- */
-  --c-accent:      #5cc8e8;   --c-accent-rgb: 92 200 232;
-  --c-accent-deep: #2a9dc4;   --c-accent-deep-rgb: 42 157 196;
-  --c-accent-wash: rgba(92, 200, 232, 0.10);
-  --c-accent-line: rgba(92, 200, 232, 0.35);
+  /* --- Single accent (muted slate blue) --- */
+  --c-accent:      #a6bfcf;   --c-accent-rgb: 166 191 207;
+  --c-accent-deep: #7d97a9;   --c-accent-deep-rgb: 125 151 169;
+  --c-accent-wash: rgba(166, 191, 207, 0.08);
+  --c-accent-line: rgba(166, 191, 207, 0.30);
 
   /* --- Alert colors (alerts & risk ONLY) --- */
-  --c-amber: #f2b34c;   --c-amber-rgb: 242 179 76;
-  --c-red:   #e5696c;   --c-red-rgb:   229 105 108;
+  --c-amber: #c99b5c;   --c-amber-rgb: 201 155 92;
+  --c-red:   #c9706b;   --c-red-rgb:   201 112 107;
 
   /* --- Risk ramp (status semantics, kept from original ramp) --- */
-  --c-risk-safe:     #4ade80;   --c-risk-safe-rgb: 74 222 128;
-  --c-risk-watch:    #f2b34c;
-  --c-risk-critical: #e5696c;
+  --c-risk-safe:     #6fa98a;   --c-risk-safe-rgb: 111 169 138;
+  --c-risk-watch:    #c99b5c;
+  --c-risk-critical: #c9706b;
 
-  /* --- Radius scale --- */
-  --r-xs: 4px;
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 16px;
-  --r-xl: 20px;
+  /* --- Radius scale (sharp, engineered) --- */
+  --r-xs: 2px;
+  --r-sm: 3px;
+  --r-md: 4px;
+  --r-lg: 6px;
+  --r-xl: 8px;
   --r-pill: 999px;
 
   /* --- Spacing scale (major rhythm) --- */
@@ -57,9 +58,10 @@
   --space-8: 64px;
   --space-9: 96px;
 
-  /* --- Type pairing: Inter body, Sora headings --- */
+  /* --- Type pairing: Inter body, Sora UI headings, serif display --- */
   --font-body: "Inter", system-ui, sans-serif;
   --font-heading: "Sora", "Inter", system-ui, sans-serif;
+  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   /* --- Motion --- */

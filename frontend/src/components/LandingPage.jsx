@@ -1,31 +1,51 @@
 // -----------------------------------------------------------------------
 // LandingPage.jsx  (LANDING PAGE ONLY)
 // -----------------------------------------------------------------------
-// WHAT: Public landing page introducing the NER Landslide Early Warning
-//       and Monitoring Platform — night-sky theme: calm, trustworthy,
-//       with a continuous falling-stars meteor shower behind the hero.
-// NOTE: Presentational redesign only. All actions, data fields and the
-//       ranked-site summary cards behave exactly as before; unlike the
-//       admin view this file renders nothing of the command dashboard.
+// WHAT: Public landing page for the NER Landslide Early Warning platform.
+//       Editorial layout: a flat charcoal canvas, serif display type and
+//       hairline rules instead of cards, glows or animated backgrounds.
+// NOTE: Presentational only. The ranked-site data is read, never mutated,
+//       and the admin entry point is a single discreet operator block at
+//       the bottom of the page (no nav/hero admin button).
 // -----------------------------------------------------------------------
 import { motion, useReducedMotion } from "framer-motion";
 import {
-  ShieldCheck, Mountain, CloudRain, Route, Bot, Eye, Lock, ArrowRight,
-  CheckCircle2, ChevronRight, Radio, Siren,
+  CloudRain, Mountain, Route, ArrowRight, ArrowUpRight,
+  Radio, ShieldCheck, Activity, Lock,
 } from "lucide-react";
 import { getRainStatus, getRiskColor } from "../utils/colorUtils";
-import NightSkyBackground from "./NightSkyBackground";
 
-const fadeUp = {
-  initial: { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-60px" },
-  transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
-};
+// Motion is opinionated: short, quiet, and skipped entirely when the OS
+// asks for reduced motion.
+function useReveal() {
+  const prefersReducedMotion = useReducedMotion();
+  return (delay = 0) =>
+    prefersReducedMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 12 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, margin: "-40px" },
+          transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] },
+        };
+}
+
+function Label({ children }) {
+  return <p className="eyebrow">{children}</p>;
+}
 
 export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
-  const topSites = rankedSites ? rankedSites.slice(0, 4) : [];
+  const sites = rankedSites ?? [];
+  const topSites = sites.slice(0, 6);
+  const highestRiskSite = sites[0];
+  const blockedCount = sites.filter((site) => site.telemetry.roadStatus === "blocked").length;
+  const stateCount = new Set(sites.map((site) => site.state)).size;
+  const meanRisk = sites.length
+    ? Math.round(sites.reduce((total, site) => total + site.risk.failureProbabilityPercent, 0) / sites.length)
+    : 0;
+
   const prefersReducedMotion = useReducedMotion();
+  const reveal = useReveal();
 
   function scrollToSection(sectionId) {
     const el = document.getElementById(sectionId);
@@ -35,297 +55,398 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
   }
 
   return (
-    <div className="nightsky isolate min-h-screen text-ink selection:bg-accent/30 selection:text-accent font-sans">
-      {/* --------------- Fixed full-page star sky (StarField) --------------- */}
-      {/* Rendered as one fixed -z-10 layer; `isolate` on this root makes
-          its stacking context so stars sit above the page gradient but
-          below all content at every scroll position. */}
-      <NightSkyBackground />
-
-      {/* ------------------------- Minimal navbar ------------------------- */}
-      <header className="sticky top-0 z-40 border-b border-line bg-bg-base/85 px-6 py-3.5 backdrop-blur-md">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between" aria-label="Main">
+    <div className="nightsky min-h-screen font-sans text-ink selection:bg-accent/25 selection:text-ink-strong">
+      {/* ------------------------------ Nav ------------------------------ */}
+      <header className="sticky top-0 z-40 border-b border-line bg-bg-base/95 backdrop-blur">
+        <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6" aria-label="Main">
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" })}
             className="flex items-center gap-3 text-left"
             aria-label="Back to top"
           >
-            <span className="relative flex h-9 w-9 items-center justify-center rounded-md bg-accent/10 ring-1 ring-accent/30">
-              <Radio size={17} className="text-accent" />
-              <span className="absolute inset-0 animate-ping-slow rounded-full bg-accent/20 motion-reduce:animate-none" />
+            <span className="flex h-7 w-7 items-center justify-center border border-line-soft text-accent">
+              <Radio size={13} />
             </span>
-            <span>
-              <span className="block text-[13px] font-semibold tracking-tight text-ink-strong">
+            <span className="leading-none">
+              <span className="block font-display text-[12.5px] font-semibold tracking-tight text-ink-strong">
                 NER Landslide Early Warning
               </span>
-              <span className="block text-[10.5px] text-ink-muted">North Eastern Region · India</span>
+              <span className="mt-1 block font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">
+                North Eastern Region · India
+              </span>
             </span>
           </button>
 
-          <div className="flex items-center gap-6">
-            <button
-              onClick={() => scrollToSection("what")}
-              className="hidden text-xs text-ink-muted transition-colors hover:text-ink md:block"
-            >
-              What we do
-            </button>
-            <button
-              onClick={() => scrollToSection("corridors")}
-              className="hidden text-xs text-ink-muted transition-colors hover:text-ink md:block"
-            >
-              Live corridors
-            </button>
-            <button
-              onClick={() => scrollToSection("safety")}
-              className="hidden text-xs text-ink-muted transition-colors hover:text-ink md:block"
-            >
-              Safety guidance
-            </button>
-            <button
-              onClick={onOpenAdminAuth}
-              className="flex items-center gap-2 rounded-sm bg-accent px-4 py-2 text-xs font-semibold text-[#06202b] transition-all hover:bg-[#7ad4ef] hover:shadow-glow-cyan active:scale-[0.98]"
-            >
-              <Lock size={13} />
-              <span>Admin portal</span>
-            </button>
+          <div className="hidden items-center gap-8 md:flex">
+            {[
+              { id: "method", label: "Method" },
+              { id: "corridors", label: "Corridors" },
+              { id: "safety", label: "Safety" },
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className="text-[12px] text-ink-muted transition-colors hover:text-ink-strong"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-ink-faint">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-live-pulse motion-reduce:animate-none" />
+            Live feeds
           </div>
         </nav>
       </header>
 
-      {/* ----------------------------- Hero ----------------------------- */}
-      <section className="relative overflow-hidden px-6 pb-16 pt-28 md:pb-24 md:pt-36">
-        {/* Star sky now comes from the fixed full-page NightSkyBackground layer */}
+      {/* ------------------------------ Hero ------------------------------ */}
+      <section className="px-6 pb-16 pt-20 md:pb-24 md:pt-28">
+        <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
+          <motion.div initial={false} animate={{ opacity: 1 }}>
+            <motion.div {...reveal(0)}>
+              <Label>Early warning · 12 monitored corridors</Label>
+            </motion.div>
 
-        <div className="relative z-10 mx-auto max-w-3xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-7 inline-flex items-center gap-2 rounded-pill border border-line bg-panel/70 px-3.5 py-1 text-[11px] font-semibold tracking-wide text-accent"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-live-pulse motion-reduce:animate-none" />
-            Live IMD &amp; NASA satellite telemetry
+            <motion.h1
+              {...reveal(0.05)}
+              className="display-heading mt-5 text-[42px] leading-[1.02] text-ink-strong sm:text-[58px]"
+            >
+              A live warning layer for the hill roads of North East India.
+            </motion.h1>
+
+            <motion.p
+              {...reveal(0.1)}
+              className="mt-6 max-w-xl text-[14.5px] leading-relaxed text-ink-muted"
+            >
+              Rainfall, slope angle, soil saturation and ground creep are sampled
+              continuously across the region. When a hillside starts to move, district
+              control rooms and residents are told before the road goes — and given a
+              route out that still works.
+            </motion.p>
+
+            <motion.div {...reveal(0.15)} className="mt-9 flex flex-wrap items-center gap-5">
+              <button
+                onClick={() => scrollToSection("corridors")}
+                className="group inline-flex items-center gap-2.5 border border-ink-strong bg-ink-strong px-5 py-2.5 text-[12px] font-semibold text-bg-base transition-colors hover:bg-white"
+              >
+                View corridor status
+                <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
+              </button>
+              <button
+                onClick={() => scrollToSection("method")}
+                className="group inline-flex items-center gap-2 text-[12px] text-ink-muted transition-colors hover:text-ink-strong"
+              >
+                How the warning is built
+                <ArrowUpRight size={13} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </button>
+            </motion.div>
           </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.08 }}
-            className="display-heading mx-auto max-w-2xl text-3xl font-semibold leading-tight text-ink-strong sm:text-5xl"
+          {/* Regional snapshot — read-only view of the same ranked data */}
+          <motion.aside
+            {...reveal(0.12)}
+            className="border border-line bg-panel p-5 self-start"
+            aria-label="Regional snapshot"
           >
-            Early warning for landslide-prone corridors across North East India
-          </motion.h1>
+            <div className="flex items-center justify-between border-b border-line pb-3">
+              <span className="eyebrow">Regional snapshot</span>
+              <span className="flex items-center gap-1.5 font-mono text-[9.5px] uppercase tracking-[0.12em] text-ink-faint">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent animate-live-pulse motion-reduce:animate-none" />
+                Live
+              </span>
+            </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.16 }}
-            className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-ink-muted sm:text-[15px]"
-          >
-            Continuous rainfall, satellite terrain and road-connectivity monitoring across
-            Meghalaya, Sikkim, Assam, Manipur, Nagaland, Mizoram, Tripura and Arunachal Pradesh —
-            with road-following escape routing when a slope turns dangerous.
-          </motion.p>
+            <div className="flex items-end justify-between gap-4 pt-5">
+              <div>
+                <p className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">
+                  Mean failure probability
+                </p>
+                <p
+                  className="mt-1 font-mono text-[34px] font-semibold leading-none tabular-nums"
+                  style={{ color: getRiskColor(meanRisk) }}
+                >
+                  {sites.length ? `${meanRisk}%` : "—"}
+                </p>
+              </div>
+              <p className="max-w-[9rem] text-right text-[10.5px] leading-relaxed text-ink-faint">
+                Across {sites.length || 12} corridors, 24-hour model run
+              </p>
+            </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.24 }}
-            className="mt-9 flex flex-wrap items-center justify-center gap-3"
-          >
-            <button
-              onClick={onOpenAdminAuth}
-              className="group flex items-center gap-2 rounded-sm bg-accent px-6 py-3 text-xs font-semibold text-[#06202b] transition-all hover:bg-[#7ad4ef] hover:shadow-glow-cyan active:scale-[0.98]"
-            >
-              <Lock size={14} />
-              <span>Open admin command center</span>
-              <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
-            </button>
-            <button
-              onClick={() => scrollToSection("what")}
-              className="flex items-center gap-2 rounded-sm border border-line bg-panel/60 px-6 py-3 text-xs font-medium text-ink transition-colors hover:border-line-soft hover:bg-panel active:scale-[0.98]"
-            >
-              <Eye size={14} />
-              <span>See how the system works</span>
-            </button>
-          </motion.div>
+            <dl className="mt-5 space-y-2.5 border-t border-line pt-4 text-[11.5px]">
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-ink-muted">Highest risk site</dt>
+                <dd className="truncate text-right font-mono text-ink">
+                  {highestRiskSite
+                    ? `${highestRiskSite.name.split(",")[0]} · ${highestRiskSite.risk.failureProbabilityPercent}%`
+                    : "—"}
+                </dd>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-ink-muted">Blocked highways</dt>
+                <dd className="font-mono" style={{ color: blockedCount > 0 ? "var(--c-red)" : "var(--c-risk-safe)" }}>
+                  {sites.length ? blockedCount : "—"}
+                </dd>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-ink-muted">States reporting</dt>
+                <dd className="font-mono text-ink">{stateCount || 8}</dd>
+              </div>
+            </dl>
+
+            {topSites.length > 0 && (
+              <ul className="mt-5 space-y-3 border-t border-line pt-4">
+                {topSites.slice(0, 3).map((site) => (
+                  <li key={site.siteId}>
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="truncate text-[11.5px] text-ink">{site.name}</span>
+                      <span
+                        className="font-mono text-[11px] tabular-nums"
+                        style={{ color: getRiskColor(site.risk.failureProbabilityPercent) }}
+                      >
+                        {site.risk.failureProbabilityPercent}%
+                      </span>
+                    </div>
+                    <div className="mt-1.5 h-[2px] w-full bg-line-soft">
+                      <div
+                        className="h-full"
+                        style={{
+                          width: `${site.risk.failureProbabilityPercent}%`,
+                          backgroundColor: getRiskColor(site.risk.failureProbabilityPercent),
+                        }}
+                      />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </motion.aside>
+        </div>
+
+        {/* Quiet figures strip */}
+        <div className="mx-auto mt-16 max-w-6xl border-t border-line pt-6">
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
+            {[
+              { value: String(sites.length || 12), label: "Corridors monitored" },
+              { value: String(stateCount || 8), label: "States covered" },
+              { value: "5 min", label: "Feed refresh" },
+              { value: "6", label: "Alert languages" },
+            ].map((stat) => (
+              <div key={stat.label}>
+                <dt className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">
+                  {stat.label}
+                </dt>
+                <dd className="mt-1.5 font-mono text-[19px] leading-none text-ink-strong tabular-nums">
+                  {stat.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
-      {/* -------------------- What the system does -------------------- */}
-      <section id="what" className="hairline px-6 py-16 md:py-20">
+      {/* ------------------------------ Method ------------------------------ */}
+      <section id="method" className="hairline px-6 py-16 md:py-24">
         <div className="mx-auto max-w-6xl">
-          <motion.div {...fadeUp} className="mx-auto mb-12 max-w-xl text-center">
-            <p className="eyebrow">What the system does</p>
-            <h2 className="display-heading mt-3 text-2xl font-semibold text-ink-strong sm:text-3xl">
-              Four tools, one monitoring picture
-            </h2>
+          <motion.div {...reveal(0)} className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
+            <div>
+              <Label>How the warning is built</Label>
+              <h2 className="display-heading mt-4 text-[30px] leading-tight text-ink-strong sm:text-[38px]">
+                Four signals, one honest risk figure.
+              </h2>
+            </div>
+            <p className="max-w-xl text-[13.5px] leading-relaxed text-ink-muted md:pt-9">
+              The model is deliberately boring: measure the things that fail a slope,
+              keep the readings current, and publish the number with its inputs so a
+              district officer can see why it changed.
+            </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12">
             {[
               {
+                icon: CloudRain,
+                title: "Rainfall",
+                text: "Open-Meteo and IMD-class readings give 24-hour accumulation and a 6-hour forecast for every corridor, refreshed through the day rather than once each morning.",
+                tag: "Open-Meteo · IMD",
+              },
+              {
                 icon: Mountain,
-                tone: "text-accent",
-                title: "3D satellite terrain",
-                text: "Renders real NASA SRTM elevation with MapLibre GL 3D terrain to show the exact steepness of every hillside.",
-                tag: "MapLibre 3D engine",
+                title: "Terrain",
+                text: "NASA SRTM elevation is rendered as real 3D terrain, so slope angle and fall-line come from the hillside itself — not from a flat map approximation.",
+                tag: "NASA SRTM · 30 m",
+              },
+              {
+                icon: Activity,
+                title: "Ground movement",
+                text: "Displacement heat layers and soil-node saturation show creep and water loading building up days before a visible crack appears.",
+                tag: "Soil nodes · creep",
               },
               {
                 icon: Route,
-                tone: "text-safe",
-                title: "Drivable escape routes",
-                text: "Queries OSRM OpenStreetMap routing for turn-by-turn escape paths and alternate detours around blocked roads.",
-                tag: "Multi-route evacuation",
-              },
-              {
-                icon: Bot,
-                tone: "text-safe",
-                title: "AI disaster copilot",
-                text: "Natural-language answers about site safety, evacuation points and rainfall forecasts, in your language.",
-                tag: "Multilingual NLP",
-              },
-              {
-                icon: Eye,
-                tone: "text-accent",
-                title: "Crack photo inspection",
-                text: "Field officers upload slope-crack photos; computer vision measures width and geological instability.",
-                tag: "Vision analysis",
+                title: "Response",
+                text: "OSRM road routing returns drivable escape paths and detours around blocked highways, alongside six-language warning blasts.",
+                tag: "OSRM · 6 languages",
               },
             ].map((item, index) => (
               <motion.div
                 key={item.title}
-                {...fadeUp}
-                transition={{ ...fadeUp.transition, delay: index * 0.07 }}
-                className="flex flex-col"
+                {...reveal(index * 0.05)}
+                className="grid gap-4 border-t border-line py-7 md:grid-cols-[3rem_1fr_auto] md:items-start md:gap-8"
               >
-                <item.icon size={20} className={item.tone} aria-hidden="true" />
-                <h3 className="mt-4 text-sm font-semibold text-ink-strong">{item.title}</h3>
-                <p className="mt-2 flex-1 text-xs leading-relaxed text-ink-muted">{item.text}</p>
-                <p className="mt-4 flex items-center gap-1 font-mono text-[10.5px] text-ink-faint">
-                  <span>{item.tag}</span>
-                  <ChevronRight size={11} />
-                </p>
+                <span className="font-mono text-[11px] text-ink-faint tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div className="flex items-start gap-4">
+                  <item.icon size={16} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
+                  <div>
+                    <h3 className="text-[14px] font-semibold text-ink-strong">{item.title}</h3>
+                    <p className="mt-2 max-w-2xl text-[12.5px] leading-relaxed text-ink-muted">
+                      {item.text}
+                    </p>
+                  </div>
+                </div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-faint md:pt-1">
+                  {item.tag}
+                </span>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ---------------- Live monitored corridors ---------------- */}
-      <section id="corridors" className="hairline px-6 py-16 md:py-20">
+      {/* ----------------------------- Corridors ----------------------------- */}
+      <section id="corridors" className="hairline px-6 py-16 md:py-24">
         <div className="mx-auto max-w-6xl">
-          <motion.div {...fadeUp} className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <motion.div {...reveal(0)} className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="eyebrow flex items-center gap-2">
-                <CloudRain size={13} className="text-accent" />
-                Live corridors
-              </p>
-              <h2 className="display-heading mt-3 text-2xl font-semibold text-ink-strong sm:text-3xl">
-                Public weather &amp; risk status
+              <Label>Live corridors</Label>
+              <h2 className="display-heading mt-4 text-[30px] leading-tight text-ink-strong sm:text-[38px]">
+                Public weather and risk status.
               </h2>
             </div>
-            <p className="font-mono text-[11px] text-ink-faint">12 sites across 8 states</p>
+            <p className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-ink-faint">
+              Ranked by failure probability
+            </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10">
+            <div className="hidden grid-cols-[1.6fr_1fr_0.7fr_1.1fr] gap-6 border-b border-line pb-2.5 md:grid">
+              {["Corridor", "State", "24h rain", "Failure probability"].map((heading) => (
+                <span key={heading} className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">
+                  {heading}
+                </span>
+              ))}
+            </div>
+
             {topSites.map((site, index) => {
+              const risk = site.risk.failureProbabilityPercent;
+              const riskColor = getRiskColor(risk);
               const rain = getRainStatus(site.telemetry.rainfallLast24hMm, site.telemetry.rainfallNext6hMm);
-              const riskColor = getRiskColor(site.risk.failureProbabilityPercent);
               return (
                 <motion.div
                   key={site.siteId}
-                  {...fadeUp}
-                  transition={{ ...fadeUp.transition, delay: index * 0.06 }}
-                  className="rounded-md border border-line bg-panel/70 p-4 transition-colors hover:border-accent/30 hover:bg-panel"
+                  {...reveal(index * 0.04)}
+                  className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 border-b border-line py-4 md:grid-cols-[1.6fr_1fr_0.7fr_1.1fr] md:gap-6"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <p className="text-xs font-semibold text-ink-strong">{site.name}</p>
-                      <p className="mt-0.5 text-[10.5px] text-ink-muted">{site.state} · {site.corridor}</p>
-                    </div>
-                    <span className="text-sm" aria-label={rain.label}>{rain.icon}</span>
+                  <div className="min-w-0">
+                    <p className="truncate text-[13px] font-medium text-ink-strong">{site.name}</p>
+                    <p className="mt-0.5 truncate text-[11px] text-ink-faint">{site.corridor}</p>
                   </div>
-                  <div className="mt-3 flex items-center justify-between border-t border-line-soft pt-3 text-[11px]">
-                    <span className="text-ink-muted">
-                      24h rainfall <strong className="font-mono text-ink">{site.telemetry.rainfallLast24hMm} mm</strong>
-                    </span>
-                    <span className="font-mono font-semibold" style={{ color: riskColor }}>
-                      {site.risk.failureProbabilityPercent}% risk
+
+                  <p className="hidden text-[12px] text-ink-muted md:block">{site.state}</p>
+
+                  <p className="hidden font-mono text-[12px] text-ink md:block tabular-nums">
+                    {site.telemetry.rainfallLast24hMm} mm
+                    <span className="ml-1.5 text-[10.5px] text-ink-faint">{rain.label}</span>
+                  </p>
+
+                  <div className="flex items-center justify-end gap-3 md:justify-start">
+                    <div className="h-[3px] w-24 bg-line-soft">
+                      <div className="h-full" style={{ width: `${risk}%`, backgroundColor: riskColor }} />
+                    </div>
+                    <span className="w-9 text-right font-mono text-[12px] tabular-nums" style={{ color: riskColor }}>
+                      {risk}%
                     </span>
                   </div>
                 </motion.div>
               );
             })}
+
+            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-faint">
+              Showing the six most exposed of {sites.length || 12} monitored corridors
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ------------------- Safety & preparedness ------------------- */}
-      <section id="safety" className="hairline px-6 py-16 md:py-20">
+      {/* ------------------------------ Safety ------------------------------ */}
+      <section id="safety" className="hairline px-6 py-16 md:py-24">
         <div className="mx-auto max-w-6xl">
-          <motion.div {...fadeUp} className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <motion.div {...reveal(0)} className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
             <div>
-              <p className="eyebrow flex items-center gap-2">
-                <Siren size={13} className="text-alert-amber" />
-                Citizen safety
-              </p>
-              <h2 className="display-heading mt-3 text-2xl font-semibold text-ink-strong sm:text-3xl">
-                Landslide safety &amp; evacuation protocol
+              <Label>Citizen safety</Label>
+              <h2 className="display-heading mt-4 text-[30px] leading-tight text-ink-strong sm:text-[38px]">
+                If the ground starts to move.
               </h2>
             </div>
-            <p className="flex items-center gap-2 font-mono text-[11px] text-ink-faint">
-              <ShieldCheck size={13} className="text-safe" />
-              NDMA &amp; SDMA preparedness guidelines
+            <p className="flex items-start gap-2.5 text-[12.5px] leading-relaxed text-ink-muted md:pt-10">
+              <ShieldCheck size={15} className="mt-0.5 shrink-0 text-safe" aria-hidden="true" />
+              Preparedness guidance follows NDMA and State Disaster Management Authority
+              protocols. Read it before the monsoon, not during it.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="mt-12 grid gap-x-12 gap-y-10 md:grid-cols-3">
             {[
               {
-                badge: "1. Before — preparedness",
-                badgeClass: "border-accent/30 bg-accent/10 text-accent",
-                checkClass: "text-accent",
+                phase: "01",
+                title: "Before",
+                note: "Prepare",
                 items: [
-                  "Inspect hillside walls for new cracks, tilting trees, or sudden groundwater seepage.",
-                  "Identify at least two evacuation routes away from steep slopes.",
-                  "Prepare an emergency grab-bag with torch, water, ID, and medicines.",
+                  "Inspect hillside walls for new cracks, tilting trees or sudden seepage.",
+                  "Agree two evacuation routes that stay off steep slopes.",
+                  "Keep a grab-bag ready: torch, water, ID, medicines, phone power bank.",
                 ],
               },
               {
-                badge: "2. During — immediate action",
-                badgeClass: "border-alert-amber/30 bg-alert-amber/10 text-alert-amber",
-                checkClass: "text-alert-amber",
+                phase: "02",
+                title: "During",
+                note: "Act",
                 items: [
-                  "Move quickly sideways out of the slide path toward higher stable ground.",
-                  "Avoid stream valleys and drainage gullies where debris flows concentrate.",
-                  "If trapped inside, curl into a tight ball and protect your head.",
+                  "Move sideways out of the slide path, toward stable higher ground.",
+                  "Stay out of stream valleys and drainage gullies — debris flows collect there.",
+                  "If you cannot escape, curl up and protect your head.",
                 ],
               },
               {
-                badge: "3. After — post-slide recovery",
-                badgeClass: "border-safe/30 bg-safe/10 text-safe",
-                checkClass: "text-safe",
+                phase: "03",
+                title: "After",
+                note: "Recover",
                 items: [
-                  "Stay clear of slide debris — secondary slope failures are common.",
-                  "Report blocked roads, broken power lines, or trapped vehicles to authorities.",
-                  "Re-enter damaged structures only after safety confirmation.",
+                  "Stay clear of fresh debris; secondary failures are common.",
+                  "Report blocked roads, broken power lines and trapped vehicles.",
+                  "Re-enter damaged structures only after an official clearance.",
                 ],
               },
             ].map((phase, index) => (
               <motion.div
-                key={phase.badge}
-                {...fadeUp}
-                transition={{ ...fadeUp.transition, delay: index * 0.08 }}
-                className="rounded-md border border-line bg-panel/70 p-6"
+                key={phase.phase}
+                {...reveal(index * 0.06)}
+                className="border-t border-line pt-5"
               >
-                <span className={`inline-block rounded-xs border px-2.5 py-1 text-[10.5px] font-semibold tracking-wide ${phase.badgeClass}`}>
-                  {phase.badge}
-                </span>
+                <div className="flex items-baseline justify-between">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-faint">
+                    {phase.phase} · {phase.note}
+                  </span>
+                  <ShieldCheck size={13} className="text-ink-faint" aria-hidden="true" />
+                </div>
+                <h3 className="mt-2 text-[15px] font-semibold text-ink-strong">{phase.title}</h3>
                 <ul className="mt-4 space-y-3">
                   {phase.items.map((item) => (
-                    <li key={item} className="flex items-start gap-2.5 text-xs leading-relaxed text-ink">
-                      <CheckCircle2 size={14} className={`shrink-0 mt-0.5 ${phase.checkClass}`} aria-hidden="true" />
+                    <li key={item} className="flex gap-2.5 text-[12.5px] leading-relaxed text-ink-muted">
+                      <span className="mt-[9px] h-[1px] w-3 shrink-0 bg-ink-faint" aria-hidden="true" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -336,20 +457,56 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
         </div>
       </section>
 
-      {/* ----------------------------- Footer ----------------------------- */}
-      <footer className="hairline px-6 py-10">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 md:flex-row">
-          <p className="text-center text-xs text-ink-faint md:text-left">
-            <span className="font-semibold text-ink-muted">NER Landslide Command &amp; Early Warning System.</span>
-            {" "}Monitoring Shillong Plateau, NH-10 Sikkim, Silchar–Lumding &amp; Tawang corridors.
-          </p>
+      {/* ---------------------- Operator access (admin) ---------------------- */}
+      <section className="hairline px-6 py-12">
+        <div className="mx-auto flex max-w-6xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="eyebrow">Operator access</p>
+            <p className="mt-2 max-w-xl text-[12.5px] leading-relaxed text-ink-muted">
+              District control rooms and emergency administrators sign in with their
+              passcode to open the live command dashboard.
+            </p>
+          </div>
           <button
             onClick={onOpenAdminAuth}
-            className="flex items-center gap-1.5 text-xs font-medium text-accent transition-colors hover:text-[#8adcf5]"
+            className="group inline-flex shrink-0 items-center gap-2.5 border border-line px-5 py-2.5 text-[12px] font-medium text-ink transition-colors hover:border-ink-faint hover:text-ink-strong"
           >
-            <Lock size={12} />
-            <span>Admin login</span>
+            <Lock size={13} className="text-ink-faint transition-colors group-hover:text-accent" />
+            Operator sign-in
+            <ArrowRight size={13} className="text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-ink" />
           </button>
+        </div>
+      </section>
+
+      {/* ------------------------------ Footer ------------------------------ */}
+      <footer className="hairline px-6 py-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-start md:justify-between">
+          <div className="max-w-md">
+            <p className="font-display text-[12.5px] font-semibold text-ink-strong">
+              NER Landslide Early Warning
+            </p>
+            <p className="mt-2 text-[11.5px] leading-relaxed text-ink-faint">
+              Monitoring the Shillong Plateau, NH-10 Sikkim, Silchar–Lumding and Tawang
+              corridors. A research-and-response platform, not a substitute for local
+              authority instructions.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-x-10 gap-y-2 text-[11.5px]">
+            <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">Data</span>
+            <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">Built with</span>
+            <span className="text-ink-muted">Open-Meteo rainfall</span>
+            <span className="text-ink-muted">MapLibre GL</span>
+            <span className="text-ink-muted">NASA SRTM elevation</span>
+            <span className="text-ink-muted">OSRM routing</span>
+            <span className="text-ink-muted">OSM road network</span>
+            <span className="text-ink-muted">Esri imagery</span>
+          </div>
+        </div>
+
+        <div className="mx-auto mt-8 flex max-w-6xl flex-col gap-2 border-t border-line pt-5 text-[10.5px] text-ink-faint sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} NER Landslide Command &amp; Early Warning System.</p>
+          <p className="font-mono uppercase tracking-[0.12em]">North Eastern Region · India</p>
         </div>
       </footer>
     </div>

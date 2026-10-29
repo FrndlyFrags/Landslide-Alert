@@ -2,18 +2,18 @@
 // AdminShell.jsx  (ADMIN PORTAL ONLY — never rendered by the landing page)
 // -----------------------------------------------------------------------
 // WHAT: Pure layout wrapper for the authorized dashboard: collapsible left
-//       sidebar, slim chrome above the content, and a compact summary stat
-//       strip derived from the data the dashboard already receives.
-// NOTE: UI/layout only. It holds no app state, makes no API calls, and the
-//       children it renders are exactly the components the app mounted
-//       before (Header, AnalyticsPanel, DigitalTwinMap, CopilotCenter).
+//       rail, a single flat summary strip, and the page content.
+// NOTE: UI/layout only. It holds no app state beyond the collapse toggle,
+//       makes no API calls, and the children it renders are exactly the
+//       components the app mounted before (Header, AnalyticsPanel,
+//       DigitalTwinMap, CopilotCenter).
 // -----------------------------------------------------------------------
 import { useState } from "react";
 import {
   LayoutDashboard, List, TrafficCone, PanelLeftClose, PanelLeftOpen,
   Radar, ShieldAlert, MapPin, Radio, TrendingUp,
 } from "lucide-react";
-import { getRiskColor, getRiskColorRgba } from "../utils/colorUtils";
+import { getRiskColor } from "../utils/colorUtils";
 
 const NAV_ITEMS = [
   { id: "shell-overview", label: "Overview", icon: LayoutDashboard },
@@ -26,21 +26,24 @@ function scrollToPanel(panelId) {
   if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
-function StatCard({ icon: Icon, label, value, valueStyle, iconClass = "text-accent", isLive }) {
+function Stat({ icon: Icon, label, value, valueStyle, isLive }) {
   return (
-    <div className="flex min-w-0 items-center gap-3 rounded-md border border-line bg-panel px-4 py-2.5">
-      <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-panel-2 ${iconClass}`}>
-        <Icon size={15} />
-      </span>
-      <div className="min-w-0 leading-tight">
-        <p className="flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wide text-ink-faint">
+    <div className="flex items-center gap-2 px-3 py-2">
+      <div className="min-w-0 flex-shrink-0">
+        <p className="text-[9px] uppercase tracking-[0.12em] text-ink-faint">
           {label}
-          {isLive && <span className="h-1.5 w-1.5 rounded-full bg-accent animate-live-pulse motion-reduce:animate-none" />}
+          {isLive && (
+            <span className="h-1 w-1 rounded-full bg-accent animate-live-pulse motion-reduce:animate-none" />
+          )}
         </p>
-        <p className="truncate font-mono text-sm font-semibold tabular-nums text-ink-strong" style={valueStyle}>
+        <p
+          className="text-[13.5px] font-semibold tabular-nums text-ink-strong"
+          style={valueStyle}
+        >
           {value}
         </p>
       </div>
+      <Icon size={13} className="mt-0.5 shrink-0 text-ink-faint" aria-hidden="true" />
     </div>
   );
 }
@@ -53,102 +56,117 @@ export default function AdminShell({ rankedSites, regionalScore, activeSensorNod
   const blockedCount = sites.filter((site) => site.telemetry.roadStatus === "blocked").length;
   const scoreColor = getRiskColor(regionalScore.regionalScore);
 
-  function handleNavClick(itemId, collapsed) {
-    if (itemId === "shell-overview") {
-      scrollToPanel("shell-overview");
-      if (collapsed) setIsCollapsed(true); // collapse back if on small screens
-      return;
-    }
+  function handleNavClick(itemId) {
     scrollToPanel(itemId);
   }
 
   return (
     <div className="admin-shell flex h-screen overflow-hidden bg-bg-base">
-      {/* ------------------- Collapsible left sidebar ------------------- */}
+      {/* ---------------------- Collapsible left rail ---------------------- */}
       <aside
-        className={`hidden h-full shrink-0 flex-col border-r border-line bg-panel transition-[width] duration-200 lg:flex ${
-          isCollapsed ? "w-14" : "w-52"
+        className={`hidden h-full shrink-0 flex-col border-r border-line bg-bg-base transition-[width] duration-200 lg:flex ${
+          isCollapsed ? "w-14" : "w-56"
         }`}
         aria-label="Dashboard navigation"
       >
-        <div className={`flex flex-1 flex-col items-start gap-1 p-2 ${isCollapsed ? "items-center" : ""}`}>
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleNavClick(item.id, false)}
-                title={isCollapsed ? item.label : undefined}
-                className={
-                  `flex w-full items-center rounded-sm px-2.5 py-2 text-xs font-medium text-ink-muted transition-colors hover:bg-panel-2 hover:text-ink ${
-                    isCollapsed ? "justify-center px-0" : "gap-2.5"
-                  }`
-                }
-              >
-                <Icon size={15} className="shrink-0" />
-                {!isCollapsed && <span className="truncate">{item.label}</span>}
-              </button>
-            );
-          })}
+        {/* Brand */}
+        <div className={`flex h-14 items-center border-b border-line ${isCollapsed ? "justify-center px-0" : "gap-2.5 px-4"}`}>
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center border border-line-soft text-accent">
+            <Radar size={13} />
+          </span>
+          {!isCollapsed && (
+            <span className="min-w-0 leading-none">
+              <span className="block truncate text-[11.5px] font-semibold tracking-tight text-ink-strong">
+                Command Center
+              </span>
+              <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.12em] text-ink-faint">
+                NER · Admin
+              </span>
+            </span>
+          )}
         </div>
 
-        <div className={`border-t border-line p-2 ${isCollapsed ? "flex justify-center" : "space-y-1"}`}>
-          <div className={`mb-2 flex items-center gap-2.5 px-1.5 ${isCollapsed ? "justify-center px-0" : ""}`}>
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-sm bg-accent/10 text-accent ring-1 ring-accent/25">
-              <Radar size={13} />
-            </span>
-            {!isCollapsed && (
+        {/* Navigation */}
+        <div className={`flex-1 py-4 ${isCollapsed ? "px-2" : "px-3"}`}>
+          {!isCollapsed && (
+            <p className="mb-2 px-2 font-mono text-[9px] uppercase tracking-[0.16em] text-ink-faint">
+              Workspace
+            </p>
+          )}
+          <nav className="space-y-0.5">
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleNavClick(item.id)}
+                  title={isCollapsed ? item.label : undefined}
+                  className={`flex w-full items-center rounded-xs border-l py-2 text-[12px] text-ink-muted transition-colors hover:bg-panel hover:text-ink-strong ${
+                    isCollapsed ? "justify-center border-transparent px-0" : "gap-2.5 border-transparent px-2.5 hover:border-accent/40"
+                  }`}
+                >
+                  <Icon size={14} className="shrink-0" />
+                  {!isCollapsed && <span className="truncate">{item.label}</span>}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Session + collapse */}
+        <div className={`border-t border-line py-3 ${isCollapsed ? "px-2" : "px-3"}`}>
+          {!isCollapsed && (
+            <div className="mb-3 flex items-center gap-2 rounded-xs border border-line-soft px-2.5 py-2">
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-safe animate-live-pulse motion-reduce:animate-none" />
               <span className="min-w-0 leading-tight">
-                <span className="block truncate text-[11px] font-semibold text-ink-strong">Admin Session</span>
-                <span className="block text-[9.5px] text-ink-faint">Authorized · Command</span>
+                <span className="block truncate text-[11px] text-ink">Authorized session</span>
+                <span className="block font-mono text-[9px] uppercase tracking-[0.1em] text-ink-faint">
+                  Command privileges
+                </span>
               </span>
-            )}
-          </div>
+            </div>
+          )}
           <button
             onClick={() => setIsCollapsed((current) => !current)}
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-expanded={!isCollapsed}
-            className={`flex w-full items-center rounded-sm px-2.5 py-2 text-xs text-ink-faint transition-colors hover:bg-panel-2 hover:text-ink ${
-              isCollapsed ? "justify-center px-0" : "gap-2.5"
+            className={`flex w-full items-center rounded-xs py-2 text-[11.5px] text-ink-faint transition-colors hover:bg-panel hover:text-ink ${
+              isCollapsed ? "justify-center px-0" : "gap-2.5 px-2.5"
             }`}
           >
-            {isCollapsed ? <PanelLeftOpen size={15} /> : <PanelLeftClose size={15} />}
+            {isCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
             {!isCollapsed && <span>Collapse</span>}
           </button>
         </div>
       </aside>
 
-      {/* ------------------- Main column ------------------- */}
+      {/* ---------------------------- Main column ---------------------------- */}
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Summary stat strip: stat cards on top (pure derived display) */}
-        <div className="grid shrink-0 grid-cols-2 gap-2 border-b border-line bg-bg-base px-3 py-2.5 lg:grid-cols-4">
-          <StatCard
+        {/* Summary strip — one flat band, no cards */}
+        <div className="grid shrink-0 gap-3 bg-bg-base/40 py-2 px-3 rounded-md lg:grid-cols-4">
+          <Stat
             icon={TrendingUp}
-            label="Regional Score"
+            label="Regional score"
             value={`${regionalScore.regionalScore.toFixed(1)}%`}
             valueStyle={{ color: scoreColor }}
-            iconClass="text-accent"
             isLive
           />
-          <StatCard
+          <Stat
             icon={MapPin}
-            label="Highest Risk"
+            label="Highest risk"
             value={topSite ? `${topSite.name.split(",")[0]} · ${topSite.risk.failureProbabilityPercent}%` : "—"}
             valueStyle={topSite ? { color: getRiskColor(topSite.risk.failureProbabilityPercent) } : undefined}
-            iconClass="text-ink-muted"
           />
-          <StatCard
+          <Stat
             icon={ShieldAlert}
-            label="Blocked Roads"
+            label="Blocked roads"
             value={String(blockedCount)}
             valueStyle={{ color: blockedCount > 0 ? "var(--c-red)" : "var(--c-risk-safe)" }}
-            iconClass={blockedCount > 0 ? "text-critical" : "text-safe"}
           />
-          <StatCard
+          <Stat
             icon={Radio}
-            label="IoT Nodes"
-            value={`${activeSensorNodes} Active`}
-            iconClass="text-accent"
+            label="IoT nodes"
+            value={`${activeSensorNodes} active`}
             isLive
           />
         </div>

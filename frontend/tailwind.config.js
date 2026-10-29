@@ -51,6 +51,7 @@ export default {
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
         display: ["Sora", "Inter", "system-ui", "sans-serif"],
+        serif: ["Instrument Serif", "Georgia", "Times New Roman", "serif"],
         mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       borderRadius: {
@@ -62,11 +63,11 @@ export default {
         pill: "var(--r-pill)",
       },
       boxShadow: {
-        "glow-cyan":    "0 0 20px rgba(92, 200, 232, 0.25)",
-        "glow-emerald": "0 0 20px rgba(74, 222, 128, 0.30)",
-        "glow-amber":   "0 0 20px rgba(242, 179, 76, 0.30)",
-        "glow-red":     "0 0 24px rgba(229, 105, 108, 0.40)",
-        "panel":        "0 1px 2px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.25)",
+        "glow-cyan":    "none",
+        "glow-emerald": "none",
+        "glow-amber":   "none",
+        "glow-red":     "none",
+        "panel":        "0 1px 2px rgba(0,0,0,0.4), 0 12px 32px rgba(0,0,0,0.32)",
       },
       keyframes: {
         "radar-sweep": {

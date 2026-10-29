@@ -32,15 +32,15 @@ function simulateCrackAnalysis() {
 }
 
 function severityColor(severity) {
-  if (severity === "severe") return "text-red-400 border-red-500/50 bg-red-500/10";
-  if (severity === "moderate") return "text-amber-400 border-amber-500/50 bg-amber-500/10";
-  return "text-emerald-400 border-emerald-500/50 bg-emerald-500/10";
+  if (severity === "severe") return "text-critical border-critical/40 bg-critical/5";
+  if (severity === "moderate") return "text-alert-amber border-alert-amber/40 bg-alert-amber/5";
+  return "text-safe border-safe/40 bg-safe/5";
 }
 
 function SectionHeading({ icon: Icon, children }) {
   return (
-    <h2 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-      <Icon size={13} className="text-telemetry/70" />
+    <h2 className="flex items-center gap-2 font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-muted">
+      <Icon size={12} className="text-ink-faint" />
       {children}
     </h2>
   );
@@ -74,72 +74,74 @@ export function FieldPhotoModal({ isOpen, onClose }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 12 }}
-          className="relative w-full max-w-md overflow-hidden rounded-2xl border border-slate-700 bg-dark-slate p-6 shadow-2xl"
+          className="relative w-full max-w-md overflow-hidden border border-line bg-panel p-6 shadow-panel"
         >
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-slate-400 hover:text-slate-200 transition-colors"
+            className="absolute right-4 top-4 text-ink-faint transition-colors hover:text-ink"
           >
             <X size={18} />
           </button>
 
           <div className="flex items-center gap-3 mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-telemetry/15 text-telemetry ring-1 ring-telemetry/40">
-              <Camera size={20} />
+            <div className="flex h-9 w-9 items-center justify-center border border-line-soft text-accent">
+              <Camera size={16} />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-100">Field Photo Report</h2>
-              <p className="text-xs text-slate-400">AI Computer Vision Hillside Analysis</p>
+              <h2 className="text-[13.5px] font-semibold text-ink-strong">Field photo report</h2>
+              <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-faint">
+                Vision-assisted hillside check
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between rounded-md border border-slate-800 bg-slate-card/40 px-3 py-2 mb-4">
+          <div className="mb-4 flex items-center justify-between border border-line bg-panel-2/40 px-3 py-2">
             <div className="flex items-center gap-2">
               {isOffline ? (
-                <WifiOff size={13} className="text-amber-400 animate-pulse" />
+                <WifiOff size={12} className="text-alert-amber" />
               ) : (
-                <Wifi size={13} className="text-emerald-400" />
+                <Wifi size={12} className="text-safe" />
               )}
-              <span className="text-[11px] text-slate-300">
+              <span className="text-[11px] text-ink-muted">
                 {isOffline ? "Offline — queued in IndexedDB" : "Online — synced"}
               </span>
             </div>
             <button
               onClick={() => setIsOffline((current) => !current)}
-              className="text-[10px] text-slate-500 underline hover:text-telemetry"
+              className="font-mono text-[9px] uppercase tracking-[0.12em] text-ink-faint underline underline-offset-2 transition-colors hover:text-accent"
             >
               Toggle
             </button>
           </div>
 
           <section>
-            <p className="text-[11px] text-slate-400 mb-2">
-              Upload a photo of a slope crack or road blockage for AI analysis.
+            <p className="mb-2 text-[11px] leading-relaxed text-ink-muted">
+              Upload a photo of a slope crack or road blockage for analysis.
             </p>
 
-            <label className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-slate-700 bg-slate-card/30 p-6 text-center transition-colors hover:border-telemetry/60 hover:bg-telemetry/5">
-              <Camera size={20} className="text-telemetry" />
-              <span className="text-xs font-medium text-slate-300">Click to choose a photo</span>
+            <label className="flex cursor-pointer flex-col items-center justify-center gap-1.5 border border-dashed border-line bg-panel-2/20 p-6 text-center transition-colors hover:border-accent/60 hover:bg-accent/5">
+              <Camera size={18} className="text-accent" />
+              <span className="text-[11.5px] text-ink">Click to choose a photo</span>
               <input type="file" accept="image/*" className="hidden" onChange={handlePhotoSelected} />
             </label>
           </section>
 
           {previewUrl && (
-            <div className="mt-4 border-t border-slate-800 pt-3">
-              <SectionHeading icon={ScanSearch}>Computer Vision Analysis</SectionHeading>
-              <div className="relative mt-2 max-h-48 overflow-hidden rounded-lg border border-slate-800">
+            <div className="mt-4 border-t border-line pt-3">
+              <SectionHeading icon={ScanSearch}>Computer vision analysis</SectionHeading>
+              <div className="relative mt-2 max-h-48 overflow-hidden border border-line">
                 <img src={previewUrl} alt="Uploaded crack" className="w-full object-cover" />
                 {analysisResult && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="absolute border-2 border-red-500 shadow-glow-red"
+                    className="absolute border-2 border-critical"
                     style={{
                       left: `${analysisResult.boundingBox.x}%`,
                       top: `${analysisResult.boundingBox.y}%`,
@@ -147,7 +149,7 @@ export function FieldPhotoModal({ isOpen, onClose }) {
                       height: `${analysisResult.boundingBox.height}%`,
                     }}
                   >
-                    <span className="absolute -top-5 left-0 rounded bg-red-500 px-1.5 py-0.5 text-[9px] font-bold text-white">
+                    <span className="absolute -top-5 left-0 bg-critical px-1.5 py-0.5 font-mono text-[8.5px] font-semibold uppercase tracking-[0.1em] text-[#170b0a]">
                       crack
                     </span>
                   </motion.div>
@@ -155,7 +157,7 @@ export function FieldPhotoModal({ isOpen, onClose }) {
               </div>
 
               {isAnalyzing && (
-                <p className="mt-2 flex items-center gap-1.5 text-[11px] text-telemetry animate-live-pulse">
+                <p className="mt-2 flex items-center gap-1.5 text-[11px] text-accent animate-live-pulse">
                   <ScanSearch size={12} />
                   Running crack detection model...
                 </p>
@@ -165,7 +167,7 @@ export function FieldPhotoModal({ isOpen, onClose }) {
                 <motion.div
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`mt-2.5 rounded-lg border p-3 ${severityColor(analysisResult.severity)}`}
+                  className={`mt-2.5 border border-l-2 p-3 ${severityColor(analysisResult.severity)}`}
                 >
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="flex items-center gap-1.5">

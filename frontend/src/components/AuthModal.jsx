@@ -42,14 +42,14 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-md"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
         onClick={onClose}
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 12 }}
-          className="relative w-full max-w-md overflow-hidden rounded-lg border border-line bg-panel p-6 shadow-panel"
+          className="relative w-full max-w-md overflow-hidden border border-line bg-panel p-6 shadow-panel"
           onClick={(event) => event.stopPropagation()}
           role="dialog"
           aria-label="Authorized Admin Portal"
@@ -65,17 +65,19 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
 
           {/* Header */}
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-accent/10 text-accent ring-1 ring-accent/25">
-              <Lock size={19} />
+            <div className="flex h-9 w-9 items-center justify-center border border-line-soft text-accent">
+              <Lock size={16} />
             </div>
             <div>
-              <h2 className="font-display text-[15px] font-semibold text-ink-strong">Authorized Admin Portal</h2>
-              <p className="text-xs text-ink-muted">Restricted emergency command access</p>
+              <h2 className="font-display text-[14px] font-semibold text-ink-strong">Authorized admin portal</h2>
+              <p className="mt-0.5 font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">
+                Restricted command access
+              </p>
             </div>
           </div>
 
           {/* Notice */}
-          <div className="mt-4 flex items-start gap-2 rounded-xs border border-alert-amber/25 bg-alert-amber/10 p-3 text-[11px] leading-relaxed text-alert-amber">
+          <div className="mt-4 flex items-start gap-2 border-l-2 border-alert-amber/70 bg-alert-amber/5 py-2 pl-2.5 pr-2 text-[11px] leading-relaxed text-alert-amber">
             <AlertCircle size={15} className="mt-0.5 shrink-0" />
             <span>
               Detailed spatial stats, IoT sensor telemetry, and warning blast triggers are restricted to authorized personnel.
@@ -85,10 +87,10 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
           <form onSubmit={handleSubmit} className="mt-5 space-y-4">
             {/* Role selector */}
             <fieldset>
-              <legend className="mb-2 text-[10.5px] font-semibold uppercase tracking-wide text-ink-muted">
+              <legend className="mb-2 font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">
                 Select official authority
               </legend>
-              <div className="space-y-2">
+              <div className="divide-y divide-line-soft border-y border-line-soft">
                 {ADMIN_ROLES.map((role, index) => {
                   const Icon = role.icon;
                   const isSelected = selectedRole === role.id;
@@ -98,13 +100,13 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
                       key={role.id}
                       onClick={() => setSelectedRole(role.id)}
                       aria-pressed={isSelected}
-                      className={`flex w-full items-center gap-3 rounded-sm border p-2.5 text-left text-xs transition-all ${
+                      className={`flex w-full items-center gap-3 border-l py-2.5 pl-2.5 pr-1 text-left text-[11.5px] transition-colors ${
                         isSelected
-                          ? "border-accent/50 bg-accent/10 font-medium text-ink"
-                          : "border-line bg-panel-2/40 text-ink-muted hover:border-accent/30"
+                          ? "border-accent bg-panel-2/70 font-medium text-ink"
+                          : "border-transparent text-ink-muted hover:border-ink-faint hover:text-ink"
                       }`}
                     >
-                      <Icon size={16} className={isSelected ? "text-accent" : "text-ink-faint"} />
+                      <Icon size={14} className={isSelected ? "text-accent" : "text-ink-faint"} />
                       <span>{role.title}</span>
                     </button>
                   );
@@ -116,7 +118,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
             <div>
               <label
                 htmlFor="admin-passcode"
-                className="mb-1.5 block text-[10.5px] font-semibold uppercase tracking-wide text-ink-muted"
+                className="mb-1.5 block font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint"
               >
                 Admin security passcode
               </label>
@@ -126,7 +128,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
                 value={passcode}
                 onChange={(e) => setPasscode(e.target.value)}
                 placeholder="Enter passcode (e.g. admin123)"
-                className="w-full rounded-xs border border-line bg-bg-base px-3.5 py-2.5 font-mono text-xs text-ink placeholder:text-ink-faint focus:border-accent/60 focus:outline-none"
+                className="w-full border border-line bg-bg-base px-3.5 py-2.5 font-mono text-[11.5px] text-ink placeholder:text-ink-faint focus:border-accent/60 focus:outline-none"
               />
               {errorMsg && (
                 <p className="mt-1.5 text-[11px] font-medium text-critical" role="alert">
@@ -142,9 +144,9 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
             {/* Button */}
             <button
               type="submit"
-              className="group flex w-full items-center justify-center gap-2 rounded-xs bg-accent px-4 py-2.5 text-xs font-bold text-[#06202b] transition-all hover:bg-[#7ad4ef] hover:shadow-glow-cyan active:scale-[0.99]"
+              className="group flex w-full items-center justify-center gap-2 border border-ink-strong bg-ink-strong px-4 py-2.5 text-[11.5px] font-semibold text-bg-base transition-colors hover:bg-white active:scale-[0.99]"
             >
-              <span>Authenticate &amp; Open Command Center</span>
+              <span>Authenticate &amp; open command center</span>
               <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
             </button>
           </form>

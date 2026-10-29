@@ -1,8 +1,10 @@
 // -----------------------------------------------------------------------
 // AnalyticsPanel.jsx
 // -----------------------------------------------------------------------
-// WHAT: Left-hand sidebar. Shows ranked high-risk locations with live rain status,
-//       smooth green-to-red risk gauges, slip-plane trend chart, and road detours.
+// WHAT: Left-hand sidebar. Ranked high-risk locations with live rain
+//       status, risk badges, slip-plane trend and road detours.
+// NOTE: Presentational redesign only — every computation, memo and
+//       handler below is unchanged.
 // -----------------------------------------------------------------------
 import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -24,54 +26,25 @@ const ALTERNATE_ROUTES = {
   "NER-012": "Detour via Ledum - Pasighat farm road (adds ~50 min)",
 };
 
-// Circular gauge with smooth green-to-red color interpolation
-function RiskGauge({ label, percent }) {
-  const radius = 34;
-  const circumference = 2 * Math.PI * radius;
+// Flat risk badge (replaces circular gauge)
+function RiskBadge({ label, percent }) {
   const color = getRiskColor(percent);
-  const [animatedPercent, setAnimatedPercent] = useState(0);
-
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => setAnimatedPercent(percent));
-    return () => cancelAnimationFrame(frame);
-  }, [percent]);
-
-  const filledLength = (animatedPercent / 100) * circumference;
-
   return (
-    <div className="flex flex-col items-center">
-      <svg width="90" height="90" viewBox="0 0 90 90" role="img" aria-label={`${label}: ${percent}%`}>
-        <circle cx="45" cy="45" r={radius} fill="none" stroke="var(--c-line)" strokeWidth="8" />
-        <circle
-          cx="45"
-          cy="45"
-          r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth="8"
-          strokeDasharray={`${filledLength} ${circumference}`}
-          strokeLinecap="round"
-          transform="rotate(-90 45 45)"
-          style={{
-            transition: "stroke-dasharray 1s cubic-bezier(0.22,1,0.36,1), stroke 0.4s ease",
-            filter: `drop-shadow(0 0 6px ${getRiskColorRgba(percent, 0.5)})`,
-          }}
-        />
-        <text x="45" y="49" textAnchor="middle" fontSize="16" fontFamily="monospace" fill={color} fontWeight="700">
-          {percent}%
-        </text>
-      </svg>
-      <p className="mt-1 text-[11px] text-ink-muted">{label}</p>
+    <div className="inline-block rounded-sm px-2.5 py-1.5 text-[10px] font-medium" style={{ color, backgroundColor: getRiskColorRgba(percent, 0.1), borderColor: color }}>
+      {percent}%
+      <span className="text-[8px] uppercase tracking-[0.1em] ml-1">{label}</span>
     </div>
   );
 }
 
-function SectionHeading({ icon: Icon, children }) {
+function SectionHeading({ icon: Icon, children, id }) {
   return (
-    <h2 className="flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-wide text-ink-muted">
-      <Icon size={13} className="text-accent/70" />
-      {children}
-    </h2>
+    <div className="flex items-center gap-2 border-b border-line pb-2">
+      <Icon size={12} className="text-ink-faint" aria-hidden="true" />
+      <h2 id={id} className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-muted">
+        {children}
+      </h2>
+    </div>
   );
 }
 
@@ -92,13 +65,13 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
   const blockedSites = rankedSites.filter((site) => site.telemetry.roadStatus === "blocked");
 
   return (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto bg-bg-base p-4">
-      {/* High-Risk Regional List with Live Rain Status */}
-      <section aria-labelledby="panel-sites-heading">
-        <SectionHeading icon={AlertTriangle}>
-          <span id="shell-sites">Ranked Sites</span>
+    <div className="flex h-full flex-col gap-4 overflow-y-auto bg-bg-base p-3">
+      {/* Ranked sites */}
+      <section aria-labelledby="shell-sites">
+        <SectionHeading icon={AlertTriangle} id="shell-sites">
+          Ranked sites
         </SectionHeading>
-        <ul className="mt-2 space-y-1.5">
+        <ul className="mt-1">
           {rankedSites.slice(0, 6).map((site, index) => {
             const riskPercent = site.risk.failureProbabilityPercent;
             const riskColor = getRiskColor(riskPercent);
@@ -106,108 +79,111 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
             const isSelected = selectedSite?.siteId === site.siteId;
 
             return (
-              <motion.li
+              <li
                 key={site.siteId}
-                initial={{ opacity: 0, x: -6 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.03 }}
+                className="border-b border-line-soft pb-3 transition-colors"
               >
                 <button
                   onClick={() => onSelectSite(site.siteId)}
-                  className={`flex w-full items-center justify-between rounded-sm border px-3 py-2 text-left transition-all hover:bg-panel-2 ${
-                    isSelected
-                      ? "border-accent/40 bg-accent/10"
-                      : "border-line bg-panel/60 hover:border-accent/30"
-                  }`}
+                  className={`flex w-full items-center justify-between gap-2 pl-2.5 pr-1 text-left transition-colors ${isSelected ? "border-accent bg-panel" : "hover:bg-panel/60"}`}
                 >
-                  <div className="min-w-0 flex-1 pr-2">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <p className="truncate text-[11px] font-medium text-ink-strong">{site.name}</p>
-                      <span className="text-[10px]" title={rain.label}>{rain.icon}</span>
+                      <p className="truncate text-[11.5px] text-ink-strong">{site.name}</p>
+                      <span className="text-[9.5px]" title={rain.label}>{rain.icon}</span>
                     </div>
-                    <p className="text-[10px] text-ink-faint">{site.state} · {site.telemetry.rainfallLast24hMm}mm 24h</p>
+                    <p className="mt-0.5 font-mono text-[9.5px] text-ink-faint">
+                      {site.state} · {site.telemetry.rainfallLast24hMm}mm 24h
+                    </p>
                   </div>
                   <span
-                    className="ml-2 shrink-0 rounded-xs border px-1.5 py-0.5 font-mono text-[11px] font-semibold tabular-nums"
-                    style={{
-                      color: riskColor,
-                      backgroundColor: getRiskColorRgba(riskPercent, 0.12),
-                      borderColor: riskColor,
-                    }}
+                    className="shrink-0 font-mono text-[11px] font-semibold tabular-nums"
+                    style={{ color: riskColor }}
                   >
                     {riskPercent}%
                   </span>
                 </button>
-              </motion.li>
+              </li>
             );
           })}
         </ul>
       </section>
 
-      {/* AI Predictive Analytics Gauges */}
+      {/* Predictive badges */}
       <section aria-labelledby="panel-gauges-heading">
-        <SectionHeading icon={GaugeIcon}>
-          <span id="panel-gauges-heading">AI Predictive Risk Gauges</span>
+        <SectionHeading icon={GaugeIcon} id="panel-gauges-heading">
+          Risk gauges
         </SectionHeading>
-        <p className="mt-1 truncate text-[10px] font-medium text-ink-muted">{selectedSite?.name}</p>
-        <div className="mt-2 flex justify-around rounded-md border border-line bg-panel/60 py-3">
-          <RiskGauge label="6-Hour Risk" percent={sixHourPercent} />
-          <RiskGauge label="24-Hour Risk" percent={twentyFourHourPercent} />
+        <p className="mt-2 truncate text-[11px] text-ink-muted">{selectedSite?.name ?? "Select a site"}</p>
+        <div className="mt-2 flex items-center justify-around rounded-md border border-line bg-panel/50 py-2">
+          <RiskBadge label="6-hour" percent={sixHourPercent} />
+          <span className="h-10 w-[1px] bg-line" aria-hidden="true" />
+          <RiskBadge label="24-hour" percent={twentyFourHourPercent} />
         </div>
       </section>
 
-      {/* Slip-Plane Displacement Chart */}
+      {/* Slip-plane trend */}
       <section aria-labelledby="panel-chart-heading">
-        <SectionHeading icon={Activity}>
-          <span id="panel-chart-heading">Slip-Plane Displacement Trend</span>
+        <SectionHeading icon={Activity} id="panel-chart-heading">
+          Slip-plane displacement
         </SectionHeading>
-        <div className="mt-2 h-36 rounded-md border border-line bg-panel/60 p-2">
+        <div className="mt-2 h-36 border border-line bg-panel/50 p-2">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={slipPlaneData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="slipPlaneGlow" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#06B6D4" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="#06B6D4" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid stroke="#1E293B" strokeDasharray="3 3" />
-              <XAxis dataKey="week" tick={{ fontSize: 10, fill: "#64748B" }} axisLine={{ stroke: "#334155" }} />
-              <YAxis tick={{ fontSize: 10, fill: "#64748B" }} axisLine={{ stroke: "#334155" }} />
+            <LineChart data={slipPlaneData} margin={{ top: 6, right: 8, left: -24, bottom: 0 }}>
+              <CartesianGrid stroke="var(--c-line-soft)" vertical={false} />
+              <XAxis
+                dataKey="week"
+                tick={{ fontSize: 9, fill: "var(--c-faint)" }}
+                axisLine={{ stroke: "var(--c-line)" }}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fontSize: 9, fill: "var(--c-faint)" }}
+                axisLine={false}
+                tickLine={false}
+              />
               <Tooltip
-                contentStyle={{ backgroundColor: "#1E293B", border: "1px solid #334155", fontSize: 11 }}
-                labelStyle={{ color: "#94A3B8" }}
+                cursor={{ stroke: "var(--c-line)" }}
+                contentStyle={{
+                  backgroundColor: "var(--c-surface)",
+                  border: "1px solid var(--c-line)",
+                  borderRadius: 2,
+                  fontSize: 11,
+                  color: "var(--c-text)",
+                }}
+                labelStyle={{ color: "var(--c-muted)" }}
               />
               <Line
                 type="monotone"
                 dataKey="displacementMm"
-                stroke="#06B6D4"
-                strokeWidth={2}
-                dot={{ r: 3, fill: "#06B6D4" }}
-                activeDot={{ r: 5 }}
+                stroke="var(--c-accent)"
+                strokeWidth={1.5}
+                dot={false}
+                activeDot={{ r: 3, fill: "var(--c-accent)" }}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
       </section>
 
-      {/* Emergency Road Rerouting */}
+      {/* Emergency rerouting */}
       <section id="shell-rerouting" aria-labelledby="panel-rerouting-heading">
-        <SectionHeading icon={TrafficCone}>
-          <span id="panel-rerouting-heading">Emergency Road Rerouting</span>
+        <SectionHeading icon={TrafficCone} id="panel-rerouting-heading">
+          Emergency rerouting
         </SectionHeading>
         {blockedSites.length === 0 ? (
-          <p className="mt-2 rounded-md border border-line bg-panel/60 p-3 text-[11px] text-ink-faint">
+          <p className="mt-2 border border-line bg-panel/50 p-3 text-[11px] leading-relaxed text-ink-faint">
             All primary highways are currently open. No reroutes needed.
           </p>
         ) : (
-          <ul className="mt-2 space-y-2">
+          <ul className="mt-2">
             {blockedSites.map((site) => (
-              <li
-                key={site.siteId}
-                className="rounded-sm border border-critical/40 bg-critical/10 p-3 text-[11px]"
-              >
-                <p className="font-medium text-critical">{site.name} — road blocked</p>
-                <p className="mt-1 text-ink">
+              <li key={site.siteId} className="border-b border-line-soft py-2.5 last:border-0">
+                <p className="flex items-center gap-1.5 text-[11px] font-medium text-critical">
+                  <span className="h-1 w-1 rounded-full bg-critical" aria-hidden="true" />
+                  {site.name} — road blocked
+                </p>
+                <p className="mt-1 text-[11px] leading-relaxed text-ink-muted">
                   {ALTERNATE_ROUTES[site.siteId] ??
                     "No pre-mapped detour available. Dispatch a survey team."}
                 </p>

@@ -38,19 +38,29 @@ function BootSequence() {
   return (
     <motion.div
       exit={{ opacity: 0 }}
-      className="command-grid-backdrop fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-onyx"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg-base"
     >
-      <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-telemetry/10 ring-1 ring-telemetry/40">
-        <Radio size={22} className="text-telemetry" />
-        <span className="absolute inset-0 animate-ping-slow rounded-full bg-telemetry/40" />
+      <div className="flex items-center gap-2.5">
+        <Radio size={15} className="text-accent" />
+        <p className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-ink-muted">
+          NER Landslide Command Center
+        </p>
       </div>
-      <p className="text-xs font-semibold tracking-wide text-slate-300">NER LANDSLIDE COMMAND CENTER</p>
-      <div className="h-16 w-72 text-center">
+
+      <div className="mt-6 h-[1px] w-56 overflow-hidden bg-line">
+        <motion.span
+          className="block h-full bg-accent"
+          animate={{ width: `${((stepIndex + 1) / BOOT_SEQUENCE_STEPS.length) * 100}%` }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        />
+      </div>
+
+      <div className="mt-4 h-14 w-80 space-y-1 text-center">
         {BOOT_SEQUENCE_STEPS.slice(0, stepIndex + 1).map((step, index) => (
           <p
             key={step}
-            className={`font-mono text-[11px] ${
-              index === stepIndex ? "text-telemetry" : "text-slate-600 line-through"
+            className={`font-mono text-[10.5px] ${
+              index === stepIndex ? "text-ink" : "text-ink-faint"
             }`}
           >
             {step}
@@ -149,7 +159,7 @@ export default function App() {
   }
 
   return (
-    <div className="relative min-h-screen bg-onyx text-slate-100 selection:bg-telemetry/30">
+    <div className="relative min-h-screen bg-bg-base text-ink selection:bg-accent/25">
       <AnimatePresence>{isBooting && <BootSequence />}</AnimatePresence>
 
       {!isBooting && (

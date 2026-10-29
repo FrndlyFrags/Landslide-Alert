@@ -281,10 +281,10 @@ export default function CopilotCenter({ rankedSites }) {
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.94 }}
             onClick={() => setIsOpen(true)}
-            className="group relative flex items-center gap-2.5 rounded-pill border border-line bg-panel/95 px-4 py-3 text-ink shadow-panel hover:border-accent/50"
+            className="group relative flex items-center gap-3 border border-line bg-panel px-3.5 py-3 text-ink shadow-panel transition-colors hover:border-ink-faint"
             aria-label="Open AI Disaster Center"
           >
-            <span className="relative flex h-8 w-8 items-center justify-center rounded-pill bg-panel-2 text-accent ring-1 ring-accent/25">
+            <span className="flex h-8 w-8 items-center justify-center border border-line-soft text-accent">
               <Bot size={18} />
             </span>
             <div className="text-left pr-1">
@@ -308,7 +308,7 @@ export default function CopilotCenter({ rankedSites }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="flex h-[520px] w-[calc(100vw-2.5rem)] max-w-96 flex-col overflow-hidden rounded-lg border border-line bg-panel shadow-panel"
+            className="flex h-[520px] w-[calc(100vw-2.5rem)] max-w-96 flex-col overflow-hidden border border-line bg-panel shadow-panel"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-line bg-panel-2/50 px-4 py-2.5">
@@ -434,7 +434,7 @@ export default function CopilotCenter({ rankedSites }) {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex items-center gap-1 rounded-xs bg-accent px-3 py-2 text-[11px] font-bold text-[#06202b] transition-colors hover:bg-[#7ad4ef] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex items-center gap-1 bg-ink-strong px-3 py-2 text-[11px] font-semibold text-bg-base transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
                     aria-label="Send message"
                   >
                     <Send size={12} />
@@ -459,7 +459,7 @@ export default function CopilotCenter({ rankedSites }) {
                       key={language}
                       onClick={() => toggleBroadcastLanguage(language)}
                       aria-pressed={broadcastLanguages.includes(language)}
-                      className={`rounded-pill border px-2.5 py-1 text-[10px] transition-colors ${
+                      className={`border px-2.5 py-1 text-[10px] transition-colors ${
                         broadcastLanguages.includes(language)
                           ? "border-accent/50 bg-accent/15 font-semibold text-accent"
                           : "border-line text-ink-faint hover:border-ink-faint"
