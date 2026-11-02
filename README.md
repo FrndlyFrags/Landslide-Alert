@@ -13,7 +13,8 @@ The app has **two experiences**:
   overview map, live telemetry, 3D terrain + escape routing, field photo
   inspection, and the AI disaster copilot.
 
-**Live site:** https://frndlyfrags.github.io/Landslide-Alert/ (auto-deployed)
+**Live site:**
+Not available right now
 
 ## What's actually real vs. simulated
 
