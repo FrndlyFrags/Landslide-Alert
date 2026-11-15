@@ -111,11 +111,11 @@ export default function TerrainEscapeModal({ site, onClose }) {
       const sitePopup = new maplibregl.Popup({ offset: 18, closeButton: false })
         .setHTML(`
           <div style="font-family:'Host Grotesk',sans-serif;font-size:11px;padding:2px;">
-            <strong style="color:#f1f1ed;">${site.name}</strong><br/>
+            <strong style="color:var(--c-heading);">${site.name}</strong><br/>
             <span style="color:${riskColor};font-weight:700;font-family:'Atkinson Hyperlegible Mono',monospace;">
               ${riskPercent}% failure probability
             </span>
-            <div style="margin-top:2px;color:#9ea3b0;">${rainStatus.icon} ${rainStatus.label} (${rainStatus.detail})</div>
+            <div style="margin-top:2px;color:var(--c-muted);">${rainStatus.icon} ${rainStatus.label} (${rainStatus.detail})</div>
           </div>
         `);
 
@@ -154,7 +154,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
         )
       );
 
-      const COLORS = ["#6db3cc", "#d4a04a", "#6fa98a", "#A78BFA", "#FB7185", "#34D399"];
+      const COLORS = ["var(--c-cool)", "var(--c-accent)", "var(--c-ok)", "#A78BFA", "var(--c-critical)", "#34D399"];
       const LABELS = ["Primary", "Alt A", "Alt B", "Route D", "Route E", "Route F"];
 
       let flatRoutes = [];
@@ -206,7 +206,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
     drawnLayerIds.current = [];
 
     safeZones.forEach((zone) => {
-      const el = buildMarkerElement("#6fa98a", 16);
+      const el = buildMarkerElement("var(--c-ok)", 16);
       new maplibregl.Marker({
         element: el,
         pitchAlignment: "viewport",

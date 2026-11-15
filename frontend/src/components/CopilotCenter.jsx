@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { getRainStatus } from "../utils/colorUtils";
 import { SAFE_ZONES } from "../data/safetyData";
+import { API_BASE_URL } from "../env";
 
 const MOCK_ALERT_PHRASES = {
   English: "LANDSLIDE WARNING: Please move to higher ground immediately.",
@@ -230,7 +231,7 @@ export default function CopilotCenter({ rankedSites }) {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/copilot/ask", {
+      const response = await fetch(`${API_BASE_URL}/api/copilot/ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: trimmedQuestion }),

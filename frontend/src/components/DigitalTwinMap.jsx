@@ -238,11 +238,11 @@ export default function DigitalTwinMap({
             "interpolate",
             ["linear"],
             ["heatmap-density"],
-            0, "rgba(109, 179, 204, 0)",
-            0.2, "rgba(109, 179, 204, 0.5)",
-            0.4, "rgba(212, 160, 74, 0.7)",
-            0.7, "rgba(239, 68, 68, 0.85)",
-            1.0, "rgba(239, 68, 68, 0.95)",
+            0, "rgba(var(--c-cool-rgb), 0)",
+            0.2, "rgba(var(--c-cool-rgb), 0.5)",
+            0.4, "rgba(var(--c-accent-rgb), 0.7)",
+            0.7, "rgba(var(--c-critical-rgb), 0.85)",
+            1.0, "rgba(var(--c-critical-rgb), 0.95)",
           ],
           "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 4, 25, 12, 60],
           "heatmap-opacity": 0.85,
@@ -320,7 +320,7 @@ export default function DigitalTwinMap({
           "circle-color": "transparent",
           "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 10, 12, 16],
           "circle-stroke-width": 2,
-          "circle-stroke-color": "#6db3cc",
+          "circle-stroke-color": "var(--c-cool)",
           "circle-stroke-opacity": 0.8,
         },
       });
@@ -375,12 +375,12 @@ export default function DigitalTwinMap({
           .setLngLat(coords)
           .setHTML(`
             <div style="font-family:'Host Grotesk',sans-serif;font-size:11px;padding:4px 2px;">
-              <strong style="color:#f1f1ed;">${props.name}</strong><br/>
+              <strong style="color:var(--c-heading);">${props.name}</strong><br/>
               <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
                 <span style="color:${props.color};font-family:'Atkinson Hyperlegible Mono',monospace;font-weight:700;font-size:12px;">
                   ${props.riskPercent}% Risk
                 </span>
-                <span style="color:#9ea3b0;font-size:10px;">${props.state}</span>
+                <span style="color:var(--c-muted);font-size:10px;">${props.state}</span>
               </div>
               <div style="margin-top:4px;padding-top:4px;border-top:1px solid var(--c-line);display:flex;align-items:center;justify-between;gap:8px;font-size:10px;">
                 <span>Weather: ${props.rainIcon} <strong>${props.rainLabel}</strong></span>
@@ -456,7 +456,7 @@ export default function DigitalTwinMap({
     ? getRainStatus(selectedSite.telemetry.rainfallLast24hMm, selectedSite.telemetry.rainfallNext6hMm)
     : null;
 
-  const selectedRiskColor = selectedSite ? getRiskColor(selectedSite.risk.failureProbabilityPercent) : "#10B981";
+  const selectedRiskColor = selectedSite ? getRiskColor(selectedSite.risk.failureProbabilityPercent) : "var(--c-ok)";
 
   const blockedSites = rankedSites ? rankedSites.filter((site) => site.telemetry.roadStatus === "blocked") : [];
 
@@ -579,7 +579,7 @@ export default function DigitalTwinMap({
                 className="h-full w-full"
                 style={{
                   background:
-                    "conic-gradient(from 0deg, transparent 0deg, transparent 300deg, #6db3cc 340deg, #6db3cc 360deg)",
+                    "conic-gradient(from 0deg, transparent 0deg, transparent 300deg, var(--c-cool) 340deg, var(--c-cool) 360deg)",
                 }}
               />
             </div>

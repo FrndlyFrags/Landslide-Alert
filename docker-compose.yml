@@ -1,0 +1,43 @@
+# -----------------------------------------------------------------------
+# docker-compose.yml
+# Brings frontend + backend together on http://localhost (or a custom port).
+# Usage:
+#   docker compose up            # start both services
+#   docker compose up -d         # daemon mode
+#   BACKEND_PORT=9000 docker compose up   # override backend port
+# -----------------------------------------------------------------------
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      args:
+        - PYTHON_VERSION=3.11-slim
+    container_name: ner-landslide-backend
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app/backend
+    environment:
+      - PORT=8000
+      - CORS_ORIGINS=http://localhost,http://localhost:${BACKEND_PORT:-8000}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BACKEND_URL=http://backend:8000
+    container_name: ner-landslide-frontend
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
