@@ -51,10 +51,11 @@ export function getRiskColorRgba(percent, opacity = 0.2) {
 
 /**
  * Determines whether it is currently raining at a site and formats the status.
+ * Uses Console-theme-aware class names: ok (green), alert-amber, critical (red), cool (blue).
  */
 export function getRainStatus(rainfall24h = 0, rainfallNext6h = 0) {
   const currentEstRate = Math.round((rainfall24h / 24 + rainfallNext6h / 6) * 10) / 10;
-  
+
   if (currentEstRate > 8.0 || rainfall24h > 100) {
     return {
       isRaining: true,
@@ -62,7 +63,7 @@ export function getRainStatus(rainfall24h = 0, rainfallNext6h = 0) {
       detail: `${currentEstRate} mm/h`,
       icon: "🌧️",
       badgeColor: "#c9706b",
-      bgClass: "bg-red-500/20 text-red-400 border-red-500/40",
+      bgClass: "border border-critical/40 bg-critical/10 text-critical",
     };
   } else if (currentEstRate > 2.0 || rainfall24h > 30) {
     return {
@@ -70,8 +71,8 @@ export function getRainStatus(rainfall24h = 0, rainfallNext6h = 0) {
       label: "Moderate Rain",
       detail: `${currentEstRate} mm/h`,
       icon: "🌧️",
-      badgeColor: "#c99b5c",
-      bgClass: "bg-amber-500/20 text-amber-400 border-amber-500/40",
+      badgeColor: "#d4a04a",
+      bgClass: "border border-alert-amber/40 bg-alert-amber/10 text-alert-amber",
     };
   } else if (currentEstRate > 0.3 || rainfall24h > 5) {
     return {
@@ -79,8 +80,8 @@ export function getRainStatus(rainfall24h = 0, rainfallNext6h = 0) {
       label: "Light Rain",
       detail: `${currentEstRate} mm/h`,
       icon: "🌦️",
-      badgeColor: "#a6bfcf",
-      bgClass: "bg-cyan-500/20 text-cyan-400 border-cyan-500/40",
+      badgeColor: "#6db3cc",
+      bgClass: "border border-cool/40 bg-cool/10 text-cool",
     };
   } else {
     return {
@@ -89,7 +90,7 @@ export function getRainStatus(rainfall24h = 0, rainfallNext6h = 0) {
       detail: "Dry conditions",
       icon: "🌤️",
       badgeColor: "#6fa98a",
-      bgClass: "bg-slate-700/40 text-slate-400 border-slate-700",
+      bgClass: "border border-line bg-surface/40 text-muted",
     };
   }
 }

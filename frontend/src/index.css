@@ -1,12 +1,9 @@
 /* -----------------------------------------------------------------------
    index.css
-   WHAT: Loads Tailwind's base styles, the shared theme tokens from
-         src/theme/tokens.css, and page-scoped styling helpers.
-         The `.nightsky` block only applies inside the landing page root
-         element; the admin portal uses its own scoped classes, so styles
-         never leak between the two.
-   NOTE: Deliberately flat — solid surfaces, hairlines and type do the
-         work. No background gradients, glows or grid overlays.
+   WHAT: Tailwind layer, global resets, and theme-wide type/motion rules.
+         The .nightsky block stays scoped to the landing page root;
+         the admin-shell block stays scoped to the dashboard.
+   NOTE: Hairline surfaces, no glow, no gradient, no floating cards.
    ----------------------------------------------------------------------- */
 @import "./theme/tokens.css";
 
@@ -21,28 +18,22 @@ body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5 {
-  font-family: var(--font-heading);
-  letter-spacing: -0.01em;
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  color: var(--c-heading);
 }
 
-/* A thin, dark scrollbar so long panels don't look out of place */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--c-bg);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--c-line);
-  border-radius: 0;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #3a3e45;
-}
+/* A thin dark scrollbar so long panels sit naturally */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-line); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-line-soft); }
 
 /* Visible keyboard focus everywhere (accessibility) */
 :focus-visible {
@@ -52,40 +43,39 @@ h1, h2, h3, h4, h5 {
 }
 
 /* Numeric readouts get slight tabular alignment so digits don't jitter */
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
-}
+.tabular-nums { font-variant-numeric: tabular-nums; }
 
-/* A slow blink used only to mark a feed as live */
+/* Slow blink reserved only for live feed markers */
 @keyframes live-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.35;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
 }
-.animate-live-pulse {
-  animation: live-pulse 2.6s ease-in-out infinite;
+.animate-live-pulse { animation: live-pulse 2.6s ease-in-out infinite; }
+
+/* Typing-dot indicator used by the copilot chat */
+@keyframes typing-dot {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.85); }
+  40% { opacity: 1; transform: scale(1); }
+}
+@layer utilities {
+  .animate-typing-dot { animation: typing-dot 1.4s ease-in-out infinite; }
 }
 
 /* =======================================================================
    LANDING PAGE — scoped helpers (never applied in the admin view)
    ======================================================================= */
-.nightsky {
-  background-color: var(--c-bg);
-}
+.nightsky { background-color: var(--c-bg); }
 
-/* Editorial display face for the public page */
+/* Editorial display face for the public page — Host Grotesk, calm weight */
 .nightsky .display-heading {
   font-family: var(--font-display);
-  font-weight: 400;
-  letter-spacing: -0.015em;
+  font-weight: 500;
+  letter-spacing: -0.03em;
   text-wrap: balance;
+  color: var(--c-heading);
 }
 
-/* Small uppercase mono label above section titles */
+/* Small mono label above section titles — uppercase, tracked */
 .nightsky .eyebrow {
   font-family: var(--font-mono);
   font-size: 10.5px;
@@ -95,21 +85,18 @@ h1, h2, h3, h4, h5 {
 }
 
 /* Thin divider used between sections */
-.nightsky .hairline {
-  border-top: 1px solid var(--c-line);
-}
+.nightsky .hairline { border-top: 1px solid var(--c-line); }
 
 /* =======================================================================
    ADMIN PORTAL — scoped app-shell styles (never applied on the landing view)
    ======================================================================= */
-.admin-shell {
-  font-family: var(--font-body);
-}
+.admin-shell { font-family: var(--font-body); }
 
+/* Hairline panels — flat surface cut from paper-2, rule edge */
 .admin-shell .panel-card {
   background: var(--c-surface);
   border: 1px solid var(--c-line);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
 }
 
 /* Section label used across dashboard panels */
@@ -121,35 +108,27 @@ h1, h2, h3, h4, h5 {
   color: var(--c-faint);
 }
 
-/* MapLibre chrome, quieted down to match the shell */
+/* MapLibre chrome — quieted down to match the shell */
 .maplibregl-ctrl-group {
   background: var(--c-surface) !important;
   border: 1px solid var(--c-line) !important;
   border-radius: var(--r-sm) !important;
   box-shadow: none !important;
 }
-.maplibregl-ctrl-group button + button {
-  border-top: 1px solid var(--c-line) !important;
-}
-.maplibregl-ctrl-group button span {
-  filter: invert(0.8);
-}
+.maplibregl-ctrl-group button + button { border-top: 1px solid var(--c-line) !important; }
+.maplibregl-ctrl-group button span { filter: invert(0.8); }
 .maplibregl-ctrl-attrib {
-  background: rgba(13, 14, 16, 0.75) !important;
+  background: rgba(19, 20, 22, 0.75) !important;
   font-size: 9px !important;
 }
-.maplibregl-ctrl-attrib a {
-  color: var(--c-faint) !important;
-}
+.maplibregl-ctrl-attrib a { color: var(--c-faint) !important; }
 
 /* =======================================================================
    Reduced motion: disable looping/animated flourishes across both pages.
    (Components additionally stop their own JS-driven motion separately.)
    ======================================================================= */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

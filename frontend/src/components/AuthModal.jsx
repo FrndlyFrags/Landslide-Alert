@@ -2,9 +2,9 @@
 // AuthModal.jsx  (ADMIN PORTAL GATE — shared entry point)
 // -----------------------------------------------------------------------
 // WHAT: Secure Admin Authorization Gate. Strictly restricts access to the
-//       command dashboard to authorized administrators. Visual redesign
-//       only — role selection, passcode verification and callbacks are
-//       exactly as before.
+//       command dashboard to authorized administrators.
+// SCOPE: Visual redesign only — role selection, passcode verification
+//        and callbacks are exactly as before.
 // -----------------------------------------------------------------------
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -49,7 +49,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
           initial={{ opacity: 0, scale: 0.95, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 12 }}
-          className="relative w-full max-w-md overflow-hidden border border-line bg-panel p-6 shadow-panel"
+          className="relative w-full max-w-md overflow-hidden border border-line bg-surface p-6 rounded-lg"
           onClick={(event) => event.stopPropagation()}
           role="dialog"
           aria-label="Authorized Admin Portal"
@@ -58,7 +58,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
           <button
             onClick={onClose}
             aria-label="Close login"
-            className="absolute top-4 right-4 text-ink-faint transition-colors hover:text-ink"
+            className="absolute top-4 right-4 text-faint transition-colors hover:text-text"
           >
             <X size={18} />
           </button>
@@ -69,8 +69,8 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
               <Lock size={16} />
             </div>
             <div>
-              <h2 className="font-display text-[14px] font-semibold text-ink-strong">Authorized admin portal</h2>
-              <p className="mt-0.5 font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">
+              <h2 className="font-display text-[14px] font-medium leading-tight text-heading">Authorized admin portal</h2>
+              <p className="mt-0.5 font-mono text-[9.5px] uppercase tracking-[0.14em] text-faint">
                 Restricted command access
               </p>
             </div>
@@ -87,7 +87,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
           <form onSubmit={handleSubmit} className="mt-5 space-y-4">
             {/* Role selector */}
             <fieldset>
-              <legend className="mb-2 font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">
+              <legend className="mb-2 font-mono text-[9.5px] uppercase tracking-[0.14em] text-faint">
                 Select official authority
               </legend>
               <div className="divide-y divide-line-soft border-y border-line-soft">
@@ -102,11 +102,11 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
                       aria-pressed={isSelected}
                       className={`flex w-full items-center gap-3 border-l py-2.5 pl-2.5 pr-1 text-left text-[11.5px] transition-colors ${
                         isSelected
-                          ? "border-accent bg-panel-2/70 font-medium text-ink"
-                          : "border-transparent text-ink-muted hover:border-ink-faint hover:text-ink"
+                          ? "border-accent bg-surface-2/70 font-medium text-text"
+                          : "border-transparent text-muted hover:border-faint hover:text-text"
                       }`}
                     >
-                      <Icon size={14} className={isSelected ? "text-accent" : "text-ink-faint"} />
+                      <Icon size={14} className={isSelected ? "text-accent" : "text-faint"} />
                       <span>{role.title}</span>
                     </button>
                   );
@@ -118,7 +118,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
             <div>
               <label
                 htmlFor="admin-passcode"
-                className="mb-1.5 block font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint"
+                className="mb-1.5 block font-mono text-[9.5px] uppercase tracking-[0.14em] text-faint"
               >
                 Admin security passcode
               </label>
@@ -128,23 +128,23 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess }) {
                 value={passcode}
                 onChange={(e) => setPasscode(e.target.value)}
                 placeholder="Enter passcode (e.g. admin123)"
-                className="w-full border border-line bg-bg-base px-3.5 py-2.5 font-mono text-[11.5px] text-ink placeholder:text-ink-faint focus:border-accent/60 focus:outline-none"
+                className="w-full border border-line bg-bg px-3.5 py-2.5 font-mono text-[11.5px] text-text placeholder:text-faint focus:border-accent/60 focus:outline-none"
               />
               {errorMsg && (
                 <p className="mt-1.5 text-[11px] font-medium text-critical" role="alert">
                   {errorMsg}
                 </p>
               )}
-              <p className="mt-1 text-[10.5px] text-ink-faint">
+              <p className="mt-1 text-[10.5px] text-faint">
                 Authorized passcode:{" "}
-                <code className="font-mono font-semibold text-accent">admin123</code>
+                <code className="font-mono font-medium text-accent">admin123</code>
               </p>
             </div>
 
             {/* Button */}
             <button
               type="submit"
-              className="group flex w-full items-center justify-center gap-2 border border-ink-strong bg-ink-strong px-4 py-2.5 text-[11.5px] font-semibold text-bg-base transition-colors hover:bg-white active:scale-[0.99]"
+              className="group flex w-full items-center justify-center gap-2 border border-heading bg-heading px-4 py-2.5 text-[11.5px] font-medium text-bg transition-colors hover:bg-white active:brightness-95"
             >
               <span>Authenticate &amp; open command center</span>
               <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />

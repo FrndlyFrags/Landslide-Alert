@@ -3,8 +3,8 @@
 // -----------------------------------------------------------------------
 // WHAT: Left-hand sidebar. Ranked high-risk locations with live rain
 //       status, risk badges, slip-plane trend and road detours.
-// NOTE: Presentational redesign only — every computation, memo and
-//       handler below is unchanged.
+// SCOPE: Presentational only — every computation, memo and handler
+//        below is unchanged from the previous version.
 // -----------------------------------------------------------------------
 import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -26,13 +26,16 @@ const ALTERNATE_ROUTES = {
   "NER-012": "Detour via Ledum - Pasighat farm road (adds ~50 min)",
 };
 
-// Flat risk badge (replaces circular gauge)
+// Flat risk badge — replaces circular gauge
 function RiskBadge({ label, percent }) {
   const color = getRiskColor(percent);
   return (
-    <div className="inline-block rounded-sm px-2.5 py-1.5 text-[10px] font-medium" style={{ color, backgroundColor: getRiskColorRgba(percent, 0.1), borderColor: color }}>
+    <div
+      className="inline-block rounded-sm px-2.5 py-1.5 text-[10px] font-medium"
+      style={{ color, backgroundColor: getRiskColorRgba(percent, 0.1), borderColor: color }}
+    >
       {percent}%
-      <span className="text-[8px] uppercase tracking-[0.1em] ml-1">{label}</span>
+      <span className="ml-1 text-[8px] uppercase tracking-[0.1em]">{label}</span>
     </div>
   );
 }
@@ -40,8 +43,8 @@ function RiskBadge({ label, percent }) {
 function SectionHeading({ icon: Icon, children, id }) {
   return (
     <div className="flex items-center gap-2 border-b border-line pb-2">
-      <Icon size={12} className="text-ink-faint" aria-hidden="true" />
-      <h2 id={id} className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-muted">
+      <Icon size={12} className="text-faint" aria-hidden="true" />
+      <h2 id={id} className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-muted">
         {children}
       </h2>
     </div>
@@ -65,7 +68,7 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
   const blockedSites = rankedSites.filter((site) => site.telemetry.roadStatus === "blocked");
 
   return (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto bg-bg-base p-3">
+    <div className="flex h-full flex-col gap-4 overflow-y-auto bg-bg p-3">
       {/* Ranked sites */}
       <section aria-labelledby="shell-sites">
         <SectionHeading icon={AlertTriangle} id="shell-sites">
@@ -79,25 +82,24 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
             const isSelected = selectedSite?.siteId === site.siteId;
 
             return (
-              <li
-                key={site.siteId}
-                className="border-b border-line-soft pb-3 transition-colors"
-              >
+              <li key={site.siteId} className="border-b border-line-soft pb-3 transition-colors">
                 <button
                   onClick={() => onSelectSite(site.siteId)}
-                  className={`flex w-full items-center justify-between gap-2 pl-2.5 pr-1 text-left transition-colors ${isSelected ? "border-accent bg-panel" : "hover:bg-panel/60"}`}
+                  className={`flex w-full items-center justify-between gap-2 pl-2.5 pr-1 text-left transition-colors ${
+                    isSelected ? "border-accent bg-surface" : "hover:bg-surface/60"
+                  }`}
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <p className="truncate text-[11.5px] text-ink-strong">{site.name}</p>
+                      <p className="truncate text-[11.5px] leading-tight text-heading">{site.name}</p>
                       <span className="text-[9.5px]" title={rain.label}>{rain.icon}</span>
                     </div>
-                    <p className="mt-0.5 font-mono text-[9.5px] text-ink-faint">
+                    <p className="mt-0.5 font-mono text-[9.5px] text-faint">
                       {site.state} · {site.telemetry.rainfallLast24hMm}mm 24h
                     </p>
                   </div>
                   <span
-                    className="shrink-0 font-mono text-[11px] font-semibold tabular-nums"
+                    className="shrink-0 font-mono text-[11px] font-medium tabular-nums leading-none"
                     style={{ color: riskColor }}
                   >
                     {riskPercent}%
@@ -114,8 +116,8 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
         <SectionHeading icon={GaugeIcon} id="panel-gauges-heading">
           Risk gauges
         </SectionHeading>
-        <p className="mt-2 truncate text-[11px] text-ink-muted">{selectedSite?.name ?? "Select a site"}</p>
-        <div className="mt-2 flex items-center justify-around rounded-md border border-line bg-panel/50 py-2">
+        <p className="mt-2 truncate text-[11px] text-muted">{selectedSite?.name ?? "Select a site"}</p>
+        <div className="mt-2 flex items-center justify-around rounded-md border border-line bg-surface/50 py-2">
           <RiskBadge label="6-hour" percent={sixHourPercent} />
           <span className="h-10 w-[1px] bg-line" aria-hidden="true" />
           <RiskBadge label="24-hour" percent={twentyFourHourPercent} />
@@ -127,7 +129,7 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
         <SectionHeading icon={Activity} id="panel-chart-heading">
           Slip-plane displacement
         </SectionHeading>
-        <div className="mt-2 h-36 border border-line bg-panel/50 p-2">
+        <div className="mt-2 h-36 border border-line bg-surface/50 p-2">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={slipPlaneData} margin={{ top: 6, right: 8, left: -24, bottom: 0 }}>
               <CartesianGrid stroke="var(--c-line-soft)" vertical={false} />
@@ -147,7 +149,7 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
                 contentStyle={{
                   backgroundColor: "var(--c-surface)",
                   border: "1px solid var(--c-line)",
-                  borderRadius: 2,
+                  borderRadius: 3,
                   fontSize: 11,
                   color: "var(--c-text)",
                 }}
@@ -156,10 +158,10 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
               <Line
                 type="monotone"
                 dataKey="displacementMm"
-                stroke="var(--c-accent)"
+                stroke="var(--c-cool)"
                 strokeWidth={1.5}
                 dot={false}
-                activeDot={{ r: 3, fill: "var(--c-accent)" }}
+                activeDot={{ r: 3, fill: "var(--c-cool)" }}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -172,7 +174,7 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
           Emergency rerouting
         </SectionHeading>
         {blockedSites.length === 0 ? (
-          <p className="mt-2 border border-line bg-panel/50 p-3 text-[11px] leading-relaxed text-ink-faint">
+          <p className="mt-2 border border-line bg-surface/50 p-3 text-[11px] leading-relaxed text-faint">
             All primary highways are currently open. No reroutes needed.
           </p>
         ) : (
@@ -183,9 +185,8 @@ export default function AnalyticsPanel({ rankedSites, selectedSite, onSelectSite
                   <span className="h-1 w-1 rounded-full bg-critical" aria-hidden="true" />
                   {site.name} — road blocked
                 </p>
-                <p className="mt-1 text-[11px] leading-relaxed text-ink-muted">
-                  {ALTERNATE_ROUTES[site.siteId] ??
-                    "No pre-mapped detour available. Dispatch a survey team."}
+                <p className="mt-1 text-[11px] leading-relaxed text-muted">
+                  {ALTERNATE_ROUTES[site.siteId] ?? "No pre-mapped detour available. Dispatch a survey team."}
                 </p>
               </li>
             ))}

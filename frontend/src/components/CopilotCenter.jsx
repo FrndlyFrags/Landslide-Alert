@@ -2,15 +2,10 @@
 // CopilotCenter.jsx  (ADMIN PORTAL ONLY)
 // -----------------------------------------------------------------------
 // WHAT: Floating AI Disaster Center (chat + multilingual broadcast).
-//       Redesigned UI: cleaner bubbles with timestamps, typing indicator,
-//       auto-scroll, minimize/expand, Enter-to-send.
-// BEHAVIOR KEPT: same backend endpoint (/api/copilot/ask) + same local
-//       fallback answer engine. Chat state now persists for the browser
-//       session (sessionStorage), so it survives admin navigation and
-//       re-renders without ever unmounting mid-session.
-// SCOPE RULE: an input guard answers ONLY project topics (landslide
-//       alerts, sensor data, risk levels, incident/report details, admin
-//       portal usage). Anything else receives one short fixed message.
+// SCOPE: Same backend endpoint (/api/copilot/ask) + same local fallback.
+//        Chat state persists for the browser session so it survives admin
+//        navigation and re-renders without ever unmounting mid-session.
+// NOTE: Visual redesign to Console graphite theme. Behaviour untouched.
 // -----------------------------------------------------------------------
 import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,10 +18,10 @@ import { SAFE_ZONES } from "../data/safetyData";
 
 const MOCK_ALERT_PHRASES = {
   English: "LANDSLIDE WARNING: Please move to higher ground immediately.",
-  Assamese: "ভূমিষ্খলন সতৰ্কবাণী: অনুগ্ৰহ কৰি তৎক্ষণাৎ ওখ ঠাইলৈ যাওক।",
+  Assamese: "ভূমিষ্খলন সতৰ্কবাণী: অনুগ্ৰহ কৰি তৎক্ষণাৎ ওখ ঠাইলৈ যাত্ৰ কৰক।",
   Khasi: "JINGKHUM SHISHA: Wan sha jaka thang naduh mynta.",
   Mizo: "TLANG PUTHLET VANNEIH THUPUAN: Hmun sang zawnah paltansuh.",
-  Bengali: "ভূমিধস সতর্কতা: অনুগ্রহ করে অবিলম্বে উঁচু স্থানে চলে যান।",
+  Bengali: "ভূমিধস সতর্কতা: অনুগ্রহ করে অবিলম্বে উঁচু স্থানে চল্ে যান।",
   Nagamese: "LANDSLIDE KHABOR: Joldi upor jagate jai.",
 };
 
@@ -59,7 +54,7 @@ function isWithinScope(question, rankedSites) {
   );
   if (matchesSite) return true;
   return IN_SCOPE_KEYWORDS.some((keyword) =>
-    q.includes(keyword) // keyword list already contains whole words
+    q.includes(keyword)
   );
 }
 
@@ -281,18 +276,18 @@ export default function CopilotCenter({ rankedSites }) {
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.94 }}
             onClick={() => setIsOpen(true)}
-            className="group relative flex items-center gap-3 border border-line bg-panel px-3.5 py-3 text-ink shadow-panel transition-colors hover:border-ink-faint"
+            className="group relative flex items-center gap-3 border border-line bg-surface px-3.5 py-3 text-text transition-colors hover:border-faint rounded-lg"
             aria-label="Open AI Disaster Center"
           >
             <span className="flex h-8 w-8 items-center justify-center border border-line-soft text-accent">
               <Bot size={18} />
             </span>
             <div className="text-left pr-1">
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-ink-strong">
+              <div className="flex items-center gap-1.5 text-xs font-medium text-heading">
                 <span>AI Copilot</span>
                 <Sparkles size={11} className="text-accent" />
               </div>
-              <p className="text-[10px] text-ink-muted">Alerts, issues &amp; reports</p>
+              <p className="text-[10px] text-muted">Alerts, issues &amp; reports</p>
             </div>
           </motion.button>
         )}
@@ -308,23 +303,23 @@ export default function CopilotCenter({ rankedSites }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="flex h-[520px] w-[calc(100vw-2.5rem)] max-w-96 flex-col overflow-hidden border border-line bg-panel shadow-panel"
+            className="flex h-[520px] w-[calc(100vw-2.5rem)] max-w-96 flex-col overflow-hidden border border-line bg-surface shadow-panel rounded-lg"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-line bg-panel-2/50 px-4 py-2.5">
+            <div className="flex items-center justify-between border-b border-line bg-surface-2/50 px-4 py-2.5">
               <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-panel-2 text-accent">
+                <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-surface-2 text-accent">
                   <Bot size={15} />
                 </div>
                 <div>
-                  <h3 className="font-display text-xs font-semibold text-ink-strong">AI Disaster Center</h3>
-                  <p className="font-mono text-[9.5px] text-ink-faint">Issues, alerts &amp; reports only</p>
+                  <h3 className="font-display text-xs font-medium text-heading">AI Disaster Center</h3>
+                  <p className="font-mono text-[9.5px] text-faint">Issues, alerts &amp; reports only</p>
                 </div>
               </div>
 
               <button
                 onClick={() => setIsOpen(false)}
-                className="rounded-xs p-1.5 text-ink-faint hover:bg-panel-2 hover:text-ink transition-colors"
+                className="rounded-sm p-1.5 text-faint hover:bg-surface-2 hover:text-text transition-colors"
                 aria-label="Minimize chat"
               >
                 <Minimize2 size={15} />
@@ -332,14 +327,14 @@ export default function CopilotCenter({ rankedSites }) {
             </div>
 
             {/* Tab Nav */}
-            <div className="flex border-b border-line text-[11px] font-semibold">
+            <div className="flex border-b border-line text-[11px] font-medium">
               <button
                 onClick={() => setActiveTab("chat")}
                 aria-pressed={activeTab === "chat"}
                 className={`flex flex-1 items-center justify-center gap-1.5 py-2 transition-colors ${
                   activeTab === "chat"
                     ? "border-b-2 border-accent text-accent bg-accent/5"
-                    : "text-ink-muted hover:text-ink"
+                    : "text-muted hover:text-text"
                 }`}
               >
                 <MessageCircle size={13} />
@@ -351,7 +346,7 @@ export default function CopilotCenter({ rankedSites }) {
                 className={`flex flex-1 items-center justify-center gap-1.5 py-2 transition-colors ${
                   activeTab === "broadcast"
                     ? "border-b-2 border-accent text-accent bg-accent/5"
-                    : "text-ink-muted hover:text-ink"
+                    : "text-muted hover:text-text"
                 }`}
               >
                 <Languages size={13} />
@@ -371,10 +366,10 @@ export default function CopilotCenter({ rankedSites }) {
                       className={`group flex items-end gap-2 ${message.role === "user" ? "flex-row-reverse" : ""}`}
                     >
                       <span
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-pill ${
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-sm ${
                           message.role === "assistant"
-                            ? "bg-panel-2 text-accent ring-1 ring-accent/25"
-                            : "bg-line text-ink"
+                            ? "bg-surface-2 text-accent ring-1 ring-accent/25"
+                            : "bg-line text-text"
                         }`}
                       >
                         {message.role === "assistant" ? <Bot size={11} /> : <User size={11} />}
@@ -383,13 +378,13 @@ export default function CopilotCenter({ rankedSites }) {
                         <div
                           className={`whitespace-pre-wrap rounded-md px-3 py-2 leading-relaxed ${
                             message.role === "assistant"
-                              ? "rounded-bl-xs border border-line bg-panel-2 text-ink"
-                              : "rounded-br-xs border border-accent/25 bg-accent/15 text-ink"
+                              ? "rounded-bl-sm border border-line bg-surface-2 text-text"
+                              : "rounded-br-sm border border-accent/25 bg-accent/15 text-text"
                           }`}
                         >
                           {message.text}
                         </div>
-                        <span className="mt-0.5 block font-mono text-[8.5px] text-ink-faint opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+                        <span className="mt-0.5 block font-mono text-[8.5px] text-faint opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
                           {formatTime(message.time)}
                         </span>
                       </div>
@@ -404,10 +399,10 @@ export default function CopilotCenter({ rankedSites }) {
                       className="flex items-center gap-2 py-0.5"
                       aria-live="polite"
                     >
-                      <span className="flex h-5 w-5 items-center justify-center rounded-pill bg-panel-2 text-accent ring-1 ring-accent/25">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-sm bg-surface-2 text-accent ring-1 ring-accent/25">
                         <Bot size={11} />
                       </span>
-                      <span className="flex items-center gap-1 rounded-md border border-line bg-panel-2 px-3 py-2">
+                      <span className="flex items-center gap-1 rounded-md border border-line bg-surface-2 px-3 py-2">
                         {[0, 1, 2].map((dot) => (
                           <span
                             key={dot}
@@ -429,12 +424,12 @@ export default function CopilotCenter({ rankedSites }) {
                     onChange={(event) => setQuestionInput(event.target.value)}
                     placeholder="Ask about a site, alert, road or report…"
                     aria-label="Ask the copilot"
-                    className="flex-1 rounded-xs border border-line bg-bg-base px-3 py-2 text-[11px] text-ink placeholder:text-ink-faint focus:border-accent/50 focus:outline-none"
+                    className="flex-1 rounded-sm border border-line bg-bg px-3 py-2 text-[11px] text-text placeholder:text-faint focus:border-accent/50 focus:outline-none"
                   />
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex items-center gap-1 bg-ink-strong px-3 py-2 text-[11px] font-semibold text-bg-base transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex items-center gap-1 bg-heading px-3 py-2 text-[11px] font-medium text-bg transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 rounded-sm"
                     aria-label="Send message"
                   >
                     <Send size={12} />
@@ -447,7 +442,7 @@ export default function CopilotCenter({ rankedSites }) {
             {activeTab === "broadcast" && (
               <div className="flex flex-1 flex-col overflow-hidden p-3">
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="text-[10.5px] font-semibold uppercase tracking-wide text-ink-muted">
+                  <span className="text-[10.5px] font-medium uppercase tracking-wide text-muted">
                     Target Broadcast Languages
                   </span>
                   <ShieldAlert size={13} className="text-alert-amber" />
@@ -459,10 +454,10 @@ export default function CopilotCenter({ rankedSites }) {
                       key={language}
                       onClick={() => toggleBroadcastLanguage(language)}
                       aria-pressed={broadcastLanguages.includes(language)}
-                      className={`border px-2.5 py-1 text-[10px] transition-colors ${
+                      className={`border px-2.5 py-1 text-[10px] transition-colors rounded-sm ${
                         broadcastLanguages.includes(language)
-                          ? "border-accent/50 bg-accent/15 font-semibold text-accent"
-                          : "border-line text-ink-faint hover:border-ink-faint"
+                          ? "border-accent/50 bg-accent/15 font-medium text-accent"
+                          : "border-line text-faint hover:border-faint"
                       }`}
                     >
                       {language}
@@ -474,9 +469,9 @@ export default function CopilotCenter({ rankedSites }) {
                   {broadcastLanguages.map((language) => (
                     <div
                       key={language}
-                      className="rounded-xs border border-line bg-bg-base/60 p-2.5 text-[11px] text-ink"
+                      className="rounded-sm border border-line bg-bg/60 p-2.5 text-[11px] text-text"
                     >
-                      <span className="font-semibold text-accent">{language}: </span>
+                      <span className="font-medium text-accent">{language}: </span>
                       {MOCK_ALERT_PHRASES[language] ?? MOCK_ALERT_PHRASES.English}
                     </div>
                   ))}

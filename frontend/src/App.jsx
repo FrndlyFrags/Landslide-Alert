@@ -1,10 +1,9 @@
 // -----------------------------------------------------------------------
 // App.jsx
 // -----------------------------------------------------------------------
-// WHAT: Main application wrapper.
-//   1. Persists view state (landing vs dashboard) & admin auth status in localStorage,
-//      so refreshing the page stays on the current page.
-//   2. Enforces strict admin passcode verification for the Command Dashboard.
+// WHAT: Main application wrapper. Persists view state & admin auth in
+//       localStorage. Renders either the public LandingPage or the
+//       authenticated AdminShell + dashboard layout.
 // -----------------------------------------------------------------------
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -38,11 +37,11 @@ function BootSequence() {
   return (
     <motion.div
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg-base"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg"
     >
       <div className="flex items-center gap-2.5">
         <Radio size={15} className="text-accent" />
-        <p className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-ink-muted">
+        <p className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-faint">
           NER Landslide Command Center
         </p>
       </div>
@@ -60,7 +59,7 @@ function BootSequence() {
           <p
             key={step}
             className={`font-mono text-[10.5px] ${
-              index === stepIndex ? "text-ink" : "text-ink-faint"
+              index === stepIndex ? "text-text" : "text-faint"
             }`}
           >
             {step}
@@ -159,7 +158,7 @@ export default function App() {
   }
 
   return (
-    <div className="relative min-h-screen bg-bg-base text-ink selection:bg-accent/25">
+    <div className="relative min-h-screen bg-bg text-text selection:bg-accent/25">
       <AnimatePresence>{isBooting && <BootSequence />}</AnimatePresence>
 
       {!isBooting && (

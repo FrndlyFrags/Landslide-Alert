@@ -9,6 +9,8 @@
 //         - MapLibre Heatmap layer for Displacement Heat
 //         - Tactical Controls Bar (Field Photo Report, Drone Patrol, Day/Night)
 //         - Right-hand side panel containing Spatial Inspector & Emergency Road Rerouting
+// SCOPE: Visual redesign to Console graphite theme. All data fetches and
+//        WebGL setup unchanged from the previous version.
 // -----------------------------------------------------------------------
 import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
@@ -46,8 +48,8 @@ function SourceTag({ source }) {
   const isLive = source === "live";
   return (
     <span
-      className={`ml-1.5 rounded px-1 py-0.5 text-[8.5px] font-semibold uppercase tracking-wide ${
-        isLive ? "bg-telemetry/15 text-telemetry" : "bg-slate-700/60 text-slate-400"
+      className={`ml-1.5 rounded-sm px-1 py-0.5 text-[8.5px] font-medium uppercase tracking-wide ${
+        isLive ? "bg-cool/15 text-cool" : "bg-line text-muted"
       }`}
     >
       {isLive ? "Live" : "Sim"}
@@ -57,8 +59,8 @@ function SourceTag({ source }) {
 
 function SectionHeading({ icon: Icon, children }) {
   return (
-    <h2 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-      <Icon size={13} className="text-telemetry/70" />
+    <h2 className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wide text-muted">
+      <Icon size={13} className="text-cool/70" />
       {children}
     </h2>
   );
@@ -147,7 +149,7 @@ export default function DigitalTwinMap({
         type: "sky",
         paint: {
           "sky-type": "atmosphere",
-          "sky-atmosphere-color": "rgba(15, 23, 42, 1)",
+          "sky-atmosphere-color": "rgba(19, 20, 22, 1)",
           "sky-atmosphere-sun": [0.0, 90.0],
           "sky-atmosphere-sun-intensity": 5,
         },
@@ -194,7 +196,7 @@ export default function DigitalTwinMap({
     const map = mapRef.current;
     if (!map || !isMapReady) return;
     if (map.getLayer("sky")) {
-      map.setPaintProperty("sky", "sky-atmosphere-color", isDaylight ? "rgba(135, 206, 235, 1)" : "rgba(15, 23, 42, 1)");
+      map.setPaintProperty("sky", "sky-atmosphere-color", isDaylight ? "rgba(135, 206, 235, 1)" : "rgba(19, 20, 22, 1)");
       map.setPaintProperty("sky", "sky-atmosphere-sun-intensity", isDaylight ? 15 : 5);
     }
   }, [isDaylight, isMapReady]);
@@ -236,10 +238,10 @@ export default function DigitalTwinMap({
             "interpolate",
             ["linear"],
             ["heatmap-density"],
-            0, "rgba(6, 182, 212, 0)",
-            0.2, "rgba(6, 182, 212, 0.5)",
-            0.4, "rgba(245, 158, 11, 0.7)",
-            0.7, "rgba(249, 115, 22, 0.85)",
+            0, "rgba(109, 179, 204, 0)",
+            0.2, "rgba(109, 179, 204, 0.5)",
+            0.4, "rgba(212, 160, 74, 0.7)",
+            0.7, "rgba(239, 68, 68, 0.85)",
             1.0, "rgba(239, 68, 68, 0.95)",
           ],
           "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 4, 25, 12, 60],
@@ -318,7 +320,7 @@ export default function DigitalTwinMap({
           "circle-color": "transparent",
           "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 10, 12, 16],
           "circle-stroke-width": 2,
-          "circle-stroke-color": "#06B6D4",
+          "circle-stroke-color": "#6db3cc",
           "circle-stroke-opacity": 0.8,
         },
       });
@@ -372,17 +374,17 @@ export default function DigitalTwinMap({
         popupRef.current = new maplibregl.Popup({ offset: 12, closeButton: false, className: "ner-popup" })
           .setLngLat(coords)
           .setHTML(`
-            <div style="font-family:'Inter',sans-serif;font-size:11px;padding:4px 2px;">
-              <strong style="color:#f1f5f9;">${props.name}</strong><br/>
+            <div style="font-family:'Host Grotesk',sans-serif;font-size:11px;padding:4px 2px;">
+              <strong style="color:#f1f1ed;">${props.name}</strong><br/>
               <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
-                <span style="color:${props.color};font-family:monospace;font-weight:700;font-size:12px;">
+                <span style="color:${props.color};font-family:'Atkinson Hyperlegible Mono',monospace;font-weight:700;font-size:12px;">
                   ${props.riskPercent}% Risk
                 </span>
-                <span style="color:#94a3b8;font-size:10px;">${props.state}</span>
+                <span style="color:#9ea3b0;font-size:10px;">${props.state}</span>
               </div>
-              <div style="margin-top:4px;padding-top:4px;border-top:1px solid #334155;display:flex;align-items:center;justify-between;gap:8px;font-size:10px;">
+              <div style="margin-top:4px;padding-top:4px;border-top:1px solid var(--c-line);display:flex;align-items:center;justify-between;gap:8px;font-size:10px;">
                 <span>Weather: ${props.rainIcon} <strong>${props.rainLabel}</strong></span>
-                <span style="font-family:monospace;color:#06B6D4;">${props.rainfall24h}mm 24h</span>
+                <span style="font-family:'Atkinson Hyperlegible Mono',monospace;color:var(--c-cool);">${props.rainfall24h}mm 24h</span>
               </div>
             </div>
           `)
@@ -459,11 +461,11 @@ export default function DigitalTwinMap({
   const blockedSites = rankedSites ? rankedSites.filter((site) => site.telemetry.roadStatus === "blocked") : [];
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-bg">
       {/* Layer toggle bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 bg-dark-slate px-4 py-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-surface px-4 py-2">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="mr-1 text-[10.5px] font-semibold uppercase tracking-wide text-slate-500">
+          <span className="mr-1 text-[10.5px] font-medium uppercase tracking-wide text-muted">
             Map Layers
           </span>
           {MAP_LAYERS.map((layer) => {
@@ -473,10 +475,10 @@ export default function DigitalTwinMap({
               <button
                 key={layer.id}
                 onClick={() => onToggleLayer(layer.id)}
-                className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] transition-all ${
+                className={`flex items-center gap-1.5 rounded-sm border px-3 py-1 text-[11px] transition-colors ${
                   isActive
-                    ? "border-telemetry bg-telemetry/10 text-telemetry shadow-glow-cyan"
-                    : "border-slate-700 text-slate-500 hover:border-slate-500 hover:text-slate-300"
+                    ? "border-cool/50 bg-cool/10 text-cool"
+                    : "border-line text-muted hover:border-faint hover:text-text"
                 }`}
               >
                 <Icon size={12} />
@@ -491,7 +493,7 @@ export default function DigitalTwinMap({
           {/* Field Photo Report Modal Trigger Button */}
           <button
             onClick={() => setIsPhotoModalOpen(true)}
-            className="flex items-center gap-1.5 rounded-lg border border-telemetry/50 bg-telemetry/10 px-3 py-1 text-[11px] font-semibold text-telemetry hover:bg-telemetry/20 transition-all shadow-glow-cyan/40"
+            className="flex items-center gap-1.5 rounded-sm border border-cool/50 bg-cool/10 px-3 py-1 text-[11px] font-medium text-cool hover:bg-cool/20 transition-colors"
             title="Upload slope crack photo for AI analysis"
           >
             <Camera size={13} />
@@ -501,10 +503,10 @@ export default function DigitalTwinMap({
           {/* Map Lock / Unlock Toggle */}
           <button
             onClick={() => setIsMapUnlocked((prev) => !prev)}
-            className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-colors ${
+            className={`flex items-center gap-1.5 rounded-sm border px-2.5 py-1 text-[11px] font-medium transition-colors ${
               isMapUnlocked
-                ? "border-telemetry/50 bg-telemetry/10 text-telemetry"
-                : "border-slate-700 bg-slate-card/80 text-slate-400 hover:border-slate-500"
+                ? "border-cool/50 bg-cool/10 text-cool"
+                : "border-line bg-surface/80 text-muted hover:border-faint"
             }`}
             title={isMapUnlocked ? "Free pan/zoom active" : "Map movement locked"}
           >
@@ -514,15 +516,15 @@ export default function DigitalTwinMap({
 
           {/* Quick Location Jump Select */}
           {rankedSites && (
-            <div className="relative flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-card/80 px-2 py-1 text-[11px] text-slate-200">
-              <MapPin size={12} className="text-telemetry shrink-0" />
+            <div className="relative flex items-center gap-1.5 rounded-sm border border-line bg-surface/80 px-2 py-1 text-[11px] text-text">
+              <MapPin size={12} className="text-cool shrink-0" />
               <select
                 value={selectedSite?.siteId || ""}
                 onChange={(e) => onSelectSite(e.target.value)}
-                className="bg-transparent text-slate-200 focus:outline-none cursor-pointer pr-1 text-[11px]"
+                className="bg-transparent text-text focus:outline-none cursor-pointer pr-1 text-[11px]"
               >
                 {rankedSites.map((site) => (
-                  <option key={site.siteId} value={site.siteId} className="bg-slate-800 text-slate-100">
+                  <option key={site.siteId} value={site.siteId} className="bg-surface text-text">
                     {site.name} ({site.risk.failureProbabilityPercent}%)
                   </option>
                 ))}
@@ -533,10 +535,10 @@ export default function DigitalTwinMap({
           {/* 3D Drone Patrol Orbit Button */}
           <button
             onClick={() => setIsDroneOrbiting((prev) => !prev)}
-            className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-all ${
+            className={`flex items-center gap-1.5 rounded-sm border px-2.5 py-1 text-[11px] font-medium transition-colors ${
               isDroneOrbiting
-                ? "border-amber-400 bg-amber-400/20 text-amber-300 shadow-glow-amber"
-                : "border-slate-700 bg-slate-card/80 text-slate-300 hover:border-slate-500"
+                ? "border-accent/60 bg-accent/10 text-accent"
+                : "border-line bg-surface/80 text-muted hover:border-faint hover:text-text"
             }`}
             title="Orbit camera 360° around selected hillside in 3D"
           >
@@ -547,10 +549,10 @@ export default function DigitalTwinMap({
           {/* Day / Night lighting toggle */}
           <button
             onClick={() => setIsDaylight((prev) => !prev)}
-            className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-card/80 px-2 py-1 text-[11px] text-slate-300 hover:border-slate-500"
+            className="flex items-center gap-1 rounded-sm border border-line bg-surface/80 px-2 py-1 text-[11px] text-muted hover:border-faint hover:text-text transition-colors"
             title="Toggle Tactical Day/Night sky lighting"
           >
-            {isDaylight ? <Sun size={12} className="text-amber-400" /> : <Moon size={12} className="text-telemetry" />}
+            {isDaylight ? <Sun size={12} className="text-accent" /> : <Moon size={12} className="text-cool" />}
           </button>
         </div>
       </div>
@@ -561,9 +563,9 @@ export default function DigitalTwinMap({
           <div ref={mapContainerRef} className="h-full w-full" />
 
           {!isMapReady && (
-            <div className="absolute inset-0 flex items-center justify-center bg-onyx z-20">
-              <p className="flex items-center gap-2 text-xs text-slate-400">
-                <Loader2 size={14} className="animate-spin text-telemetry" />
+            <div className="absolute inset-0 flex items-center justify-center bg-bg z-20">
+              <p className="flex items-center gap-2 text-xs text-muted">
+                <Loader2 size={14} className="animate-spin text-cool" />
                 Loading satellite terrain...
               </p>
             </div>
@@ -577,7 +579,7 @@ export default function DigitalTwinMap({
                 className="h-full w-full"
                 style={{
                   background:
-                    "conic-gradient(from 0deg, transparent 0deg, transparent 300deg, #06B6D4 340deg, #06B6D4 360deg)",
+                    "conic-gradient(from 0deg, transparent 0deg, transparent 300deg, #6db3cc 340deg, #6db3cc 360deg)",
                 }}
               />
             </div>
@@ -585,23 +587,23 @@ export default function DigitalTwinMap({
 
           {/* Road connectivity legend */}
           {showRoads && isMapReady && (
-            <div className="absolute bottom-10 left-4 z-20 flex gap-4 rounded-lg border border-slate-800 bg-slate-card/90 px-3 py-2 text-[10px] text-slate-300 backdrop-blur-sm shadow-xl">
+            <div className="absolute bottom-10 left-4 z-20 flex gap-4 rounded-sm border border-line bg-surface/90 px-3 py-2 text-[10px] text-muted backdrop-blur-sm">
               <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-4 rounded bg-emerald-500 shadow-glow-emerald" /> Open Road
+                <span className="h-1.5 w-4 rounded-sm bg-ok" /> Open Road
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-4 rounded bg-red-500 shadow-glow-red" /> Blocked Road
+                <span className="h-1.5 w-4 rounded-sm bg-critical" /> Blocked Road
               </span>
             </div>
           )}
 
           {/* Map info hint */}
           {isMapReady && (
-            <div className="absolute top-4 left-4 z-20 flex items-center gap-2 rounded-md border border-slate-700/60 bg-slate-card/80 px-2.5 py-1 text-[9.5px] text-slate-300 backdrop-blur font-mono">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="absolute top-4 left-4 z-20 flex items-center gap-2 rounded-sm border border-line/60 bg-surface/80 px-2.5 py-1 text-[9.5px] text-muted backdrop-blur font-mono">
+              <span className="h-1.5 w-1.5 rounded-full bg-ok animate-pulse" />
               SATELLITE · 3D TERRAIN · LIVE MONITORING
               {selectedSite && (
-                <span className="border-l border-slate-700 pl-2 text-telemetry">
+                <span className="border-l border-line pl-2 text-cool">
                   SLOPE: {selectedSite.telemetry.slopeAngleDegrees}°
                 </span>
               )}
@@ -610,7 +612,7 @@ export default function DigitalTwinMap({
         </div>
 
         {/* Right-hand side panel: Spatial Inspector & Emergency Road Rerouting */}
-        <aside className="w-80 shrink-0 overflow-y-auto border-l border-slate-800 bg-dark-slate p-4 flex flex-col gap-5">
+        <aside className="w-80 shrink-0 overflow-y-auto border-l border-line bg-surface p-4 flex flex-col gap-5">
           {/* Spatial Inspector */}
           <AnimatePresence mode="wait">
             {selectedSite ? (
@@ -621,15 +623,15 @@ export default function DigitalTwinMap({
                 exit={{ opacity: 0, x: -8 }}
                 transition={{ duration: 0.18 }}
               >
-                <p className="text-[10px] uppercase tracking-wide text-slate-500">Spatial Inspector</p>
-                <h3 className="mt-1 text-sm font-semibold text-slate-50">{selectedSite.name}</h3>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[10px] uppercase tracking-wide text-muted">Spatial Inspector</p>
+                <h3 className="mt-1 font-display text-sm font-medium text-heading">{selectedSite.name}</h3>
+                <p className="text-[11px] text-muted">
                   {selectedSite.state} · {selectedSite.corridor}
                 </p>
 
                 {/* Smooth green-to-red risk score badge */}
                 <div
-                  className="mt-3 inline-block rounded-md px-2.5 py-1 font-mono text-xs font-semibold ring-1"
+                  className="mt-3 inline-block rounded-sm px-2.5 py-1 font-mono text-xs font-medium ring-1"
                   style={{
                     color: selectedRiskColor,
                     backgroundColor: getRiskColorRgba(selectedSite.risk.failureProbabilityPercent, 0.12),
@@ -641,9 +643,9 @@ export default function DigitalTwinMap({
 
                 {/* Explicit Rain Status Card */}
                 {selectedRainStatus && (
-                  <div className={`mt-3 rounded-lg border p-2.5 ${selectedRainStatus.bgClass}`}>
+                  <div className={`mt-3 rounded-sm border p-2.5 ${selectedRainStatus.bgClass}`}>
                     <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-xs font-semibold">
+                      <span className="flex items-center gap-1.5 text-xs font-medium">
                         <span>{selectedRainStatus.icon}</span>
                         {selectedRainStatus.label}
                       </span>
@@ -651,8 +653,8 @@ export default function DigitalTwinMap({
                         {selectedRainStatus.detail}
                       </span>
                     </div>
-                    <p className="mt-1 text-[10px] text-slate-400">
-                      24h Total: <strong className="text-slate-200">{selectedSite.telemetry.rainfallLast24hMm} mm</strong> | 6h Forecast: <strong className="text-slate-200">{selectedSite.telemetry.rainfallNext6hMm} mm</strong>
+                    <p className="mt-1 text-[10px] text-muted">
+                      24h Total: <strong className="text-text">{selectedSite.telemetry.rainfallLast24hMm} mm</strong> | 6h Forecast: <strong className="text-text">{selectedSite.telemetry.rainfallNext6hMm} mm</strong>
                     </p>
                   </div>
                 )}
@@ -682,14 +684,14 @@ export default function DigitalTwinMap({
                     label="Road Status"
                     value={selectedSite.telemetry.roadStatus === "open" ? "Open" : "Blocked"}
                     valueClass={
-                      selectedSite.telemetry.roadStatus === "open" ? "text-emerald-400" : "text-red-400"
+                      selectedSite.telemetry.roadStatus === "open" ? "text-ok" : "text-critical"
                     }
                   />
                 </dl>
 
                 <button
                   onClick={() => onOpenTerrainView(selectedSite)}
-                  className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-md border border-telemetry/50 bg-telemetry/10 px-3 py-2 text-[11px] font-semibold text-telemetry transition-colors hover:bg-telemetry/20"
+                  className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-sm border border-cool/50 bg-cool/10 px-3 py-2 text-[11px] font-medium text-cool transition-colors hover:bg-cool/20"
                 >
                   <Box size={13} />
                   3D Terrain &amp; All Escape Routes
@@ -700,10 +702,10 @@ export default function DigitalTwinMap({
                 key="empty"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex h-28 flex-col items-center justify-center gap-2 text-center border-b border-slate-800/80 pb-4"
+                className="flex h-28 flex-col items-center justify-center gap-2 text-center border-b border-line/80 pb-4"
               >
-                <SatelliteIcon size={20} className="text-slate-600" />
-                <p className="text-[11px] text-slate-500">
+                <SatelliteIcon size={20} className="text-muted" />
+                <p className="text-[11px] text-muted">
                   Click any site marker on the satellite map to inspect its live data
                 </p>
               </motion.div>
@@ -711,10 +713,10 @@ export default function DigitalTwinMap({
           </AnimatePresence>
 
           {/* Emergency Road Rerouting Section on Right Side */}
-          <section className="border-t border-slate-800 pt-4">
+          <section className="border-t border-line pt-4">
             <SectionHeading icon={TrafficCone}>Emergency Road Rerouting</SectionHeading>
             {blockedSites.length === 0 ? (
-              <p className="mt-2 rounded-md border border-slate-800 bg-slate-card/40 p-3 text-[11px] text-slate-500">
+              <p className="mt-2 rounded-sm border border-line bg-surface/40 p-3 text-[11px] text-muted">
                 All primary highways are currently open. No reroutes needed.
               </p>
             ) : (
@@ -722,13 +724,13 @@ export default function DigitalTwinMap({
                 {blockedSites.map((site) => (
                   <li
                     key={site.siteId}
-                    className="rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-[11px]"
+                    className="rounded-sm border border-critical/40 bg-critical/10 p-3 text-[11px]"
                   >
-                    <p className="font-medium text-red-400 flex items-center gap-1.5">
+                    <p className="font-medium text-critical flex items-center gap-1.5">
                       <AlertTriangle size={12} className="shrink-0" />
                       {site.name} — road blocked
                     </p>
-                    <p className="mt-1 text-slate-300 leading-relaxed">
+                    <p className="mt-1 text-muted leading-relaxed">
                       {ALTERNATE_ROUTES[site.siteId] ??
                         "No pre-mapped detour available. Dispatch a survey team."}
                     </p>
@@ -748,12 +750,12 @@ export default function DigitalTwinMap({
 
       <style>{`
         .maplibregl-popup-content {
-          background: #1E293B !important;
-          border: 1px solid #334155 !important;
-          border-radius: 8px !important;
+          background: var(--c-surface) !important;
+          border: 1px solid var(--c-line) !important;
+          border-radius: 3px !important;
           padding: 8px 12px !important;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
-          color: #cbd5e1;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.45) !important;
+          color: var(--c-text);
         }
         .maplibregl-popup-tip { display: none !important; }
         .maplibregl-ctrl-attrib { font-size: 9px !important; }
@@ -762,10 +764,10 @@ export default function DigitalTwinMap({
   );
 }
 
-function InspectorRow({ label, value, valueClass = "text-slate-100", source }) {
+function InspectorRow({ label, value, valueClass = "text-heading", source }) {
   return (
-    <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-      <dt className="text-slate-400">{label}</dt>
+    <div className="flex items-center justify-between border-b border-line pb-2">
+      <dt className="text-muted">{label}</dt>
       <dd className={`flex items-center font-mono ${valueClass}`}>
         {value}
         {source && <SourceTag source={source} />}

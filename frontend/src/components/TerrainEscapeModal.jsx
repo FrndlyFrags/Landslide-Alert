@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------
 // WHAT: Full-screen 3D satellite terrain map with all drivable escape routes,
 //       turn-by-turn navigation, rain status, and safety strategy.
+// SCOPE: UI/layout only — data fetching and route computation unchanged.
 // -----------------------------------------------------------------------
 import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
@@ -101,7 +102,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
         type: "sky",
         paint: {
           "sky-type": "atmosphere",
-          "sky-atmosphere-color": "rgba(13, 14, 16, 1)",
+          "sky-atmosphere-color": "rgba(19, 20, 22, 1)",
           "sky-atmosphere-sun-intensity": 6,
         },
       });
@@ -109,12 +110,12 @@ export default function TerrainEscapeModal({ site, onClose }) {
       // Site marker — pitchAlignment & rotationAlignment viewport anchors marker above 3D elevation mesh!
       const sitePopup = new maplibregl.Popup({ offset: 18, closeButton: false })
         .setHTML(`
-          <div style="font-family:Inter,sans-serif;font-size:11px;padding:2px;">
-            <strong style="color:#f4f4f2;">${site.name}</strong><br/>
-            <span style="color:${riskColor};font-weight:700;font-family:monospace;">
+          <div style="font-family:'Host Grotesk',sans-serif;font-size:11px;padding:2px;">
+            <strong style="color:#f1f1ed;">${site.name}</strong><br/>
+            <span style="color:${riskColor};font-weight:700;font-family:'Atkinson Hyperlegible Mono',monospace;">
               ${riskPercent}% failure probability
             </span>
-            <div style="margin-top:2px;color:#a6bfcf;">${rainStatus.icon} ${rainStatus.label} (${rainStatus.detail})</div>
+            <div style="margin-top:2px;color:#9ea3b0;">${rainStatus.icon} ${rainStatus.label} (${rainStatus.detail})</div>
           </div>
         `);
 
@@ -153,7 +154,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
         )
       );
 
-      const COLORS = ["#06B6D4", "#F59E0B", "#10B981", "#A78BFA", "#FB7185", "#34D399"];
+      const COLORS = ["#6db3cc", "#d4a04a", "#6fa98a", "#A78BFA", "#FB7185", "#34D399"];
       const LABELS = ["Primary", "Alt A", "Alt B", "Route D", "Route E", "Route F"];
 
       let flatRoutes = [];
@@ -188,7 +189,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
     } catch (error) {
       setRouteError("Could not reach the live routing service. Check your internet connection.");
       console.error(error);
-    } fontinally: {
+    } finally {
       setIsLoading(false);
     }
   }
@@ -205,7 +206,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
     drawnLayerIds.current = [];
 
     safeZones.forEach((zone) => {
-      const el = buildMarkerElement("#10B981", 16);
+      const el = buildMarkerElement("#6fa98a", 16);
       new maplibregl.Marker({
         element: el,
         pitchAlignment: "viewport",
@@ -305,15 +306,15 @@ export default function TerrainEscapeModal({ site, onClose }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex bg-onyx"
+      className="fixed inset-0 z-50 flex bg-bg"
     >
       {/* 3D terrain satellite map */}
       <div className="relative flex-1">
         <div ref={mapContainerRef} className="h-full w-full" />
 
         {!isMapReady && (
-          <div className="absolute inset-0 flex items-center justify-center bg-onyx">
-            <p className="flex items-center gap-2 text-xs text-ink-muted">
+          <div className="absolute inset-0 flex items-center justify-center bg-bg">
+            <p className="flex items-center gap-2 text-xs text-muted">
               <Loader2 size={13} className="animate-spin text-accent" />
               Loading satellite terrain...
             </p>
@@ -322,26 +323,26 @@ export default function TerrainEscapeModal({ site, onClose }) {
 
         <button
           onClick={onClose}
-          className="absolute left-4 top-4 z-10 flex items-center gap-1.5 border border-line bg-bg-base/90 px-3 py-2 text-[11px] font-medium text-ink backdrop-blur transition-colors hover:border-critical/60 hover:text-critical"
+          className="absolute left-4 top-4 z-10 flex items-center gap-1.5 border border-line bg-surface/90 px-3 py-2 text-[11px] font-medium text-text backdrop-blur transition-colors hover:border-critical/60 hover:text-critical rounded-sm"
         >
           <X size={14} />
           Exit 3D View
         </button>
 
-        <div className="absolute bottom-6 left-4 z-10 border border-line bg-bg-base/90 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-ink-faint backdrop-blur">
+        <div className="absolute bottom-6 left-4 z-10 border border-line bg-surface/90 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-faint backdrop-blur rounded-sm">
           Satellite · 3D terrain · OSRM routing
         </div>
 
         {allRoutes.length > 0 && (
-          <div className="absolute right-14 top-4 z-10 flex flex-col gap-0.5 border border-line bg-bg-base/90 p-1.5 backdrop-blur">
+          <div className="absolute right-14 top-4 z-10 flex flex-col gap-0.5 border border-line bg-surface/90 p-1.5 backdrop-blur rounded-sm">
             {allRoutes.map((route) => (
               <button
                 key={route.id}
                 onClick={() => setActiveRouteId(route.id)}
                 className={`flex items-center gap-2 px-2 py-1 text-[10px] transition-colors ${
                   route.id === activeRouteId
-                    ? "bg-panel text-ink-strong"
-                    : "text-ink-muted hover:text-ink"
+                    ? "bg-surface-2 text-text"
+                    : "text-muted hover:text-text"
                 }`}
               >
                 <span
@@ -349,7 +350,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
                   style={{ backgroundColor: route.color }}
                 />
                 <span className="font-mono">{route.label}</span>
-                <span className="text-ink-faint">{route.distanceKm} km</span>
+                <span className="text-faint">{route.distanceKm} km</span>
               </button>
             ))}
           </div>
@@ -357,15 +358,15 @@ export default function TerrainEscapeModal({ site, onClose }) {
       </div>
 
       {/* Sidebar */}
-      <aside className="flex w-96 shrink-0 flex-col overflow-y-auto border-l border-line bg-bg-base p-4">
+      <aside className="flex w-96 shrink-0 flex-col overflow-y-auto border-l border-line bg-bg p-4">
         <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-ink-faint">Selected location</p>
-          <h2 className="mt-0.5 text-sm font-semibold text-ink-strong">{site.name}</h2>
-          <p className="text-[11px] text-ink-muted">{site.state} · {site.corridor}</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-faint">Selected location</p>
+          <h2 className="mt-0.5 font-display text-sm font-medium leading-tight text-heading">{site.name}</h2>
+          <p className="text-[11px] text-muted">{site.state} · {site.corridor}</p>
 
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <div
-              className="inline-block border px-2.5 py-1 font-mono text-[11px] font-semibold"
+              className="inline-block border px-2.5 py-1 font-mono text-[11px] font-medium tabular-nums leading-none"
               style={{
                 color: riskColor,
                 backgroundColor: getRiskColorRgba(riskPercent, 0.1),
@@ -385,33 +386,33 @@ export default function TerrainEscapeModal({ site, onClose }) {
         </div>
 
         {safeZones.length > 0 && (
-          <div className="mt-3 border border-line bg-panel/50 p-2.5">
-            <p className="mb-1.5 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-faint">Safe destinations</p>
+          <div className="mt-3 border border-line bg-surface/50 p-2.5 rounded-sm">
+            <p className="mb-1.5 font-mono text-[9px] uppercase tracking-[0.14em] text-faint">Safe destinations</p>
             {safeZones.map((zone, i) => (
-              <div key={i} className="mb-1 flex items-center gap-1.5 text-[11px] text-ink">
-                <span className="h-1 w-1 shrink-0 rounded-full bg-safe" />
+              <div key={i} className="mb-1 flex items-center gap-1.5 text-[11px] text-text">
+                <span className="h-1 w-1 shrink-0 rounded-full bg-ok" />
                 {zone.name}
               </div>
             ))}
           </div>
         )}
 
-        <section className="mt-4 border border-line bg-panel/40 p-3">
-          <h3 className="flex items-center gap-2 font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-muted">
-            <Navigation size={12} className="text-ink-faint" />
+        <section className="mt-4 border border-line bg-surface/40 p-3 rounded-sm">
+          <h3 className="flex items-center gap-2 font-mono text-[9.5px] uppercase tracking-[0.14em] text-muted">
+            <Navigation size={12} className="text-faint" />
             All escape routes
           </h3>
 
           {!routesFetched && !isLoading && (
             <>
-              <p className="mt-2 text-[11px] text-ink-muted">
+              <p className="mt-2 text-[11px] text-muted">
                 Fetch all real drivable routes to{" "}
-                <span className="text-ink">{safeZones.length} safe destinations</span>{" "}
+                <span className="text-text">{safeZones.length} safe destinations</span>{" "}
                 using live OpenStreetMap road data, including alternatives.
               </p>
               <button
                 onClick={handleGetAllRoutes}
-                className="mt-3 flex w-full items-center justify-center gap-1.5 bg-ink-strong px-3 py-2 text-[11px] font-semibold text-bg-base transition-colors hover:bg-white"
+                className="mt-3 flex w-full items-center justify-center gap-1.5 bg-heading px-3 py-2 text-[11px] font-medium text-bg transition-colors hover:bg-white rounded-sm"
               >
                 <MapPinned size={13} />
                 Get All Escape Routes
@@ -437,10 +438,10 @@ export default function TerrainEscapeModal({ site, onClose }) {
                     <button
                       key={route.id}
                       onClick={() => setActiveRouteId(route.id)}
-                      className={`w-full border p-2.5 text-left transition-colors ${
+                      className={`w-full border p-2.5 text-left transition-colors rounded-sm ${
                         isActive
-                          ? "border-accent/50 bg-panel"
-                          : "border-line bg-panel/40 hover:border-ink-faint"
+                          ? "border-accent/50 bg-surface"
+                          : "border-line bg-surface/40 hover:border-faint"
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -449,31 +450,31 @@ export default function TerrainEscapeModal({ site, onClose }) {
                             className="h-2 w-2 shrink-0 rounded-full"
                             style={{ backgroundColor: route.color }}
                           />
-                          <span className="text-[11px] font-semibold text-ink">{route.label}</span>
+                          <span className="text-[11px] font-medium text-text">{route.label}</span>
                           {isActive && <CheckCircle2 size={11} className="text-accent" />}
                         </div>
-                        <div className="flex items-center gap-2 text-[10px] text-ink-muted">
+                        <div className="flex items-center gap-2 font-mono text-[10px] text-muted tabular-nums">
                           <RouteIcon size={10} />
                           {route.distanceKm} km
                           <Clock size={10} />
                           ~{route.durationMinutes} min
                         </div>
                       </div>
-                      <p className="mt-0.5 text-[10px] text-ink-faint">→ {route.destination}</p>
+                      <p className="mt-0.5 text-[10px] text-faint">→ {route.destination}</p>
                     </button>
                   );
                 })}
 
                 {activeRoute && (
                   <div className="mt-2">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-ink-faint">Turn-by-turn</p>
+                    <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-faint">Turn-by-turn</p>
                     <ol className="mt-1.5 max-h-36 space-y-1.5 overflow-y-auto pr-1">
                       {activeRoute.steps.map((step, index) => (
-                        <li key={index} className="flex gap-2 text-[11px] text-ink">
-                          <span className="shrink-0 font-mono text-[10px] text-ink-faint">{index + 1}.</span>
+                        <li key={index} className="flex gap-2 text-[11px] text-text">
+                          <span className="shrink-0 font-mono text-[10px] text-faint tabular-nums">{index + 1}.</span>
                           <span>
                             {step.instruction}
-                            <span className="ml-1 text-ink-faint">({step.distanceMeters}m)</span>
+                            <span className="ml-1 text-faint">({step.distanceMeters}m)</span>
                           </span>
                         </li>
                       ))}
@@ -483,7 +484,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
 
                 <button
                   onClick={handleGetAllRoutes}
-                  className="mt-1 w-full border border-line px-3 py-1.5 text-[10px] text-ink-muted transition-colors hover:border-ink-faint hover:text-ink"
+                  className="mt-1 w-full border border-line px-3 py-1.5 text-[10px] text-muted transition-colors hover:border-faint hover:text-text"
                 >
                   Refresh routes
                 </button>
@@ -492,18 +493,18 @@ export default function TerrainEscapeModal({ site, onClose }) {
           </AnimatePresence>
         </section>
 
-        <section className="mt-4 border border-line bg-panel/40 p-3">
-          <h3 className="flex items-center gap-2 font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-muted">
-            <ShieldCheck size={12} className="text-ink-faint" />
+        <section className="mt-4 border border-line bg-surface/40 p-3 rounded-sm">
+          <h3 className="flex items-center gap-2 font-mono text-[9.5px] uppercase tracking-[0.14em] text-muted">
+            <ShieldCheck size={12} className="text-faint" />
             Safety strategy
           </h3>
           <div className="mt-2 space-y-3">
             {LANDSLIDE_SAFETY_STRATEGY.map((section) => (
               <div key={section.phase}>
-                <p className="text-[11px] font-semibold text-ink">{section.phase}</p>
+                <p className="text-[11px] font-medium text-text">{section.phase}</p>
                 <ul className="mt-1 space-y-1">
                   {section.points.map((point, index) => (
-                    <li key={index} className="flex gap-1.5 text-[10.5px] text-ink-muted">
+                    <li key={index} className="flex gap-1.5 text-[10.5px] text-muted">
                       <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-accent/60" />
                       {point}
                     </li>
@@ -519,7 +520,7 @@ export default function TerrainEscapeModal({ site, onClose }) {
         .maplibregl-popup-content {
           background: var(--c-surface) !important;
           border: 1px solid var(--c-line) !important;
-          border-radius: 2px !important;
+          border-radius: 3px !important;
           padding: 8px 12px !important;
           box-shadow: 0 12px 32px rgba(0,0,0,0.55) !important;
           color: var(--c-text);

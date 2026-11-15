@@ -3,10 +3,8 @@
 // -----------------------------------------------------------------------
 // WHAT: Pure layout wrapper for the authorized dashboard: collapsible left
 //       rail, a single flat summary strip, and the page content.
-// NOTE: UI/layout only. It holds no app state beyond the collapse toggle,
-//       makes no API calls, and the children it renders are exactly the
-//       components the app mounted before (Header, AnalyticsPanel,
-//       DigitalTwinMap, CopilotCenter).
+// SCOPE: UI/layout only. It holds no app state beyond the collapse toggle,
+//        makes no API calls, and forwards children unchanged.
 // -----------------------------------------------------------------------
 import { useState } from "react";
 import {
@@ -30,20 +28,20 @@ function Stat({ icon: Icon, label, value, valueStyle, isLive }) {
   return (
     <div className="flex items-center gap-2 px-3 py-2">
       <div className="min-w-0 flex-shrink-0">
-        <p className="text-[9px] uppercase tracking-[0.12em] text-ink-faint">
+        <p className="text-[9px] uppercase tracking-[0.12em] text-faint">
           {label}
           {isLive && (
-            <span className="h-1 w-1 rounded-full bg-accent animate-live-pulse motion-reduce:animate-none" />
+            <span className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-accent animate-live-pulse motion-reduce:animate-none" />
           )}
         </p>
         <p
-          className="text-[13.5px] font-semibold tabular-nums text-ink-strong"
-          style={valueStyle}
+          className="text-[13.5px] font-medium tabular-nums leading-tight"
+          style={{ color: valueStyle }}
         >
           {value}
         </p>
       </div>
-      <Icon size={13} className="mt-0.5 shrink-0 text-ink-faint" aria-hidden="true" />
+      <Icon size={13} className="mt-0.5 shrink-0 text-muted" aria-hidden="true" />
     </div>
   );
 }
@@ -61,10 +59,10 @@ export default function AdminShell({ rankedSites, regionalScore, activeSensorNod
   }
 
   return (
-    <div className="admin-shell flex h-screen overflow-hidden bg-bg-base">
+    <div className="admin-shell flex h-screen overflow-hidden bg-bg text-text selection:bg-accent/25">
       {/* ---------------------- Collapsible left rail ---------------------- */}
       <aside
-        className={`hidden h-full shrink-0 flex-col border-r border-line bg-bg-base transition-[width] duration-200 lg:flex ${
+        className={`hidden h-full shrink-0 flex-col border-r border-line bg-bg transition-[width] duration-200 lg:flex ${
           isCollapsed ? "w-14" : "w-56"
         }`}
         aria-label="Dashboard navigation"
@@ -76,10 +74,10 @@ export default function AdminShell({ rankedSites, regionalScore, activeSensorNod
           </span>
           {!isCollapsed && (
             <span className="min-w-0 leading-none">
-              <span className="block truncate text-[11.5px] font-semibold tracking-tight text-ink-strong">
+              <span className="block truncate text-[11.5px] font-medium tracking-tight leading-tight text-heading">
                 Command Center
               </span>
-              <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.12em] text-ink-faint">
+              <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.12em] text-faint">
                 NER · Admin
               </span>
             </span>
@@ -89,7 +87,7 @@ export default function AdminShell({ rankedSites, regionalScore, activeSensorNod
         {/* Navigation */}
         <div className={`flex-1 py-4 ${isCollapsed ? "px-2" : "px-3"}`}>
           {!isCollapsed && (
-            <p className="mb-2 px-2 font-mono text-[9px] uppercase tracking-[0.16em] text-ink-faint">
+            <p className="mb-2 px-2 font-mono text-[9px] uppercase tracking-[0.16em] text-faint">
               Workspace
             </p>
           )}
@@ -101,8 +99,10 @@ export default function AdminShell({ rankedSites, regionalScore, activeSensorNod
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
                   title={isCollapsed ? item.label : undefined}
-                  className={`flex w-full items-center rounded-xs border-l py-2 text-[12px] text-ink-muted transition-colors hover:bg-panel hover:text-ink-strong ${
-                    isCollapsed ? "justify-center border-transparent px-0" : "gap-2.5 border-transparent px-2.5 hover:border-accent/40"
+                  className={`flex w-full items-center rounded-sm border-l py-2 text-[12px] text-muted transition-colors hover:bg-surface hover:text-heading ${
+                    isCollapsed
+                      ? "justify-center border-transparent px-0"
+                      : "gap-2.5 border-transparent px-2.5 hover:border-accent/40"
                   }`}
                 >
                   <Icon size={14} className="shrink-0" />
@@ -116,11 +116,11 @@ export default function AdminShell({ rankedSites, regionalScore, activeSensorNod
         {/* Session + collapse */}
         <div className={`border-t border-line py-3 ${isCollapsed ? "px-2" : "px-3"}`}>
           {!isCollapsed && (
-            <div className="mb-3 flex items-center gap-2 rounded-xs border border-line-soft px-2.5 py-2">
-              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-safe animate-live-pulse motion-reduce:animate-none" />
+            <div className="mb-3 flex items-center gap-2 rounded-sm border border-line-soft px-2.5 py-2">
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-ok animate-live-pulse motion-reduce:animate-none" />
               <span className="min-w-0 leading-tight">
-                <span className="block truncate text-[11px] text-ink">Authorized session</span>
-                <span className="block font-mono text-[9px] uppercase tracking-[0.1em] text-ink-faint">
+                <span className="block truncate text-[11px] text-text">Authorized session</span>
+                <span className="block font-mono text-[9px] uppercase tracking-[0.1em] text-faint">
                   Command privileges
                 </span>
               </span>
@@ -130,7 +130,7 @@ export default function AdminShell({ rankedSites, regionalScore, activeSensorNod
             onClick={() => setIsCollapsed((current) => !current)}
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-expanded={!isCollapsed}
-            className={`flex w-full items-center rounded-xs py-2 text-[11.5px] text-ink-faint transition-colors hover:bg-panel hover:text-ink ${
+            className={`flex w-full items-center rounded-sm py-2 text-[11.5px] text-faint transition-colors hover:bg-surface hover:text-text ${
               isCollapsed ? "justify-center px-0" : "gap-2.5 px-2.5"
             }`}
           >
@@ -143,25 +143,25 @@ export default function AdminShell({ rankedSites, regionalScore, activeSensorNod
       {/* ---------------------------- Main column ---------------------------- */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Summary strip — one flat band, no cards */}
-        <div className="grid shrink-0 gap-3 bg-bg-base/40 py-2 px-3 rounded-md lg:grid-cols-4">
+        <div className="grid shrink-0 gap-3 bg-bg/40 py-2 px-3 rounded-md lg:grid-cols-4">
           <Stat
             icon={TrendingUp}
             label="Regional score"
             value={`${regionalScore.regionalScore.toFixed(1)}%`}
-            valueStyle={{ color: scoreColor }}
+            valueStyle={scoreColor}
             isLive
           />
           <Stat
             icon={MapPin}
             label="Highest risk"
             value={topSite ? `${topSite.name.split(",")[0]} · ${topSite.risk.failureProbabilityPercent}%` : "—"}
-            valueStyle={topSite ? { color: getRiskColor(topSite.risk.failureProbabilityPercent) } : undefined}
+            valueStyle={topSite ? getRiskColor(topSite.risk.failureProbabilityPercent) : undefined}
           />
           <Stat
             icon={ShieldAlert}
             label="Blocked roads"
             value={String(blockedCount)}
-            valueStyle={{ color: blockedCount > 0 ? "var(--c-red)" : "var(--c-risk-safe)" }}
+            valueStyle={blockedCount > 0 ? "var(--c-critical)" : "var(--c-ok)"}
           />
           <Stat
             icon={Radio}

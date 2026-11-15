@@ -1,0 +1,11 @@
+{
+  "run_id": "deep-audit-001",
+  "repo": "landslide-monitoring-ner",
+  "target": "D:\\Landslide (SIH)\\landslide-monitoring-ner",
+  "source_ref": "main",
+  "profile": "deep",
+  "scope_paths": ["/"],
+  "budget": 50,
+  "execution_policy": "sandboxed-source-and-local-only",
+  "run_status": "in_progress"
+}

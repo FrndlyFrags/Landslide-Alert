@@ -2,11 +2,10 @@
 // LandingPage.jsx  (LANDING PAGE ONLY)
 // -----------------------------------------------------------------------
 // WHAT: Public landing page for the NER Landslide Early Warning platform.
-//       Editorial layout: a flat charcoal canvas, serif display type and
-//       hairline rules instead of cards, glows or animated backgrounds.
-// NOTE: Presentational only. The ranked-site data is read, never mutated,
-//       and the admin entry point is a single discreet operator block at
-//       the bottom of the page (no nav/hero admin button).
+//       Editorial layout: graphite canvas, Host Grotesk headings and
+//       Atkinson Hyperlegible Mono readouts, hairline rules.
+// SCOPE: Presentational only. The ranked-site data is read, never mutated,
+//        and the admin entry point is a single discreet operator block.
 // -----------------------------------------------------------------------
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -15,7 +14,7 @@ import {
 } from "lucide-react";
 import { getRainStatus, getRiskColor } from "../utils/colorUtils";
 
-// Motion is opinionated: short, quiet, and skipped entirely when the OS
+// Motion is opinionated: short, quiet, skipped entirely when the OS
 // asks for reduced motion.
 function useReveal() {
   const prefersReducedMotion = useReducedMotion();
@@ -55,9 +54,9 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
   }
 
   return (
-    <div className="nightsky min-h-screen font-sans text-ink selection:bg-accent/25 selection:text-ink-strong">
+    <div className="nightsky min-h-screen bg-bg text-text selection:bg-accent/25 selection:text-heading">
       {/* ------------------------------ Nav ------------------------------ */}
-      <header className="sticky top-0 z-40 border-b border-line bg-bg-base/95 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-line bg-bg/95 backdrop-blur">
         <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6" aria-label="Main">
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" })}
@@ -68,10 +67,10 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
               <Radio size={13} />
             </span>
             <span className="leading-none">
-              <span className="block font-display text-[12.5px] font-semibold tracking-tight text-ink-strong">
+              <span className="block font-display text-[12.5px] font-medium tracking-tight leading-tight text-heading">
                 NER Landslide Early Warning
               </span>
-              <span className="mt-1 block font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">
+              <span className="mt-1 block font-mono text-[9.5px] uppercase tracking-[0.14em] text-faint">
                 North Eastern Region · India
               </span>
             </span>
@@ -86,14 +85,14 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className="text-[12px] text-ink-muted transition-colors hover:text-ink-strong"
+                className="text-[12px] text-muted transition-colors hover:text-heading"
               >
                 {item.label}
               </button>
             ))}
           </div>
 
-          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-ink-faint">
+          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
             <span className="h-1.5 w-1.5 rounded-full bg-accent animate-live-pulse motion-reduce:animate-none" />
             Live feeds
           </div>
@@ -110,14 +109,14 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
 
             <motion.h1
               {...reveal(0.05)}
-              className="display-heading mt-5 text-[42px] leading-[1.02] text-ink-strong sm:text-[58px]"
+              className="display-heading mt-5 text-[42px] leading-[1.02] text-heading sm:text-[58px]"
             >
               A live warning layer for the hill roads of North East India.
             </motion.h1>
 
             <motion.p
               {...reveal(0.1)}
-              className="mt-6 max-w-xl text-[14.5px] leading-relaxed text-ink-muted"
+              className="mt-6 max-w-xl text-[14.5px] leading-relaxed text-muted"
             >
               Rainfall, slope angle, soil saturation and ground creep are sampled
               continuously across the region. When a hillside starts to move, district
@@ -128,14 +127,14 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
             <motion.div {...reveal(0.15)} className="mt-9 flex flex-wrap items-center gap-5">
               <button
                 onClick={() => scrollToSection("corridors")}
-                className="group inline-flex items-center gap-2.5 border border-ink-strong bg-ink-strong px-5 py-2.5 text-[12px] font-semibold text-bg-base transition-colors hover:bg-white"
+                className="group inline-flex items-center gap-2.5 border border-heading bg-heading px-5 py-2.5 text-[12px] font-medium text-bg transition-colors hover:bg-white"
               >
                 View corridor status
                 <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
               </button>
               <button
                 onClick={() => scrollToSection("method")}
-                className="group inline-flex items-center gap-2 text-[12px] text-ink-muted transition-colors hover:text-ink-strong"
+                className="group inline-flex items-center gap-2 text-[12px] text-muted transition-colors hover:text-heading"
               >
                 How the warning is built
                 <ArrowUpRight size={13} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -146,12 +145,12 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
           {/* Regional snapshot — read-only view of the same ranked data */}
           <motion.aside
             {...reveal(0.12)}
-            className="border border-line bg-panel p-5 self-start"
+            className="border border-line bg-surface p-5 self-start rounded-lg"
             aria-label="Regional snapshot"
           >
             <div className="flex items-center justify-between border-b border-line pb-3">
               <span className="eyebrow">Regional snapshot</span>
-              <span className="flex items-center gap-1.5 font-mono text-[9.5px] uppercase tracking-[0.12em] text-ink-faint">
+              <span className="flex items-center gap-1.5 font-mono text-[9.5px] uppercase tracking-[0.12em] text-faint">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent animate-live-pulse motion-reduce:animate-none" />
                 Live
               </span>
@@ -159,39 +158,39 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
 
             <div className="flex items-end justify-between gap-4 pt-5">
               <div>
-                <p className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">
+                <p className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-faint">
                   Mean failure probability
                 </p>
                 <p
-                  className="mt-1 font-mono text-[34px] font-semibold leading-none tabular-nums"
+                  className="mt-1 font-mono text-[34px] font-medium leading-none tabular-nums"
                   style={{ color: getRiskColor(meanRisk) }}
                 >
                   {sites.length ? `${meanRisk}%` : "—"}
                 </p>
               </div>
-              <p className="max-w-[9rem] text-right text-[10.5px] leading-relaxed text-ink-faint">
+              <p className="max-w-[9rem] text-right text-[10.5px] leading-relaxed text-faint">
                 Across {sites.length || 12} corridors, 24-hour model run
               </p>
             </div>
 
             <dl className="mt-5 space-y-2.5 border-t border-line pt-4 text-[11.5px]">
               <div className="flex items-center justify-between gap-3">
-                <dt className="text-ink-muted">Highest risk site</dt>
-                <dd className="truncate text-right font-mono text-ink">
+                <dt className="text-muted">Highest risk site</dt>
+                <dd className="truncate text-right font-mono text-text">
                   {highestRiskSite
                     ? `${highestRiskSite.name.split(",")[0]} · ${highestRiskSite.risk.failureProbabilityPercent}%`
                     : "—"}
                 </dd>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <dt className="text-ink-muted">Blocked highways</dt>
-                <dd className="font-mono" style={{ color: blockedCount > 0 ? "var(--c-red)" : "var(--c-risk-safe)" }}>
+                <dt className="text-muted">Blocked highways</dt>
+                <dd className="font-mono" style={{ color: blockedCount > 0 ? "var(--c-critical)" : "var(--c-ok)" }}>
                   {sites.length ? blockedCount : "—"}
                 </dd>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <dt className="text-ink-muted">States reporting</dt>
-                <dd className="font-mono text-ink">{stateCount || 8}</dd>
+                <dt className="text-muted">States reporting</dt>
+                <dd className="font-mono text-text">{stateCount || 8}</dd>
               </div>
             </dl>
 
@@ -200,7 +199,7 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
                 {topSites.slice(0, 3).map((site) => (
                   <li key={site.siteId}>
                     <div className="flex items-baseline justify-between gap-3">
-                      <span className="truncate text-[11.5px] text-ink">{site.name}</span>
+                      <span className="truncate text-[11.5px] text-text">{site.name}</span>
                       <span
                         className="font-mono text-[11px] tabular-nums"
                         style={{ color: getRiskColor(site.risk.failureProbabilityPercent) }}
@@ -234,10 +233,10 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
               { value: "6", label: "Alert languages" },
             ].map((stat) => (
               <div key={stat.label}>
-                <dt className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">
+                <dt className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-faint">
                   {stat.label}
                 </dt>
-                <dd className="mt-1.5 font-mono text-[19px] leading-none text-ink-strong tabular-nums">
+                <dd className="mt-1.5 font-mono text-[19px] leading-none text-heading tabular-nums">
                   {stat.value}
                 </dd>
               </div>
@@ -252,11 +251,11 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
           <motion.div {...reveal(0)} className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
             <div>
               <Label>How the warning is built</Label>
-              <h2 className="display-heading mt-4 text-[30px] leading-tight text-ink-strong sm:text-[38px]">
+              <h2 className="display-heading mt-4 text-[30px] leading-tight text-heading sm:text-[38px]">
                 Four signals, one honest risk figure.
               </h2>
             </div>
-            <p className="max-w-xl text-[13.5px] leading-relaxed text-ink-muted md:pt-9">
+            <p className="max-w-xl text-[13.5px] leading-relaxed text-muted md:pt-9">
               The model is deliberately boring: measure the things that fail a slope,
               keep the readings current, and publish the number with its inputs so a
               district officer can see why it changed.
@@ -295,19 +294,19 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
                 {...reveal(index * 0.05)}
                 className="grid gap-4 border-t border-line py-7 md:grid-cols-[3rem_1fr_auto] md:items-start md:gap-8"
               >
-                <span className="font-mono text-[11px] text-ink-faint tabular-nums">
+                <span className="font-mono text-[11px] text-faint tabular-nums">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <div className="flex items-start gap-4">
                   <item.icon size={16} className="mt-0.5 shrink-0 text-accent" aria-hidden="true" />
                   <div>
-                    <h3 className="text-[14px] font-semibold text-ink-strong">{item.title}</h3>
-                    <p className="mt-2 max-w-2xl text-[12.5px] leading-relaxed text-ink-muted">
+                    <h3 className="text-[14px] font-medium text-heading">{item.title}</h3>
+                    <p className="mt-2 max-w-2xl text-[12.5px] leading-relaxed text-muted">
                       {item.text}
                     </p>
                   </div>
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-faint md:pt-1">
+                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-faint md:pt-1">
                   {item.tag}
                 </span>
               </motion.div>
@@ -322,11 +321,11 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
           <motion.div {...reveal(0)} className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <Label>Live corridors</Label>
-              <h2 className="display-heading mt-4 text-[30px] leading-tight text-ink-strong sm:text-[38px]">
+              <h2 className="display-heading mt-4 text-[30px] leading-tight text-heading sm:text-[38px]">
                 Public weather and risk status.
               </h2>
             </div>
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-ink-faint">
+            <p className="font-mono text-[10.5px] uppercase tracking-[0.12em] text-faint">
               Ranked by failure probability
             </p>
           </motion.div>
@@ -334,7 +333,7 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
           <div className="mt-10">
             <div className="hidden grid-cols-[1.6fr_1fr_0.7fr_1.1fr] gap-6 border-b border-line pb-2.5 md:grid">
               {["Corridor", "State", "24h rain", "Failure probability"].map((heading) => (
-                <span key={heading} className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">
+                <span key={heading} className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-faint">
                   {heading}
                 </span>
               ))}
@@ -351,15 +350,15 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
                   className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 border-b border-line py-4 md:grid-cols-[1.6fr_1fr_0.7fr_1.1fr] md:gap-6"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-[13px] font-medium text-ink-strong">{site.name}</p>
-                    <p className="mt-0.5 truncate text-[11px] text-ink-faint">{site.corridor}</p>
+                    <p className="truncate text-[13px] font-medium text-heading">{site.name}</p>
+                    <p className="mt-0.5 truncate text-[11px] text-faint">{site.corridor}</p>
                   </div>
 
-                  <p className="hidden text-[12px] text-ink-muted md:block">{site.state}</p>
+                  <p className="hidden text-[12px] text-muted md:block">{site.state}</p>
 
-                  <p className="hidden font-mono text-[12px] text-ink md:block tabular-nums">
+                  <p className="hidden font-mono text-[12px] text-text md:block tabular-nums">
                     {site.telemetry.rainfallLast24hMm} mm
-                    <span className="ml-1.5 text-[10.5px] text-ink-faint">{rain.label}</span>
+                    <span className="ml-1.5 text-[10.5px] text-faint">{rain.label}</span>
                   </p>
 
                   <div className="flex items-center justify-end gap-3 md:justify-start">
@@ -374,7 +373,7 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
               );
             })}
 
-            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-faint">
+            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
               Showing the six most exposed of {sites.length || 12} monitored corridors
             </p>
           </div>
@@ -387,12 +386,12 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
           <motion.div {...reveal(0)} className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
             <div>
               <Label>Citizen safety</Label>
-              <h2 className="display-heading mt-4 text-[30px] leading-tight text-ink-strong sm:text-[38px]">
+              <h2 className="display-heading mt-4 text-[30px] leading-tight text-heading sm:text-[38px]">
                 If the ground starts to move.
               </h2>
             </div>
-            <p className="flex items-start gap-2.5 text-[12.5px] leading-relaxed text-ink-muted md:pt-10">
-              <ShieldCheck size={15} className="mt-0.5 shrink-0 text-safe" aria-hidden="true" />
+            <p className="flex items-start gap-2.5 text-[12.5px] leading-relaxed text-muted md:pt-10">
+              <ShieldCheck size={15} className="mt-0.5 shrink-0 text-ok" aria-hidden="true" />
               Preparedness guidance follows NDMA and State Disaster Management Authority
               protocols. Read it before the monsoon, not during it.
             </p>
@@ -437,16 +436,16 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
                 className="border-t border-line pt-5"
               >
                 <div className="flex items-baseline justify-between">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-faint">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
                     {phase.phase} · {phase.note}
                   </span>
-                  <ShieldCheck size={13} className="text-ink-faint" aria-hidden="true" />
+                  <ShieldCheck size={13} className="text-faint" aria-hidden="true" />
                 </div>
-                <h3 className="mt-2 text-[15px] font-semibold text-ink-strong">{phase.title}</h3>
+                <h3 className="mt-2 text-[15px] font-medium text-heading">{phase.title}</h3>
                 <ul className="mt-4 space-y-3">
                   {phase.items.map((item) => (
-                    <li key={item} className="flex gap-2.5 text-[12.5px] leading-relaxed text-ink-muted">
-                      <span className="mt-[9px] h-[1px] w-3 shrink-0 bg-ink-faint" aria-hidden="true" />
+                    <li key={item} className="flex gap-2.5 text-[12.5px] leading-relaxed text-muted">
+                      <span className="mt-[9px] h-[1px] w-3 shrink-0 bg-faint" aria-hidden="true" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -462,18 +461,18 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
         <div className="mx-auto flex max-w-6xl flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="eyebrow">Operator access</p>
-            <p className="mt-2 max-w-xl text-[12.5px] leading-relaxed text-ink-muted">
+            <p className="mt-2 max-w-xl text-[12.5px] leading-relaxed text-muted">
               District control rooms and emergency administrators sign in with their
               passcode to open the live command dashboard.
             </p>
           </div>
           <button
             onClick={onOpenAdminAuth}
-            className="group inline-flex shrink-0 items-center gap-2.5 border border-line px-5 py-2.5 text-[12px] font-medium text-ink transition-colors hover:border-ink-faint hover:text-ink-strong"
+            className="group inline-flex shrink-0 items-center gap-2.5 border border-line px-5 py-2.5 text-[12px] font-medium text-text transition-colors hover:border-faint hover:text-heading"
           >
-            <Lock size={13} className="text-ink-faint transition-colors group-hover:text-accent" />
+            <Lock size={13} className="text-faint transition-colors group-hover:text-accent" />
             Operator sign-in
-            <ArrowRight size={13} className="text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-ink" />
+            <ArrowRight size={13} className="text-faint transition-transform group-hover:translate-x-0.5 group-hover:text-text" />
           </button>
         </div>
       </section>
@@ -482,10 +481,10 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
       <footer className="hairline px-6 py-10">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="max-w-md">
-            <p className="font-display text-[12.5px] font-semibold text-ink-strong">
+            <p className="font-display text-[12.5px] font-medium text-heading">
               NER Landslide Early Warning
             </p>
-            <p className="mt-2 text-[11.5px] leading-relaxed text-ink-faint">
+            <p className="mt-2 text-[11.5px] leading-relaxed text-faint">
               Monitoring the Shillong Plateau, NH-10 Sikkim, Silchar–Lumding and Tawang
               corridors. A research-and-response platform, not a substitute for local
               authority instructions.
@@ -493,18 +492,18 @@ export default function LandingPage({ rankedSites, onOpenAdminAuth }) {
           </div>
 
           <div className="grid grid-cols-2 gap-x-10 gap-y-2 text-[11.5px]">
-            <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">Data</span>
-            <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ink-faint">Built with</span>
-            <span className="text-ink-muted">Open-Meteo rainfall</span>
-            <span className="text-ink-muted">MapLibre GL</span>
-            <span className="text-ink-muted">NASA SRTM elevation</span>
-            <span className="text-ink-muted">OSRM routing</span>
-            <span className="text-ink-muted">OSM road network</span>
-            <span className="text-ink-muted">Esri imagery</span>
+            <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-faint">Data</span>
+            <span className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-faint">Built with</span>
+            <span className="text-muted">Open-Meteo rainfall</span>
+            <span className="text-muted">MapLibre GL</span>
+            <span className="text-muted">NASA SRTM elevation</span>
+            <span className="text-muted">OSRM routing</span>
+            <span className="text-muted">OSM road network</span>
+            <span className="text-muted">Esri imagery</span>
           </div>
         </div>
 
-        <div className="mx-auto mt-8 flex max-w-6xl flex-col gap-2 border-t border-line pt-5 text-[10.5px] text-ink-faint sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto mt-8 flex max-w-6xl flex-col gap-2 border-t border-line pt-5 text-[10.5px] text-faint sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} NER Landslide Command &amp; Early Warning System.</p>
           <p className="font-mono uppercase tracking-[0.12em]">North Eastern Region · India</p>
         </div>

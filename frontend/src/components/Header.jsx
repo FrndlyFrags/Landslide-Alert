@@ -3,12 +3,11 @@
 // -----------------------------------------------------------------------
 // WHAT: Top bar of the dashboard: connection status, regional risk figure,
 //       language picker, warning blast trigger and "Public view" link.
-// NOTE: Every control, state variable and handler is unchanged from the
-//       previous version — only presentation (flat bar, hairline dividers,
-//       no glow) has been redesigned.
+// SCOPE: Every control, state variable and handler is unchanged — only
+//        presentation has been redesigned (flat bar, hairline dividers).
 // -----------------------------------------------------------------------
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Satellite, CloudRain, Radio, ChevronDown, Siren, Languages, RefreshCw, Home } from "lucide-react";
 import { SUPPORTED_LANGUAGES } from "../data/mockData";
 import { getRiskColor, getRiskColorRgba } from "../utils/colorUtils";
@@ -16,15 +15,17 @@ import { getRiskColor, getRiskColorRgba } from "../utils/colorUtils";
 function FeedNote({ icon: Icon, label, detail }) {
   return (
     <span className="flex items-center gap-1.5 whitespace-nowrap">
-      <Icon size={11} className="text-ink-faint" aria-hidden="true" />
-      <span className="text-[10.5px] text-ink-muted">{label}</span>
-      <span className="font-mono text-[9.5px] text-ink-faint">{detail}</span>
+      <Icon size={11} className="text-faint" aria-hidden="true" />
+      <span className="text-[10.5px] text-muted">{label}</span>
+      <span className="font-mono text-[9.5px] text-faint">{detail}</span>
     </span>
   );
 }
 
 function useCountUp(targetValue, durationMs = 900) {
-  const prefersReducedMotion = useReducedMotion();
+  const prefersReducedMotion = typeof window !== "undefined"
+    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    : false;
   const [displayValue, setDisplayValue] = useState(0);
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -69,13 +70,13 @@ export default function Header({
   }
 
   return (
-    <header className="relative z-20 shrink-0 border-b border-line bg-bg-base px-4 py-2.5">
+    <header className="relative z-20 shrink-0 border-b border-line bg-bg px-4 py-2.5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         {/* ---------------------------- Left side ---------------------------- */}
         <div className="flex min-w-0 flex-wrap items-center gap-3">
           <button
             onClick={onExitToLanding}
-            className="flex items-center gap-1.5 text-[11px] text-ink-muted transition-colors hover:text-ink-strong"
+            className="flex items-center gap-1.5 text-[11px] text-muted transition-colors hover:text-heading"
             title="Return to Public Landing Page"
           >
             <Home size={12} />
@@ -85,10 +86,10 @@ export default function Header({
           <span className="hidden h-4 w-[1px] bg-line sm:block" aria-hidden="true" />
 
           <div className="leading-none">
-            <h1 className="text-[12px] font-semibold tracking-tight text-ink-strong">
+            <h1 className="text-[12px] font-medium tracking-tight leading-tight text-heading">
               Landslide Command Center
             </h1>
-            <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-faint">
+            <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-faint">
               Authorized telemetry
             </p>
           </div>
@@ -105,13 +106,13 @@ export default function Header({
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="flex items-center gap-1.5 border border-line px-2.5 py-1.5 text-[11px] text-ink-muted transition-colors hover:border-ink-faint hover:text-ink disabled:opacity-50"
+            className="flex items-center gap-1.5 border border-line px-2.5 py-1.5 text-[11px] text-muted transition-colors hover:border-text hover:text-heading disabled:opacity-50"
             title="Re-fetch live rainfall and elevation data"
           >
             <RefreshCw size={12} className={isRefreshing ? "animate-spin" : ""} />
             {isRefreshing ? "Syncing" : "Refresh"}
             {lastUpdated && !isRefreshing && (
-              <span className="ml-0.5 font-mono text-[9px] text-ink-faint tabular-nums">
+              <span className="ml-0.5 font-mono text-[9px] text-faint tabular-nums">
                 {lastUpdated.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </span>
             )}
@@ -123,10 +124,10 @@ export default function Header({
             style={{ borderColor: scoreColor, backgroundColor: scoreBgColor }}
             title="Regional Global Risk Score"
           >
-            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-ink-faint">
+            <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-faint">
               Region
             </span>
-            <span className="font-mono text-[12.5px] font-semibold tabular-nums" style={{ color: scoreColor }}>
+            <span className="font-mono text-[12.5px] font-medium tabular-nums leading-none" style={{ color: scoreColor }}>
               {animatedScore.toFixed(1)}%
             </span>
           </div>
@@ -135,11 +136,11 @@ export default function Header({
             <button
               onClick={() => setShowLanguageMenu((open) => !open)}
               aria-expanded={showLanguageMenu}
-              className="flex items-center gap-1.5 border border-line px-2.5 py-1.5 text-[11px] text-ink transition-colors hover:border-ink-faint"
+              className="flex items-center gap-1.5 border border-line px-2.5 py-1.5 text-[11px] text-text transition-colors hover:border-faint"
             >
               <Languages size={12} />
               <span className="font-mono tabular-nums">{selectedLanguages.length}</span>
-              <ChevronDown size={11} className={`transition-transform ${showLanguageMenu ? "rotate-180" : ""}`} />
+              <ChevronDown size={11} className={`transition-transform duration-150 ${showLanguageMenu ? "rotate-180" : ""}`} />
             </button>
             <AnimatePresence>
               {showLanguageMenu && (
@@ -150,10 +151,10 @@ export default function Header({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.14 }}
-                    className="absolute right-0 z-20 mt-2 w-48 border border-line bg-panel py-1 shadow-panel"
+                    className="absolute right-0 z-20 mt-2 w-48 border border-line bg-surface py-1"
                     role="menu"
                   >
-                    <p className="px-3 pb-1.5 pt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-faint">
+                    <p className="px-3 pb-1.5 pt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-faint">
                       Alert languages
                     </p>
                     {SUPPORTED_LANGUAGES.map((language) => {
@@ -161,12 +162,24 @@ export default function Header({
                       return (
                         <div
                           key={language}
-                          className={`flex items-center gap-2 px-3 py-1.5 text-[11px] text-ink transition-colors hover:bg-panel-2 ${
-                            isSelected ? "border-accent bg-accent/10" : "border-line bg-panel/20"
-                          }`}                        >                        <span
-                          className={`h-2.5 w-2.5 rounded shrink-0 items-center justify-center border ${
-                            isSelected ? "border-accent bg-accent" : "border-ink-faint"
-                          }`}                          aria-hidden="true"                        >                          {isSelected && <span className="h-1 w-1 bg-bg-base" />}                        </span>                        {language}                      </div>
+                          className={`flex items-center gap-2 px-3 py-1.5 text-[11px] transition-colors ${
+                            isSelected
+                              ? "border-accent bg-accent/10 text-accent"
+                              : "border-transparent text-muted hover:bg-surface-2 hover:text-text"
+                          }`}
+                        >
+                          <span
+                            className={`h-2.5 w-2.5 shrink-0 items-center justify-center rounded-sm border ${
+                              isSelected
+                                ? "border-accent bg-accent"
+                                : "border-faint bg-transparent"
+                            }`}
+                            aria-hidden="true"
+                          >
+                            {isSelected && <span className="block h-1 w-1 bg-bg" />}
+                          </span>
+                          {language}
+                        </div>
                       );
                     })}
                   </motion.div>
@@ -175,16 +188,14 @@ export default function Header({
             </AnimatePresence>
           </div>
 
-          <motion.button
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.98 }}
+          <button
             onClick={() => onTriggerWarning(selectedLanguages)}
-            className="flex items-center gap-1.5 bg-critical px-3 py-1.5 text-[11px] font-semibold text-[#170b0a] transition-colors hover:bg-[#d9807b]"
+            className="flex items-center gap-1.5 bg-critical px-3 py-1.5 text-[11px] font-medium text-bg transition-colors hover:brightness-110"
           >
             <Siren size={12} />
             <span className="hidden sm:inline">Warning blast</span>
             <span className="sm:hidden">Blast</span>
-          </motion.button>
+          </button>
         </div>
       </div>
     </header>

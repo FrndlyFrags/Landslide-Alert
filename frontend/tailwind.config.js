@@ -1,11 +1,9 @@
 // -----------------------------------------------------------------------
 // tailwind.config.js
-// WHAT: Configures Tailwind CSS and maps every UI theme token defined in
-//       src/theme/tokens.css into Tailwind utilities (bg-ink, text-heading,
-//       bg-panel ...) so the landing page and the admin portal share one
-//       palette without hard-coded hex values.
-// WHY:  Colors use `rgb(var(--token-rgb) / <alpha-value>)` so opacity
-//       modifiers like bg-telemetry/10 keep working.
+// WHAT: Maps every design token from src/theme/tokens.css into Tailwind
+//       utilities so the landing page and admin portal share one palette.
+// NOTE: Console theme — graphite ground (oklch dark blue-grey), amber
+//       accent for people/operators, cool-blue for instruments/telemetry.
 // -----------------------------------------------------------------------
 /** @type {import('tailwindcss').Config} */
 const alpha = (token) => `rgb(var(${token}) / <alpha-value>)`;
@@ -18,77 +16,64 @@ export default {
         transparent: "transparent",
         current: "currentColor",
 
-        // Base surfaces (alpha-capable triplets)
-        "bg-base":   alpha("--c-bg-rgb"),
-        "panel":     alpha("--c-surface-rgb"),
-        "panel-2":   alpha("--c-surface-2-rgb"),
-        "line":      alpha("--c-line-rgb"),
-        "line-soft": alpha("--c-line-soft-rgb"),
+        // Paper (graphite ground, three steps)
+        "bg":       alpha("--c-bg-rgb"),
+        "surface":  alpha("--c-surface-rgb"),
+        "surface-2":alpha("--c-surface-2-rgb"),
 
-        // Text
-        "ink":        "var(--c-text)",
-        "ink-strong": "var(--c-heading)",
-        "ink-muted":  "var(--c-muted)",
-        "ink-faint":  "var(--c-faint)",
+        // Rules & edges
+        "line":     alpha("--c-line-rgb"),
+        "line-soft":alpha("--c-line-soft-rgb"),
 
-        // Accent
+        // Ink
+        "heading":  "var(--c-heading)",
+        "text":     "var(--c-text)",
+        "muted":    "var(--c-muted)",
+        "faint":    "var(--c-faint)",
+
+        // Accent — amber (person / operator signal)
         "accent":      alpha("--c-accent-rgb"),
         "accent-deep": alpha("--c-accent-deep-rgb"),
-        // Legacy aliases — existing dashboard components keep their class
-        // names while consuming the new token palette underneath.
-        telemetry:     alpha("--c-accent-rgb"),
-        onyx:          alpha("--c-bg-rgb"),
-        "dark-slate":  alpha("--c-surface-rgb"),
-        "slate-card":  alpha("--c-surface-2-rgb"),
 
-        // Alerts & risk only
-        "alert-amber": alpha("--c-amber-rgb"),
-        "alert-red":   alpha("--c-red-rgb"),
-        watch:         alpha("--c-amber-rgb"),
-        critical:      alpha("--c-red-rgb"),
-        safe:          alpha("--c-risk-safe-rgb"),
+        // Cool — instrument / telemetry signal
+        "cool":      alpha("--c-cool-rgb"),
+        "cool-soft": "var(--c-cool-soft)",
+
+        // Risk & alert semantics (domain-stable colours)
+        "ok":          alpha("--c-ok-rgb"),
+        "ok-soft":     "var(--c-ok-soft)",
+        "critical":    alpha("--c-critical-rgb"),
+        "critical-soft":"var(--c-critical-soft)",
+        "alert-amber": alpha("--c-alert-amber-rgb"),
+        "alert-amber-soft": "var(--c-alert-amber-soft)",
+
+        // Legacy aliases kept for backward compatibility during transition
+        "panel":    alpha("--c-surface-rgb"),
+        "panel-2":  alpha("--c-surface-2-rgb"),
+        "onyx":     alpha("--c-bg-rgb"),
+        "dark-slate":alpha("--c-surface-rgb"),
+        "telemetry":"var(--c-cool)",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Sora", "Inter", "system-ui", "sans-serif"],
-        serif: ["Instrument Serif", "Georgia", "Times New Roman", "serif"],
-        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
+        sans:   ["Host Grotesk", "ui-sans-serif", "system-ui", "sans-serif"],
+        display:["Host Grotesk", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono:   ["Atkinson Hyperlegible Mono", "ui-monospace", "monospace"],
       },
       borderRadius: {
-        xs: "var(--r-xs)",
-        sm: "var(--r-sm)",
-        md: "var(--r-md)",
-        lg: "var(--r-lg)",
-        xl: "var(--r-xl)",
+        xs:   "var(--r-xs)",
+        sm:   "var(--r-sm)",
+        md:   "var(--r-md)",
+        lg:   "var(--r-lg)",
+        xl:   "var(--r-xl)",
         pill: "var(--r-pill)",
       },
       boxShadow: {
-        "glow-cyan":    "none",
-        "glow-emerald": "none",
-        "glow-amber":   "none",
-        "glow-red":     "none",
-        "panel":        "0 1px 2px rgba(0,0,0,0.4), 0 12px 32px rgba(0,0,0,0.32)",
+        panel: "0 1px 2px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.28)",
       },
       keyframes: {
         "radar-sweep": {
           "0%": { transform: "rotate(0deg)" },
           "100%": { transform: "rotate(360deg)" },
-        },
-        "scan-line": {
-          "0%": { transform: "translateY(-100%)" },
-          "100%": { transform: "translateY(100%)" },
-        },
-        "ping-slow": {
-          "0%": { transform: "scale(1)", opacity: 0.6 },
-          "100%": { transform: "scale(2.4)", opacity: 0 },
-        },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
-        "reveal-up": {
-          "0%": { opacity: 0, transform: "translateY(14px)" },
-          "100%": { opacity: 1, transform: "translateY(0)" },
         },
         "typing-dot": {
           "0%, 60%, 100%": { opacity: 0.25 },
@@ -97,11 +82,7 @@ export default {
       },
       animation: {
         "radar-sweep": "radar-sweep 4s linear infinite",
-        "scan-line": "scan-line 3s ease-in-out infinite",
-        "ping-slow": "ping-slow 2.4s cubic-bezier(0,0,0.2,1) infinite",
-        shimmer: "shimmer 2.5s linear infinite",
-        "reveal-up": "reveal-up 0.6s cubic-bezier(0.22,1,0.36,1) both",
-        "typing-dot": "typing-dot 1.4s ease-in-out infinite",
+        "typing-dot":  "typing-dot 1.4s ease-in-out infinite",
       },
     },
   },

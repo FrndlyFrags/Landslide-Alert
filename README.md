@@ -52,6 +52,11 @@ Landslide-Alert/
 
 ```bash
 cd backend
+# NOTE: Python 3.14+ requires newer pydantic versions with pre-built wheels.
+# The original requirements.txt (pydantic==2.7.4) fails to build from source
+# on Python 3.14 due to missing MSVC linker. If you encounter build errors,
+# upgrade pydantic-core first:
+pip install "pydantic>=2.8" "pydantic-core>=2.23"
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```

@@ -1,53 +1,55 @@
 /* -----------------------------------------------------------------------
-   tokens.css — Single source of truth for the UI theme.
-   WHAT: Design tokens (colors, spacing, radii, type) shared by the
-         landing page and the admin portal.
-   NOTE: Colors exist in two forms:
-         --c-x      solid value for plain CSS usage
-         --c-x-rgb  "R G B" triplet for Tailwind alpha modifiers
-                    (e.g. bg-telemetry/10 -> rgb(var(--c-accent-rgb)/0.1))
-         Palette: neutral charcoal surfaces, warm off-white type, one muted
-         slate accent. No neon, no gradients — colour is used for meaning
-         (risk + alerts) rather than decoration.
+   tokens.css
+   WHAT: Design tokens for the Console theme — graphite ground, Host Grotesk,
+         amber for people/operators, cool-blue for instruments/measurements.
+         Semantic aliases keep risk-alert colours stable across the swap.
+   NOTE: No glow, no shadow, no gradient. Panels are 1px rules cut from
+         one surface stepped three lightnesses. Mono is what an instrument
+         wrote; grotesk is what a person reads.
    ----------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500&family=Atkinson+Hyperlegible+Mono:wght@400;500&display=swap');
+
 :root {
-  /* --- Base surfaces (neutral charcoal) --- */
-  --c-bg:        #0d0e10;   --c-bg-rgb:        13 14 16;
-  --c-surface:   #141519;   --c-surface-rgb:   20 21 25;
-  --c-surface-2: #1a1c21;   --c-surface-2-rgb: 26 28 33;
-  --c-line:      #2b2e34;   --c-line-rgb:      43 46 52;
-  --c-line-soft: #212429;   --c-line-soft-rgb: 33 36 41;
+  /* --- Paper (graphite ground, stepped) --- */
+  --c-bg:       #1f222a;   --c-bg-rgb:    31 34 42;
+  --c-surface:  #262a34;   --c-surface-rgb: 38 42 52;
+  --c-surface-2:#2d313d;   --c-surface-2-rgb: 45 49 61;
+  --c-line:     #3e4454;   --c-line-rgb:    62 68 84;
+  --c-line-soft:#343947;   --c-line-soft-rgb: 52 57 71;
 
-  /* --- Text --- */
-  --c-text:      #c8ccd2;  /* body                     */
-  --c-heading:   #f4f4f2;  /* headings / primary ink   */
-  --c-muted:     #8f949e;  /* secondary                */
-  --c-faint:     #646a74;  /* captions / placeholders  */
+  /* --- Ink --- */
+  --c-heading: #f1f1ed;   --c-heading-rgb: 241 241 237;
+  --c-text:    #cccfd6;   --c-text-rgb:    204 207 214;
+  --c-muted:   #9ea3b0;   --c-muted-rgb:   158 163 176;
+  --c-faint:   #6b7182;   --c-faint-rgb:   107 113 130;
 
-  /* --- Single accent (muted slate blue) --- */
-  --c-accent:      #a6bfcf;   --c-accent-rgb: 166 191 207;
-  --c-accent-deep: #7d97a9;   --c-accent-deep-rgb: 125 151 169;
-  --c-accent-wash: rgba(166, 191, 207, 0.08);
-  --c-accent-line: rgba(166, 191, 207, 0.30);
+  /* --- Accent — amber (person/operator signal) --- */
+  --c-accent:        #d4a04a;   --c-accent-rgb:  212 160 74;
+  --c-accent-deep:   #b8863a;   --c-accent-deep-rgb: 184 134 58;
+  --c-accent-wash: rgba(212, 160, 74, 0.10);
+  --c-accent-line: rgba(212, 160, 74, 0.35);
 
-  /* --- Alert colors (alerts & risk ONLY) --- */
-  --c-amber: #c99b5c;   --c-amber-rgb: 201 155 92;
-  --c-red:   #c9706b;   --c-red-rgb:   201 112 107;
+  /* --- Cool — instrument / telemetry signal --- */
+  --c-cool:      #6db3cc;   --c-cool-rgb:  109 179 204;
+  --c-cool-soft: rgba(109, 179, 204, 0.12);
 
-  /* --- Risk ramp (status semantics, kept from original ramp) --- */
-  --c-risk-safe:     #6fa98a;   --c-risk-safe-rgb: 111 169 138;
-  --c-risk-watch:    #c99b5c;
-  --c-risk-critical: #c9706b;
+  /* --- Risk / alert semantics (keep as-is for domain meaning) --- */
+  --c-ok:          #6fa98a;   --c-ok-rgb:       111 169 138;
+  --c-ok-soft:     rgba(111, 169, 138, 0.10);
+  --c-critical:    #c9706b;   --c-critical-rgb: 201 112 107;
+  --c-critical-soft: rgba(201, 112, 107, 0.10);
+  --c-alert-amber: #d4a04a;   --c-alert-amber-rgb: 212 160 74;
+  --c-alert-amber-soft: rgba(212, 160, 74, 0.10);
 
-  /* --- Radius scale (sharp, engineered) --- */
-  --r-xs: 2px;
-  --r-sm: 3px;
-  --r-md: 4px;
-  --r-lg: 6px;
-  --r-xl: 8px;
+  /* --- Radius scale (Card 10 px · Pill 6 px — Console spec) --- */
+  --r-xs:   3px;
+  --r-sm:   4px;
+  --r-md:   6px;
+  --r-lg:   10px;
+  --r-xl:   14px;
   --r-pill: 999px;
 
-  /* --- Spacing scale (major rhythm) --- */
+  /* --- Spacing --- */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -56,13 +58,11 @@
   --space-6: 32px;
   --space-7: 48px;
   --space-8: 64px;
-  --space-9: 96px;
 
-  /* --- Type pairing: Inter body, Sora UI headings, serif display --- */
-  --font-body: "Inter", system-ui, sans-serif;
-  --font-heading: "Sora", "Inter", system-ui, sans-serif;
-  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /* --- Faces --- */
+  --font-display: "Host Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body:    var(--font-display);
+  --font-mono:    "Atkinson Hyperlegible Mono", ui-monospace, monospace;
 
   /* --- Motion --- */
   --t-fast: 140ms cubic-bezier(0.22, 1, 0.36, 1);

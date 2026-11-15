@@ -1,0 +1,34 @@
+{
+  "coverage_ledger": [
+    {
+      "unit": "Authentication Gate",
+      "file": "frontend/src/components/AuthModal.jsx",
+      "risk": "High (Hardcoded credentials)",
+      "notes": "Passcode verification is client-side only."
+    },
+    {
+      "unit": "REST API Endpoints",
+      "file": "backend/main.py",
+      "risk": "Medium (Lack of auth/authorization on backend)",
+      "notes": "Backend endpoints seem to lack session or role-based access control."
+    },
+    {
+      "unit": "Telemetry Data Fetching",
+      "file": "frontend/src/services/liveDataService.js",
+      "risk": "Low (Public APIs)",
+      "notes": "Client-side calls to public APIs. Data integrity relies on API reliability."
+    },
+    {
+      "unit": "Risk Calculation Engine",
+      "file": "backend/models/predict.py",
+      "risk": "Medium (Model logic transparency)",
+      "notes": "Logic is clear and rule-based, but ensures predictability."
+    },
+    {
+      "unit": "CORS Configuration",
+      "file": "backend/main.py",
+      "risk": "Medium (Permissive CORS)",
+      "notes": "allow_origins=['*'] is used for development."
+    }
+  ]
+}
